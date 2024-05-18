@@ -1,42 +1,50 @@
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useEffect } from 'react';
+import { LoaderFunctionArgs, redirect } from 'react-router-dom';
+import { api } from '@lib/api/client.ts';
 
-function Callback() {
-    const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
+export async function loader({ request }: LoaderFunctionArgs) {
+    const searchParams = new URL(request.url).searchParams;
+    const {
+        access_token: accessToken,
+        refresh_token: refreshToken,
+        autoLogin
+    } = Object.fromEntries(searchParams);
 
-    useEffect(() => {
-        const accessToken = searchParams.get('access_token');
-        const refreshToken = searchParams.get('refresh_token');
+    // 로그인 실패
+    if (!accessToken || !refreshToken) {
+        return redirect('/');
+    }
 
-        // 로그인 실패
-        if (!(accessToken && refreshToken)) {
-            navigate('/');
-            return;
+    const response = await api.GET('/me', {
+        params: {
+            header: {
+                authorization: `Bearer ${accessToken}`
+            }
         }
+    });
 
-        // 자동 로그인
-        const autoLogin = searchParams.get('autoLogin');
-        const LOGIN_KEY = 'HAY_login';
-        const ACCESS_TOKEN_KEY = 'HAY_AT';
-        const REFRESH_TOKEN_KEY = 'HAY_RT';
-        if (autoLogin === 'T') {
-            localStorage.setItem(LOGIN_KEY, 'T');
-            localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
-            localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
-        } else if (localStorage.getItem(LOGIN_KEY)) {
-            localStorage.removeItem(LOGIN_KEY);
-            sessionStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
-            sessionStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+    if (response.error) {
+        return redirect('/');
+    }
+
+    // 자동 로그인
+    const AUTO_LOGIN_KEY = 'HAY_auto_login';
+    const ACCESS_TOKEN_KEY = 'HAY_AT';
+    const REFRESH_TOKEN_KEY = 'HAY_RT';
+
+    if (autoLogin === 'T') {
+        localStorage.setItem(AUTO_LOGIN_KEY, 'T');
+        localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
+        localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+    } else {
+        if (localStorage.getItem(AUTO_LOGIN_KEY)) {
+            localStorage.removeItem(AUTO_LOGIN_KEY);
         }
+        sessionStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
+        sessionStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+    }
 
-        // todo profile api 호출
-
-        // 여부에 따라
-        navigate('/info-form');
-    }, [navigate, searchParams]);
-
-    return <div></div>;
+    if (response.data.profile) {
+        return redirect('/question-list');
+    }
+    return redirect('/info-form');
 }
-
-export default Callback;
