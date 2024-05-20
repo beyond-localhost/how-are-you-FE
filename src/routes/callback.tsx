@@ -1,5 +1,11 @@
 import { LoaderFunctionArgs, redirect } from 'react-router-dom';
 import { api } from '@lib/api/client.ts';
+import {
+    ACCESS_TOKEN_KEY,
+    AUTO_LOGIN_KEY,
+    REFRESH_TOKEN_KEY,
+    TRUE_VALUE
+} from '@/constants/login.ts';
 
 export async function loader({ request }: LoaderFunctionArgs) {
     const searchParams = new URL(request.url).searchParams;
@@ -27,12 +33,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
     }
 
     // 자동 로그인
-    const AUTO_LOGIN_KEY = 'HAY_auto_login';
-    const ACCESS_TOKEN_KEY = 'HAY_AT';
-    const REFRESH_TOKEN_KEY = 'HAY_RT';
-
     if (autoLogin === 'T') {
-        localStorage.setItem(AUTO_LOGIN_KEY, 'T');
+        localStorage.setItem(AUTO_LOGIN_KEY, TRUE_VALUE);
         localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
         localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
     } else {

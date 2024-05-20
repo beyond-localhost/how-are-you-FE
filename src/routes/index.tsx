@@ -1,12 +1,13 @@
 import { api } from '@lib/api/client.ts';
 import { PageLayout } from '@components/StyledComponents.ts';
 import { useRef } from 'react';
+import { FALSE_VALUE, TRUE_VALUE } from '@/constants/login.ts';
 
 function Index() {
     const checkboxRef = useRef<HTMLInputElement>(null);
 
     const handleKakaoClick = async () => {
-        const isAutoLogin = checkboxRef.current?.checked ? 'T' : 'F';
+        const isAutoLogin = checkboxRef.current?.checked ? TRUE_VALUE : FALSE_VALUE;
 
         const res = await api.POST('/auth/kakao', {
             body: {
