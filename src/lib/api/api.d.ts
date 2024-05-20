@@ -70,7 +70,7 @@ export interface operations {
             };
         };
         responses: {
-            200: {
+            201: {
                 content: {
                     'application/json': {
                         url: string;
@@ -83,6 +83,37 @@ export interface operations {
                     };
                 };
             };
+            400: {
+                content: {
+                    'application/json':
+                        | {
+                              /** @constant */
+                              _tag: 'DataParseError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'InputRangeError';
+                          };
+                    'multipart/form-data':
+                        | {
+                              /** @constant */
+                              _tag: 'DataParseError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'InputRangeError';
+                          };
+                    'text/plain':
+                        | {
+                              /** @constant */
+                              _tag: 'DataParseError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'InputRangeError';
+                          };
+                };
+            };
         };
     };
     getMe: {
@@ -93,7 +124,79 @@ export interface operations {
         };
         responses: {
             200: {
-                content: never;
+                content: {
+                    'application/json': {
+                        id: number;
+                        email: string;
+                        profile: null | {
+                            nickname: string;
+                            dateOfBirthYear: number;
+                        };
+                    };
+                    'multipart/form-data': {
+                        id: number;
+                        email: string;
+                        profile: null | {
+                            nickname: string;
+                            dateOfBirthYear: number;
+                        };
+                    };
+                    'text/plain': {
+                        id: number;
+                        email: string;
+                        profile: null | {
+                            nickname: string;
+                            dateOfBirthYear: number;
+                        };
+                    };
+                };
+            };
+            401: {
+                content: {
+                    'application/json':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                    'multipart/form-data':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                    'text/plain':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                };
+            };
+            404: {
+                content: {
+                    'application/json': {
+                        /** @constant */
+                        _tag: 'DataNotFoundError';
+                    };
+                    'multipart/form-data': {
+                        /** @constant */
+                        _tag: 'DataNotFoundError';
+                    };
+                    'text/plain': {
+                        /** @constant */
+                        _tag: 'DataNotFoundError';
+                    };
+                };
             };
         };
     };
@@ -106,9 +209,62 @@ export interface operations {
         responses: {
             200: {
                 content: {
-                    'application/json': string;
-                    'multipart/form-data': string;
-                    'text/plain': string;
+                    'application/json': {
+                        nickname: string;
+                    };
+                    'multipart/form-data': {
+                        nickname: string;
+                    };
+                    'text/plain': {
+                        nickname: string;
+                    };
+                };
+            };
+            401: {
+                content: {
+                    'application/json':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                    'multipart/form-data':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                    'text/plain':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                };
+            };
+            404: {
+                content: {
+                    'application/json': {
+                        /** @constant */
+                        _tag: 'DataNotFoundError';
+                    };
+                    'multipart/form-data': {
+                        /** @constant */
+                        _tag: 'DataNotFoundError';
+                    };
+                    'text/plain': {
+                        /** @constant */
+                        _tag: 'DataNotFoundError';
+                    };
                 };
             };
         };
@@ -121,7 +277,82 @@ export interface operations {
         };
         responses: {
             200: {
-                content: never;
+                content: {
+                    'application/json': {
+                        id: number;
+                        nickname: string;
+                        dateOfBirthYear: number;
+                        jobs: {
+                            id: number;
+                            name: string;
+                        }[];
+                    };
+                    'multipart/form-data': {
+                        id: number;
+                        nickname: string;
+                        dateOfBirthYear: number;
+                        jobs: {
+                            id: number;
+                            name: string;
+                        }[];
+                    };
+                    'text/plain': {
+                        id: number;
+                        nickname: string;
+                        dateOfBirthYear: number;
+                        jobs: {
+                            id: number;
+                            name: string;
+                        }[];
+                    };
+                };
+            };
+            401: {
+                content: {
+                    'application/json':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                    'multipart/form-data':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                    'text/plain':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                };
+            };
+            404: {
+                content: {
+                    'application/json': {
+                        /** @constant */
+                        _tag: 'DataNotFoundError';
+                    };
+                    'multipart/form-data': {
+                        /** @constant */
+                        _tag: 'DataNotFoundError';
+                    };
+                    'text/plain': {
+                        /** @constant */
+                        _tag: 'DataNotFoundError';
+                    };
+                };
             };
         };
     };
@@ -182,11 +413,67 @@ export interface operations {
                     };
                 };
             };
-            400: {
+            401: {
                 content: {
-                    'application/json': string;
-                    'multipart/form-data': string;
-                    'text/plain': string;
+                    'application/json':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                    'multipart/form-data':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                    'text/plain':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                };
+            };
+            404: {
+                content: {
+                    'application/json': {
+                        /** @constant */
+                        _tag: 'DataNotFoundError';
+                    };
+                    'multipart/form-data': {
+                        /** @constant */
+                        _tag: 'DataNotFoundError';
+                    };
+                    'text/plain': {
+                        /** @constant */
+                        _tag: 'DataNotFoundError';
+                    };
+                };
+            };
+            500: {
+                content: {
+                    'application/json': {
+                        /** @constant */
+                        _tag: 'UnInterntionalError';
+                    };
+                    'multipart/form-data': {
+                        /** @constant */
+                        _tag: 'UnInterntionalError';
+                    };
+                    'text/plain': {
+                        /** @constant */
+                        _tag: 'UnInterntionalError';
+                    };
                 };
             };
         };
@@ -199,7 +486,67 @@ export interface operations {
         };
         responses: {
             200: {
-                content: never;
+                content: {
+                    'application/json': {
+                        id: number;
+                        question: string;
+                    };
+                    'multipart/form-data': {
+                        id: number;
+                        question: string;
+                    };
+                    'text/plain': {
+                        id: number;
+                        question: string;
+                    };
+                };
+            };
+            401: {
+                content: {
+                    'application/json':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                    'multipart/form-data':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                    'text/plain':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                };
+            };
+            500: {
+                content: {
+                    'application/json': {
+                        /** @constant */
+                        _tag: 'UnInterntionalError';
+                    };
+                    'multipart/form-data': {
+                        /** @constant */
+                        _tag: 'UnInterntionalError';
+                    };
+                    'text/plain': {
+                        /** @constant */
+                        _tag: 'UnInterntionalError';
+                    };
+                };
             };
         };
     };
@@ -226,8 +573,65 @@ export interface operations {
             };
         };
         responses: {
-            200: {
-                content: never;
+            201: {
+                content: {
+                    'application/json': {
+                        id: number;
+                    };
+                    'multipart/form-data': {
+                        id: number;
+                    };
+                    'text/plain': {
+                        id: number;
+                    };
+                };
+            };
+            400: {
+                content: {
+                    'application/json': {
+                        /** @constant */
+                        _tag: 'UserAlreadyAnswerTodayQuestionError';
+                    };
+                    'multipart/form-data': {
+                        /** @constant */
+                        _tag: 'UserAlreadyAnswerTodayQuestionError';
+                    };
+                    'text/plain': {
+                        /** @constant */
+                        _tag: 'UserAlreadyAnswerTodayQuestionError';
+                    };
+                };
+            };
+            401: {
+                content: {
+                    'application/json':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                    'multipart/form-data':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                    'text/plain':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                };
             };
         };
     };
@@ -242,8 +646,59 @@ export interface operations {
             };
         };
         responses: {
-            200: {
-                content: never;
+            204: {
+                content: {
+                    'application/json': boolean;
+                    'multipart/form-data': boolean;
+                    'text/plain': boolean;
+                };
+            };
+            400: {
+                content: {
+                    'application/json': {
+                        /** @constant */
+                        _tag: 'DataNotFoundError';
+                    };
+                    'multipart/form-data': {
+                        /** @constant */
+                        _tag: 'DataNotFoundError';
+                    };
+                    'text/plain': {
+                        /** @constant */
+                        _tag: 'DataNotFoundError';
+                    };
+                };
+            };
+            401: {
+                content: {
+                    'application/json':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                    'multipart/form-data':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                    'text/plain':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                };
             };
         };
     };
@@ -272,7 +727,79 @@ export interface operations {
         };
         responses: {
             200: {
-                content: never;
+                content: {
+                    'application/json': {
+                        id: number;
+                        userId: number;
+                        createdAt: string;
+                        updatedAt: string;
+                        questionDistributionId: number;
+                        isPublic: boolean;
+                    };
+                    'multipart/form-data': {
+                        id: number;
+                        userId: number;
+                        createdAt: string;
+                        updatedAt: string;
+                        questionDistributionId: number;
+                        isPublic: boolean;
+                    };
+                    'text/plain': {
+                        id: number;
+                        userId: number;
+                        createdAt: string;
+                        updatedAt: string;
+                        questionDistributionId: number;
+                        isPublic: boolean;
+                    };
+                };
+            };
+            401: {
+                content: {
+                    'application/json':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                    'multipart/form-data':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                    'text/plain':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                };
+            };
+            404: {
+                content: {
+                    'application/json': {
+                        /** @constant */
+                        _tag: 'DataNotFoundError';
+                    };
+                    'multipart/form-data': {
+                        /** @constant */
+                        _tag: 'DataNotFoundError';
+                    };
+                    'text/plain': {
+                        /** @constant */
+                        _tag: 'DataNotFoundError';
+                    };
+                };
             };
         };
     };

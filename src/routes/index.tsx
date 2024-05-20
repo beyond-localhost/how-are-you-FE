@@ -1,12 +1,15 @@
 import { api } from '@lib/api/client.ts';
 import { PageLayout } from '@components/StyledComponents.ts';
 import { useRef } from 'react';
+import { BOOLEAN_STRING } from '@/constants/common.ts';
 
 function Index() {
     const checkboxRef = useRef<HTMLInputElement>(null);
 
     const handleKakaoClick = async () => {
-        const isAutoLogin = checkboxRef.current?.checked ? 'T' : 'F';
+        const isAutoLogin = checkboxRef.current?.checked
+            ? BOOLEAN_STRING.TRUE
+            : BOOLEAN_STRING.FALSE;
 
         const res = await api.POST('/auth/kakao', {
             body: {
