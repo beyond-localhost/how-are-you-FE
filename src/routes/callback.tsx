@@ -1,11 +1,7 @@
 import { LoaderFunctionArgs, redirect } from 'react-router-dom';
 import { api } from '@lib/api/client.ts';
-import {
-    ACCESS_TOKEN_KEY,
-    AUTO_LOGIN_KEY,
-    REFRESH_TOKEN_KEY,
-    TRUE_VALUE
-} from '@/constants/login.ts';
+import { AUTH } from '@/constants/auth.ts';
+import { BOOLEAN_STRING } from '@/constants/common.ts';
 
 export async function loader({ request }: LoaderFunctionArgs) {
     const searchParams = new URL(request.url).searchParams;
@@ -34,15 +30,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
     // 자동 로그인
     if (autoLogin === 'T') {
-        localStorage.setItem(AUTO_LOGIN_KEY, TRUE_VALUE);
-        localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
-        localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+        localStorage.setItem(AUTH.AUTO_LOGIN_KEY, BOOLEAN_STRING.TRUE);
+        localStorage.setItem(AUTH.ACCESS_TOKEN_KEY, accessToken);
+        localStorage.setItem(AUTH.REFRESH_TOKEN_KEY, refreshToken);
     } else {
-        if (localStorage.getItem(AUTO_LOGIN_KEY)) {
-            localStorage.removeItem(AUTO_LOGIN_KEY);
+        if (localStorage.getItem(AUTH.AUTO_LOGIN_KEY)) {
+            localStorage.removeItem(AUTH.AUTO_LOGIN_KEY);
         }
-        sessionStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
-        sessionStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+        sessionStorage.setItem(AUTH.ACCESS_TOKEN_KEY, accessToken);
+        sessionStorage.setItem(AUTH.REFRESH_TOKEN_KEY, refreshToken);
     }
 
     if (response.data.profile) {
