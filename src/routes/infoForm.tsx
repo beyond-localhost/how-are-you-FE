@@ -1,81 +1,120 @@
 import { PageLayout } from '@components/StyledComponents.ts';
 import { useState } from 'react';
+import { useLoaderData } from 'react-router-dom';
+import NicknameForm from '@/feature/info-form/NicknameForm.tsx';
+import { InfoParam } from '@type/infoFormType.ts';
+import GenderForm from '@feature/info-form/GenderForm.tsx';
+import BirthForm from '@feature/info-form/BirthForm.tsx';
+// import { api } from '@lib/api/client.ts';
+// import { AUTH } from '@/constants/auth.ts';
+
+enum Step {
+    Nickname,
+    Jender,
+    Birth,
+    Job,
+    Worry
+}
 
 type Info = {
     readonly nickname: string;
-    readonly gender: number;
-    readonly birth: string;
-    readonly job: number;
-    readonly worry: number;
+    readonly gender: string | null;
+    readonly year: string;
+    readonly month: string;
+    readonly day: string;
+    readonly job: number | null;
+    readonly worry: number | null;
 };
 
+export async function loader() {
+    // const response = await api.GET('/recommendation_nickname', {
+    //     params: {
+    //         header: {
+    //             authorization: `Bearer ${sessionStorage.getItem(AUTH.ACCESS_TOKEN_KEY)}`
+    //         }
+    //     }
+    // });
+    //
+    // if (response.error) {
+    //     alert('다시 시도해주세요'); // todo
+    //     return null;
+    // }
+    //
+    // const nickname = response && response.nickname;
+    // return nickname;
+    return '긍정적인토토로';
+}
+
 function InfoForm() {
-    const [step, setStep] = useState(0);
+    const recommendNickname = useLoaderData() as string;
+    const [step, setStep] = useState<Step>(0);
     const [info, setInfo] = useState<Info>({
         nickname: '',
-        gender: 0,
-        birth: '',
-        job: 0,
-        worry: 0
+        gender: null,
+        year: '2000',
+        month: '1',
+        day: '1',
+        job: null,
+        worry: null
     });
-    const keys = Object.keys(info);
 
-    const isKeyofInfoType = (value: string | undefined): value is keyof Info => {
-        return typeof value === 'string' && keys.includes(value);
-    };
+    const infoKeys = Object.keys(info);
 
-    const setCurInfo = () => {
-        const key = keys[step]; // 변경 대상
-        // todo 위에있는 key는 keyof Info로 좁혀져야함 !!!!!!!
-
-        if (!isKeyofInfoType(key)) {
-            return;
-        }
-
-        const newObj = {
-            ...info,
-            [key]: 1
-        } satisfies Info; // todo
-        setInfo(newObj);
-    };
-
+    // region - step
     const handlePrevStep = () => {
-        setCurInfo();
         setStep(prevState => prevState - 1);
     };
 
     const handleNextStep = () => {
-        setCurInfo();
         setStep(prevState => prevState + 1);
     };
 
-    const renderStepForm = () => {
-        // const key = keys[step]; // 변경 대상
+    // true면 disabled
+    const checkNextDisabled = () => {
+        const curKey = infoKeys[step];
+        if (!isKeyOfInfo(curKey)) return true;
 
+        const curValue = info[curKey];
+        return step === Step.Worry || !curValue || ['', -1].includes(curValue);
+    };
+    // endregion - step
+
+    // region - setting form
+    const isKeyOfInfo = (value: string | undefined): value is keyof Info => {
+        return typeof value === 'string' && infoKeys.includes(value);
+    };
+
+    const setCurInfoByKey = ({ key, value }: InfoParam) => {
+        const newObj = {
+            ...info,
+            [key]: value
+        };
+        setInfo(newObj);
+    };
+
+    // endregion - setting form
+
+    const renderStepForm = () => {
         switch (step) {
             case 0:
             default:
                 return (
-                    <>
-                        <label htmlFor="nickname">닉네임</label>
-                        <input id="nickname" autoFocus defaultValue={info.nickname} />
-                    </>
+                    <NicknameForm
+                        setCurInfoByKey={setCurInfoByKey}
+                        recommendNickname={recommendNickname}
+                        nickname={info.nickname}
+                    />
                 );
             case 1:
+                return <GenderForm setCurInfoByKey={setCurInfoByKey} gender={info.gender} />;
+            case 2:
                 return (
-                    <>
-                        <p>성별</p>
-                        <div>
-                            <label htmlFor="man">남자</label>
-                            <input type="radio" id="man" />
-
-                            <label htmlFor="woman">여자</label>
-                            <input type="radio" id="woman" />
-
-                            <label htmlFor="nothing">선택안함</label>
-                            <input type="radio" id="nothing" />
-                        </div>
-                    </>
+                    <BirthForm
+                        setCurInfoByKey={setCurInfoByKey}
+                        year={info.year}
+                        month={info.month}
+                        day={info.day}
+                    />
                 );
         }
     };
@@ -84,7 +123,9 @@ function InfoForm() {
         <PageLayout>
             <h1>기본 정보 입력</h1>
 
-            <em>{step}단계</em>
+            <em>
+                {step + 1}/{infoKeys.length} 단계
+            </em>
 
             {renderStepForm()}
 
@@ -92,7 +133,9 @@ function InfoForm() {
                 <button onClick={handlePrevStep} disabled={step === 0}>
                     ⬅️
                 </button>
-                <button onClick={handleNextStep}>➡️</button>
+                <button onClick={handleNextStep} disabled={checkNextDisabled()}>
+                    ➡️
+                </button>
             </div>
         </PageLayout>
     );
