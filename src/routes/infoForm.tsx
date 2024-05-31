@@ -5,6 +5,7 @@ import NicknameForm from '@/feature/info-form/NicknameForm.tsx';
 import { InfoParam } from '@type/infoFormType.ts';
 import GenderForm from '@feature/info-form/GenderForm.tsx';
 import BirthForm from '@feature/info-form/BirthForm.tsx';
+import JobForm from '@feature/info-form/JobForm.tsx';
 // import { api } from '@lib/api/client.ts';
 // import { AUTH } from '@/constants/auth.ts';
 
@@ -19,9 +20,7 @@ enum Step {
 type Info = {
     readonly nickname: string;
     readonly gender: string | null;
-    readonly year: string;
-    readonly month: string;
-    readonly day: string;
+    readonly birth: string;
     readonly job: number | null;
     readonly worry: number | null;
 };
@@ -51,9 +50,7 @@ function InfoForm() {
     const [info, setInfo] = useState<Info>({
         nickname: '',
         gender: null,
-        year: '2000',
-        month: '1',
-        day: '1',
+        birth: '--',
         job: null,
         worry: null
     });
@@ -108,14 +105,9 @@ function InfoForm() {
             case 1:
                 return <GenderForm setCurInfoByKey={setCurInfoByKey} gender={info.gender} />;
             case 2:
-                return (
-                    <BirthForm
-                        setCurInfoByKey={setCurInfoByKey}
-                        year={info.year}
-                        month={info.month}
-                        day={info.day}
-                    />
-                );
+                return <BirthForm setCurInfoByKey={setCurInfoByKey} birth={info.birth} />;
+            case 3:
+                return <JobForm setCurInfoByKey={setCurInfoByKey} job={info.job} />;
         }
     };
 

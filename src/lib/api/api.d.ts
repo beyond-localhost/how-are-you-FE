@@ -16,6 +16,12 @@ export interface paths {
     '/recommendation_nickname': {
         get: operations['getRecommendation_nickname'];
     };
+    '/jobs': {
+        get: operations['getJobs'];
+    };
+    '/worries': {
+        get: operations['getWorries'];
+    };
     '/me/profile': {
         get: operations['getMeProfile'];
         post: operations['postMeProfile'];
@@ -29,6 +35,10 @@ export interface paths {
     '/questions/{id}/answers/{answerId}': {
         delete: operations['deleteQuestionsByIdAnswersByAnswerId'];
         patch: operations['patchQuestionsByIdAnswersByAnswerId'];
+    };
+    '/questions/answers': {
+        /** @description type은 전체를 의미하는 all과 특정 기간을 의미하는 duration중 하나가 와야해요. duration이면 startDateTime과 endDateTime이 필수에요. */
+        get: operations['getQuestionsAnswers'];
     };
 }
 
@@ -265,6 +275,118 @@ export interface operations {
                         /** @constant */
                         _tag: 'DataNotFoundError';
                     };
+                };
+            };
+        };
+    };
+    getJobs: {
+        parameters: {
+            header: {
+                authorization: string;
+            };
+        };
+        responses: {
+            200: {
+                content: {
+                    'application/json': {
+                        id: number;
+                        name: string;
+                    }[];
+                    'multipart/form-data': {
+                        id: number;
+                        name: string;
+                    }[];
+                    'text/plain': {
+                        id: number;
+                        name: string;
+                    }[];
+                };
+            };
+            401: {
+                content: {
+                    'application/json':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                    'multipart/form-data':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                    'text/plain':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                };
+            };
+        };
+    };
+    getWorries: {
+        parameters: {
+            header: {
+                authorization: string;
+            };
+        };
+        responses: {
+            200: {
+                content: {
+                    'application/json': {
+                        id: number;
+                        name: string;
+                    }[];
+                    'multipart/form-data': {
+                        id: number;
+                        name: string;
+                    }[];
+                    'text/plain': {
+                        id: number;
+                        name: string;
+                    }[];
+                };
+            };
+            401: {
+                content: {
+                    'application/json':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                    'multipart/form-data':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                    'text/plain':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
                 };
             };
         };
@@ -754,6 +876,22 @@ export interface operations {
                     };
                 };
             };
+            400: {
+                content: {
+                    'application/json': {
+                        /** @constant */
+                        _tag: 'QuestionAnswerModificationTimeLimitError';
+                    };
+                    'multipart/form-data': {
+                        /** @constant */
+                        _tag: 'QuestionAnswerModificationTimeLimitError';
+                    };
+                    'text/plain': {
+                        /** @constant */
+                        _tag: 'QuestionAnswerModificationTimeLimitError';
+                    };
+                };
+            };
             401: {
                 content: {
                     'application/json':
@@ -799,6 +937,70 @@ export interface operations {
                         /** @constant */
                         _tag: 'DataNotFoundError';
                     };
+                };
+            };
+        };
+    };
+    /** @description type은 전체를 의미하는 all과 특정 기간을 의미하는 duration중 하나가 와야해요. duration이면 startDateTime과 endDateTime이 필수에요. */
+    getQuestionsAnswers: {
+        parameters: {
+            query: {
+                type: 'all' | 'duration';
+                startDateTime?: string;
+                endDateTime?: string;
+                offset: number;
+                limit: number;
+            };
+            header: {
+                authorization: string;
+            };
+        };
+        responses: {
+            400: {
+                content: {
+                    'application/json': {
+                        /** @constant */
+                        _tag: 'InputRangeError';
+                    };
+                    'multipart/form-data': {
+                        /** @constant */
+                        _tag: 'InputRangeError';
+                    };
+                    'text/plain': {
+                        /** @constant */
+                        _tag: 'InputRangeError';
+                    };
+                };
+            };
+            401: {
+                content: {
+                    'application/json':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                    'multipart/form-data':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
+                    'text/plain':
+                        | {
+                              /** @constant */
+                              _tag: 'JWTMalformedError';
+                          }
+                        | {
+                              /** @constant */
+                              _tag: 'JWTExpiredError';
+                          };
                 };
             };
         };
