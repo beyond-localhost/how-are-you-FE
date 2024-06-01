@@ -6,6 +6,7 @@ import { InfoParam } from '@type/infoFormType.ts';
 import GenderForm from '@feature/info-form/GenderForm.tsx';
 import BirthForm from '@feature/info-form/BirthForm.tsx';
 import JobForm from '@feature/info-form/JobForm.tsx';
+import WorryForm from '@feature/info-form/WorryForm.tsx';
 // import { api } from '@lib/api/client.ts';
 // import { AUTH } from '@/constants/auth.ts';
 
@@ -108,6 +109,8 @@ function InfoForm() {
                 return <BirthForm setCurInfoByKey={setCurInfoByKey} birth={info.birth} />;
             case 3:
                 return <JobForm setCurInfoByKey={setCurInfoByKey} job={info.job} />;
+            case 4:
+                return <WorryForm setCurInfoByKey={setCurInfoByKey} worry={info.worry} />;
         }
     };
 

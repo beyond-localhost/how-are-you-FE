@@ -10,3 +10,4 @@ export interface setCurInfoByKeyParam {
 }
 
 export type Jobs = paths['/jobs']['get']['responses']['200']['content']['application/json'];
+export type Worries = paths['/worries']['get']['responses']['200']['content']['application/json'];
