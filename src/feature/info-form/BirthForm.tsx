@@ -1,15 +1,10 @@
-import { setCurInfoByKeyParam } from '@type/infoFormType.ts';
+import { Birth, setCurInfoByKeyParam } from '@type/infoFormType.ts';
 import React, { Fragment } from 'react';
+import { BIRTH_INPUT } from '@/constants/form.ts';
 
 interface BirthFormProp extends setCurInfoByKeyParam {
-    birth: string;
+    birth: Birth;
 }
-
-const BIRTH_INPUT = [
-    { id: 'year', label: '년' },
-    { id: 'month', label: '월' },
-    { id: 'day', label: '일' }
-];
 
 const BirthForm: React.FC<BirthFormProp> = ({ setCurInfoByKey, birth }) => {
     const birthArr = birth.split('-'); // ['1998', '5', '1']
@@ -25,24 +20,35 @@ const BirthForm: React.FC<BirthFormProp> = ({ setCurInfoByKey, birth }) => {
         setCurInfoByKey({ key: 'birth', value: newBirth });
     };
 
-    // todo: maxLength
+    const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        const maxLength = e.target.maxLength;
+        if (value.length > maxLength) {
+            e.target.value = value.slice(0, maxLength);
+        }
+    };
+
     return (
         <>
             <p>생년월일</p>
 
-            {BIRTH_INPUT.map((item, index) => (
-                <Fragment key={item.id}>
-                    <input
-                        type="number"
-                        id={item.id}
-                        min={0}
-                        maxLength={item.id === 'year' ? 4 : 2}
-                        value={birthArr[index]}
-                        onChange={e => handleChangeInput(e, index)}
-                    />
-                    <label htmlFor={item.id}>{item.label}</label>
-                </Fragment>
-            ))}
+            {BIRTH_INPUT.map((item, index) => {
+                const { id, label } = item;
+                return (
+                    <Fragment key={id}>
+                        <input
+                            type="number"
+                            id={id}
+                            min={0}
+                            maxLength={id === 'year' ? 4 : 2}
+                            value={birthArr[index]}
+                            onInput={handleInput}
+                            onChange={e => handleChangeInput(e, index)}
+                        />
+                        <label htmlFor={id}>{label}</label>
+                    </Fragment>
+                );
+            })}
         </>
     );
 };

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '@lib/api/client.ts';
 import { AUTH } from '@/constants/auth.ts';
-import { Jobs, setCurInfoByKeyParam } from '@type/infoFormType.ts';
+import { Job, Jobs, setCurInfoByKeyParam } from '@type/infoFormType.ts';
 
 interface JobFormProp extends setCurInfoByKeyParam {
-    job: number | null;
+    job: Job;
 }
 
 const JobForm: React.FC<JobFormProp> = ({ setCurInfoByKey, job }) => {
@@ -35,14 +35,14 @@ const JobForm: React.FC<JobFormProp> = ({ setCurInfoByKey, job }) => {
 
             {jobList.length > 0 &&
                 jobList.map(item => {
-                    const id = item.id;
+                    const { id, name } = item;
                     return (
                         <button
                             key={id}
                             style={{ padding: '10px', color: job === id ? 'blue' : 'black' }}
                             onClick={() => handleClick(id)}
                         >
-                            {item.name}
+                            {name}
                         </button>
                     );
                 })}

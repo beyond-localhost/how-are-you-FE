@@ -1,9 +1,9 @@
 import { GENDER } from '@/constants/form.ts';
 import React from 'react';
-import { setCurInfoByKeyParam } from '@type/infoFormType.ts';
+import { Gender, setCurInfoByKeyParam } from '@type/infoFormType.ts';
 
 interface GenderFormProp extends setCurInfoByKeyParam {
-    gender: string | null;
+    gender: Gender;
 }
 
 const GenderForm: React.FC<GenderFormProp> = ({ setCurInfoByKey, gender }) => {
@@ -14,13 +14,17 @@ const GenderForm: React.FC<GenderFormProp> = ({ setCurInfoByKey, gender }) => {
     return (
         <>
             <p>성별</p>
+
             <div onChange={handleGenderCheck}>
-                {Object.entries(GENDER).map(([_, item]) => (
-                    <div key={item.id}>
-                        <input type="radio" id={item.id} checked={gender === item.id} readOnly />
-                        <label htmlFor={item.id}>{item.label}</label>
-                    </div>
-                ))}
+                {GENDER.map(item => {
+                    const { id, label } = item;
+                    return (
+                        <div key={id}>
+                            <input type="radio" id={id} checked={gender === id} readOnly />
+                            <label htmlFor={id}>{label}</label>
+                        </div>
+                    );
+                })}
             </div>
         </>
     );

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { setCurInfoByKeyParam } from '@type/infoFormType.ts';
+import { Nickname, setCurInfoByKeyParam } from '@type/infoFormType.ts';
 
 interface NicknameFormProp extends setCurInfoByKeyParam {
     recommendNickname: string;
-    nickname: string;
+    nickname: Nickname;
 }
 
 const NicknameForm: React.FC<NicknameFormProp> = ({

@@ -2,47 +2,43 @@ import { PageLayout } from '@components/StyledComponents.ts';
 import { useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import NicknameForm from '@/feature/info-form/NicknameForm.tsx';
-import { InfoParam } from '@type/infoFormType.ts';
+import {
+    Birth,
+    Gender,
+    InfoParam,
+    Job,
+    Nickname,
+    NicknameData,
+    Worry
+} from '@type/infoFormType.ts';
 import GenderForm from '@feature/info-form/GenderForm.tsx';
 import BirthForm from '@feature/info-form/BirthForm.tsx';
 import JobForm from '@feature/info-form/JobForm.tsx';
 import WorryForm from '@feature/info-form/WorryForm.tsx';
-// import { api } from '@lib/api/client.ts';
-// import { AUTH } from '@/constants/auth.ts';
-
-enum Step {
-    Nickname,
-    Jender,
-    Birth,
-    Job,
-    Worry
-}
+import { api } from '@lib/api/client.ts';
+import { AUTH } from '@/constants/auth.ts';
+import { Step } from '@/constants/form.ts';
 
 type Info = {
-    readonly nickname: string;
-    readonly gender: string | null;
-    readonly birth: string;
-    readonly job: number | null;
-    readonly worry: number | null;
+    readonly nickname: Nickname;
+    readonly gender: Gender;
+    readonly birth: Birth;
+    readonly job: Job;
+    readonly worry: Worry;
 };
 
 export async function loader() {
-    // const response = await api.GET('/recommendation_nickname', {
-    //     params: {
-    //         header: {
-    //             authorization: `Bearer ${sessionStorage.getItem(AUTH.ACCESS_TOKEN_KEY)}`
-    //         }
-    //     }
-    // });
-    //
-    // if (response.error) {
-    //     alert('다시 시도해주세요'); // todo
-    //     return null;
-    // }
-    //
-    // const nickname = response && response.nickname;
-    // return nickname;
-    return '긍정적인토토로';
+    const response = await api.GET('/recommendation_nickname', {
+        params: {
+            header: {
+                authorization: `Bearer ${sessionStorage.getItem(AUTH.ACCESS_TOKEN_KEY)}`
+            }
+        }
+    });
+
+    const responseData: NicknameData | undefined = response.data;
+
+    return responseData ? responseData.nickname : '긍정적인 토토로'; // todo - sm: undefined 처리?
 }
 
 function InfoForm() {
@@ -73,7 +69,7 @@ function InfoForm() {
         if (!isKeyOfInfo(curKey)) return true;
 
         const curValue = info[curKey];
-        return step === Step.Worry || !curValue || ['', -1].includes(curValue);
+        return !curValue || ['', -1].includes(curValue);
     };
     // endregion - step
 
