@@ -1,6 +1,6 @@
 import { PageLayout } from '@components/StyledComponents.ts';
 import { useState } from 'react';
-import { useLoaderData } from 'react-router-dom';
+import { useLoaderData, useNavigate } from 'react-router-dom';
 import NicknameForm from '@/feature/info-form/NicknameForm.tsx';
 import {
     Birth,
@@ -57,7 +57,9 @@ export async function loader() {
 }
 
 function InfoForm() {
+    const navigate = useNavigate();
     const recommendNickname = useLoaderData() as string;
+
     const [step, setStep] = useState<Step>(0);
     const [info, setInfo] = useState<Info>({
         nickname: '',
@@ -74,7 +76,17 @@ function InfoForm() {
     const infoKeys = Object.keys(info);
 
     // region - step
+    const submitInfoForm = () => {
+        // todo: post api
+        navigate('/question-list');
+    };
+
     const handleStepClick = (direction: Direction) => {
+        if (step === Step.Worry) {
+            submitInfoForm();
+            return;
+        }
+
         const nextStepValue = direction === DIRECTION.LEFT ? -1 : 1;
         setStep(prevState => prevState + nextStepValue);
     };
