@@ -17,7 +17,15 @@ import JobForm from '@feature/info-form/JobForm.tsx';
 import WorryForm from '@feature/info-form/WorryForm.tsx';
 import { api } from '@lib/api/client.ts';
 import { AUTH } from '@/constants/auth.ts';
-import { Step } from '@/constants/form.ts';
+
+// 입력폼 단계
+enum Step {
+    Nickname,
+    Gender,
+    Birth,
+    Job,
+    Worry
+}
 
 type Info = {
     readonly nickname: Nickname;
@@ -26,6 +34,13 @@ type Info = {
     readonly job: Job;
     readonly worry: Worry;
 };
+
+type Direction = 'left' | 'right'; // 화살표 버튼
+
+const DIRECTION = {
+    LEFT: 'left',
+    RIGHT: 'right'
+} as const;
 
 export async function loader() {
     const response = await api.GET('/recommendation_nickname', {
@@ -47,29 +62,64 @@ function InfoForm() {
     const [info, setInfo] = useState<Info>({
         nickname: '',
         gender: null,
-        birth: '--',
+        birth: {
+            year: null,
+            month: null,
+            day: null
+        },
         job: null,
-        worry: null
+        worry: []
     });
 
     const infoKeys = Object.keys(info);
 
     // region - step
-    const handlePrevStep = () => {
-        setStep(prevState => prevState - 1);
+    const handleStepClick = (direction: Direction) => {
+        const nextStepValue = direction === DIRECTION.LEFT ? -1 : 1;
+        setStep(prevState => prevState + nextStepValue);
     };
 
-    const handleNextStep = () => {
-        setStep(prevState => prevState + 1);
-    };
-
-    // true면 disabled
-    const checkNextDisabled = () => {
+    const getCurKeyAndValue = () => {
         const curKey = infoKeys[step];
-        if (!isKeyOfInfo(curKey)) return true;
+        if (!isKeyOfInfo(curKey)) return {};
 
         const curValue = info[curKey];
-        return !curValue || ['', -1].includes(curValue);
+        return { curKey, curValue };
+    };
+
+    const checkDisabled = (direction: Direction): boolean => {
+        const { curKey, curValue } = getCurKeyAndValue();
+        if (!curKey) return true;
+
+        // 좌측 버튼
+        if (direction === DIRECTION.LEFT && step === Step.Nickname) {
+            return true;
+        }
+
+        // 우측 버튼
+        if (direction === DIRECTION.RIGHT) {
+            if (!curValue) {
+                return true; // 값이 없을 때
+            } else if (step === Step.Birth && (!isBirthValid() || Number(info.birth.year) < 1920)) {
+                return true; // 유효하지 않은 생년월일
+            } else if (step === Step.Worry && info.worry.length === 0) {
+                return true; // 고민 선택x
+            }
+        }
+
+        return false;
+    };
+
+    // 생년월일 유효성
+    const isBirthValid = () => {
+        const { year, month, day } = info.birth;
+        const curDate = new Date(`${year}-${month}-${day}`);
+
+        return (
+            curDate.getFullYear() === Number(year) &&
+            curDate.getMonth() === Number(month) - 1 &&
+            curDate.getDate() === Number(day)
+        );
     };
     // endregion - step
 
@@ -121,10 +171,16 @@ function InfoForm() {
             {renderStepForm()}
 
             <div>
-                <button onClick={handlePrevStep} disabled={step === 0}>
+                <button
+                    onClick={() => handleStepClick(DIRECTION.LEFT)}
+                    disabled={checkDisabled(DIRECTION.LEFT)}
+                >
                     ⬅️
                 </button>
-                <button onClick={handleNextStep} disabled={checkNextDisabled()}>
+                <button
+                    onClick={() => handleStepClick(DIRECTION.RIGHT)}
+                    disabled={checkDisabled(DIRECTION.RIGHT)}
+                >
                     ➡️
                 </button>
             </div>

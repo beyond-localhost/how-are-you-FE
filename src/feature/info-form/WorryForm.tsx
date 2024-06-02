@@ -24,8 +24,9 @@ const WorryForm: React.FC<WorryFormProp> = ({ setCurInfoByKey, worry }) => {
         });
     }, []);
 
-    const handleClick = (id: number) => {
-        setCurInfoByKey({ key: 'worry', value: id });
+    const handleClick = (index: number) => {
+        const newWorryArr = [...worry, index];
+        setCurInfoByKey({ key: 'worry', value: newWorryArr });
     };
 
     // todo: api 가져올동안 loading spinner
@@ -34,13 +35,16 @@ const WorryForm: React.FC<WorryFormProp> = ({ setCurInfoByKey, worry }) => {
             <p>고민</p>
 
             {worryList.length > 0 &&
-                worryList.map(item => {
+                worryList.map((item, index) => {
                     const { id, name } = item;
                     return (
                         <button
                             key={id}
-                            style={{ padding: '10px', color: worry === id ? 'blue' : 'black' }}
-                            onClick={() => handleClick(id)}
+                            style={{
+                                padding: '10px',
+                                color: worry.includes(index) ? 'blue' : 'black'
+                            }}
+                            onClick={() => handleClick(index)}
                         >
                             {name}
                         </button>

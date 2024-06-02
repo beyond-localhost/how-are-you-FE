@@ -1,13 +1,6 @@
-// 입력폼 단계
-export enum Step {
-    Nickname,
-    Gender,
-    Birth,
-    Job,
-    Worry
-}
-
 // 성별 입력 값
+import { BirthKey } from '@type/infoFormType.ts';
+
 export const GENDER = [
     { id: 'male', label: '남자' },
     { id: 'female', label: '여자' },
@@ -15,7 +8,11 @@ export const GENDER = [
 ] as const;
 
 // 생년월일 입력 값
-export const BIRTH_INPUT = [
+type Birth = {
+    id: BirthKey;
+    label: string;
+};
+export const BIRTH_INPUT: Birth[] = [
     { id: 'year', label: '년' },
     { id: 'month', label: '월' },
     { id: 'day', label: '일' }

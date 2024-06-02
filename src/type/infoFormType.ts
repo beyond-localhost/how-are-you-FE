@@ -3,13 +3,15 @@ import { paths } from '@lib/api/api';
 // 입력폼 value 타입
 export type Nickname = string;
 export type Gender = string | null;
-export type Birth = string;
+export type Birth = Record<BirthKey, string | null>;
 export type Job = number | null;
-export type Worry = number | null;
+export type Worry = number[];
+
+export type BirthKey = 'year' | 'month' | 'day';
 
 export interface InfoParam {
     key: string;
-    value: string | number;
+    value: Nickname | Gender | Birth | Job | Worry;
 }
 
 export interface setCurInfoByKeyParam {
