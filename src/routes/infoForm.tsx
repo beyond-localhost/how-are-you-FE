@@ -35,12 +35,10 @@ type Info = {
     readonly worry: Worry;
 };
 
-type Direction = 'left' | 'right'; // 화살표 버튼
-
-const DIRECTION = {
-    LEFT: 'left',
-    RIGHT: 'right'
-} as const;
+enum Direction {
+    LEFT,
+    RIGHT
+}
 
 export async function loader() {
     const response = await api.GET('/recommendation_nickname', {
@@ -60,7 +58,7 @@ function InfoForm() {
     const navigate = useNavigate();
     const recommendNickname = useLoaderData() as string;
 
-    const [step, setStep] = useState<Step>(0);
+    const [step, setStep] = useState<Step>(Step.Nickname);
     const [info, setInfo] = useState<Info>({
         nickname: '',
         gender: null,
@@ -87,7 +85,7 @@ function InfoForm() {
             return;
         }
 
-        const nextStepValue = direction === DIRECTION.LEFT ? -1 : 1;
+        const nextStepValue = direction === Direction.LEFT ? -1 : 1;
         setStep(prevState => prevState + nextStepValue);
     };
 
@@ -104,12 +102,12 @@ function InfoForm() {
         if (!curKey) return true;
 
         // 좌측 버튼
-        if (direction === DIRECTION.LEFT && step === Step.Nickname) {
+        if (direction === Direction.LEFT && step === Step.Nickname) {
             return true;
         }
 
         // 우측 버튼
-        if (direction === DIRECTION.RIGHT) {
+        if (direction === Direction.RIGHT) {
             if (!curValue) {
                 return true; // 값이 없을 때
             } else if (step === Step.Birth && (!isBirthValid() || Number(info.birth.year) < 1920)) {
@@ -152,8 +150,7 @@ function InfoForm() {
 
     const renderStepForm = () => {
         switch (step) {
-            case 0:
-            default:
+            case Step.Nickname:
                 return (
                     <NicknameForm
                         setCurInfoByKey={setCurInfoByKey}
@@ -161,13 +158,13 @@ function InfoForm() {
                         nickname={info.nickname}
                     />
                 );
-            case 1:
+            case Step.Gender:
                 return <GenderForm setCurInfoByKey={setCurInfoByKey} gender={info.gender} />;
-            case 2:
+            case Step.Birth:
                 return <BirthForm setCurInfoByKey={setCurInfoByKey} birth={info.birth} />;
-            case 3:
+            case Step.Job:
                 return <JobForm setCurInfoByKey={setCurInfoByKey} job={info.job} />;
-            case 4:
+            case Step.Worry:
                 return <WorryForm setCurInfoByKey={setCurInfoByKey} worry={info.worry} />;
         }
     };
@@ -183,18 +180,20 @@ function InfoForm() {
             {renderStepForm()}
 
             <div>
-                <button
-                    onClick={() => handleStepClick(DIRECTION.LEFT)}
-                    disabled={checkDisabled(DIRECTION.LEFT)}
-                >
-                    ⬅️
-                </button>
-                <button
-                    onClick={() => handleStepClick(DIRECTION.RIGHT)}
-                    disabled={checkDisabled(DIRECTION.RIGHT)}
-                >
-                    ➡️
-                </button>
+                {Object.values(Direction).map(direction => {
+                    if (typeof direction !== 'number') {
+                        return null;
+                    }
+                    return (
+                        <button
+                            key={direction}
+                            onClick={() => handleStepClick(direction)}
+                            disabled={checkDisabled(direction)}
+                        >
+                            {direction === Direction.LEFT ? '⬅️' : '➡️'}
+                        </button>
+                    );
+                })}
             </div>
         </PageLayout>
     );
