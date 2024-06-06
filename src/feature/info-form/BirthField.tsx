@@ -6,7 +6,7 @@ interface BirthFormProp extends setCurInfoByKeyParam {
     birth: Birth;
 }
 
-const BirthForm: React.FC<BirthFormProp> = ({ setCurInfoByKey, birth }) => {
+const BirthField: React.FC<BirthFormProp> = ({ setCurInfoByKey, birth }) => {
     const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newBirthObj = { ...birth, [e.target.id]: e.target.value };
 
@@ -47,4 +47,4 @@ const BirthForm: React.FC<BirthFormProp> = ({ setCurInfoByKey, birth }) => {
     );
 };
 
-export default BirthForm;
+export default BirthField;

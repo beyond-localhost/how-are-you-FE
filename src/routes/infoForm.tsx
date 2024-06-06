@@ -1,7 +1,6 @@
 import { PageLayout } from '@components/StyledComponents.ts';
 import { useState } from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
-import NicknameForm from '@/feature/info-form/NicknameForm.tsx';
 import {
     Birth,
     Gender,
@@ -11,10 +10,11 @@ import {
     NicknameData,
     Worry
 } from '@type/infoFormType.ts';
-import GenderForm from '@feature/info-form/GenderForm.tsx';
-import BirthForm from '@feature/info-form/BirthForm.tsx';
-import JobForm from '@feature/info-form/JobForm.tsx';
-import WorryForm from '@feature/info-form/WorryForm.tsx';
+import NicknameField from '@feature/info-form/NicknameField.tsx';
+import GenderField from '@feature/info-form/GenderField.tsx';
+import BirthField from '@feature/info-form/BirthField.tsx';
+import JobField from '@feature/info-form/JobField.tsx';
+import WorryField from '@feature/info-form/WorryField.tsx';
 import { api } from '@lib/api/client.ts';
 import { AUTH } from '@/constants/auth.ts';
 
@@ -152,20 +152,20 @@ function InfoForm() {
         switch (step) {
             case Step.Nickname:
                 return (
-                    <NicknameForm
+                    <NicknameField
                         setCurInfoByKey={setCurInfoByKey}
                         recommendNickname={recommendNickname}
                         nickname={info.nickname}
                     />
                 );
             case Step.Gender:
-                return <GenderForm setCurInfoByKey={setCurInfoByKey} gender={info.gender} />;
+                return <GenderField setCurInfoByKey={setCurInfoByKey} gender={info.gender} />;
             case Step.Birth:
-                return <BirthForm setCurInfoByKey={setCurInfoByKey} birth={info.birth} />;
+                return <BirthField setCurInfoByKey={setCurInfoByKey} birth={info.birth} />;
             case Step.Job:
-                return <JobForm setCurInfoByKey={setCurInfoByKey} job={info.job} />;
+                return <JobField setCurInfoByKey={setCurInfoByKey} job={info.job} />;
             case Step.Worry:
-                return <WorryForm setCurInfoByKey={setCurInfoByKey} worry={info.worry} />;
+                return <WorryField setCurInfoByKey={setCurInfoByKey} worry={info.worry} />;
         }
     };
 

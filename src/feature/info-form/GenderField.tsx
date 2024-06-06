@@ -6,7 +6,7 @@ interface GenderFormProp extends setCurInfoByKeyParam {
     gender: Gender;
 }
 
-const GenderForm: React.FC<GenderFormProp> = ({ setCurInfoByKey, gender }) => {
+const GenderField: React.FC<GenderFormProp> = ({ setCurInfoByKey, gender }) => {
     const handleGenderCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
         setCurInfoByKey({ key: 'gender', value: e.target.id });
     };
@@ -30,4 +30,4 @@ const GenderForm: React.FC<GenderFormProp> = ({ setCurInfoByKey, gender }) => {
     );
 };
 
-export default GenderForm;
+export default GenderField;

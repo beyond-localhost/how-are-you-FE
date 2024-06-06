@@ -6,7 +6,7 @@ interface NicknameFormProp extends setCurInfoByKeyParam {
     nickname: Nickname;
 }
 
-const NicknameForm: React.FC<NicknameFormProp> = ({
+const NicknameField: React.FC<NicknameFormProp> = ({
     setCurInfoByKey,
     recommendNickname,
     nickname
@@ -55,4 +55,4 @@ const NicknameForm: React.FC<NicknameFormProp> = ({
     );
 };
 
-export default NicknameForm;
+export default NicknameField;

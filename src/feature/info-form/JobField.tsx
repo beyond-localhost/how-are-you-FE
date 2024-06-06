@@ -7,7 +7,7 @@ interface JobFormProp extends setCurInfoByKeyParam {
     job: Job;
 }
 
-const JobForm: React.FC<JobFormProp> = ({ setCurInfoByKey, job }) => {
+const JobField: React.FC<JobFormProp> = ({ setCurInfoByKey, job }) => {
     const [jobList, setJobList] = useState<Jobs>([]);
 
     useEffect(() => {
@@ -50,4 +50,4 @@ const JobForm: React.FC<JobFormProp> = ({ setCurInfoByKey, job }) => {
     );
 };
 
-export default JobForm;
+export default JobField;

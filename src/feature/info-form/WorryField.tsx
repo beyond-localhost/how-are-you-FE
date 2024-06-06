@@ -7,7 +7,7 @@ interface WorryFormProp extends setCurInfoByKeyParam {
     worry: Worry;
 }
 
-const WorryForm: React.FC<WorryFormProp> = ({ setCurInfoByKey, worry }) => {
+const WorryField: React.FC<WorryFormProp> = ({ setCurInfoByKey, worry }) => {
     const [worryList, setWorryList] = useState<Worries>([]);
 
     useEffect(() => {
@@ -54,4 +54,4 @@ const WorryForm: React.FC<WorryFormProp> = ({ setCurInfoByKey, worry }) => {
     );
 };
 
-export default WorryForm;
+export default WorryField;
