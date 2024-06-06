@@ -15,12 +15,17 @@ const GenderField: React.FC<GenderFormProp> = ({ setCurInfoByKey, gender }) => {
         <>
             <p>성별</p>
 
-            <div onChange={handleGenderCheck}>
+            <div>
                 {GENDER.map(item => {
                     const { id, label } = item;
                     return (
                         <div key={id}>
-                            <input type="radio" id={id} checked={gender === id} readOnly />
+                            <input
+                                type="radio"
+                                id={id}
+                                checked={gender === id}
+                                onChange={handleGenderCheck}
+                            />
                             <label htmlFor={id}>{label}</label>
                         </div>
                     );

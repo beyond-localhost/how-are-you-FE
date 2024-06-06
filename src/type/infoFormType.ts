@@ -3,7 +3,7 @@ import { paths } from '@lib/api/api';
 // 입력폼 value 타입
 export type Nickname = string;
 export type Gender = string | null;
-export type Birth = Record<BirthKey, string | null>;
+export type Birth = Record<BirthKey, number>;
 export type Job = number | null;
 export type Worry = number[];
 

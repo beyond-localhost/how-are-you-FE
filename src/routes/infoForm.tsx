@@ -1,6 +1,6 @@
 import { PageLayout } from '@components/StyledComponents.ts';
 import { useState } from 'react';
-import { useLoaderData, useNavigate } from 'react-router-dom';
+import { Form, useLoaderData, useNavigate } from 'react-router-dom';
 import {
     Birth,
     Gender,
@@ -63,9 +63,9 @@ function InfoForm() {
         nickname: '',
         gender: null,
         birth: {
-            year: null,
-            month: null,
-            day: null
+            year: 2000,
+            month: 1,
+            day: 1
         },
         job: null,
         worry: []
@@ -166,6 +166,8 @@ function InfoForm() {
                 return <JobField setCurInfoByKey={setCurInfoByKey} job={info.job} />;
             case Step.Worry:
                 return <WorryField setCurInfoByKey={setCurInfoByKey} worry={info.worry} />;
+            default: // todo
+                return <div>err!</div>;
         }
     };
 
@@ -177,24 +179,29 @@ function InfoForm() {
                 {step + 1}/{infoKeys.length} 단계
             </em>
 
-            {renderStepForm()}
+            <Form>
+                <fieldset>
+                    <legend>기본 정보 입력</legend>
+                    {renderStepForm()}
+                </fieldset>
 
-            <div>
-                {Object.values(Direction).map(direction => {
-                    if (typeof direction !== 'number') {
-                        return null;
-                    }
-                    return (
-                        <button
-                            key={direction}
-                            onClick={() => handleStepClick(direction)}
-                            disabled={checkDisabled(direction)}
-                        >
-                            {direction === Direction.LEFT ? '⬅️' : '➡️'}
-                        </button>
-                    );
-                })}
-            </div>
+                <div>
+                    {Object.values(Direction).map(direction => {
+                        if (typeof direction !== 'number') {
+                            return null;
+                        }
+                        return (
+                            <button
+                                key={direction}
+                                onClick={() => handleStepClick(direction)}
+                                disabled={checkDisabled(direction)}
+                            >
+                                {direction === Direction.LEFT ? '⬅️' : '➡️'}
+                            </button>
+                        );
+                    })}
+                </div>
+            </Form>
         </PageLayout>
     );
 }

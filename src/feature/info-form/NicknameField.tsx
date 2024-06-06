@@ -1,55 +1,63 @@
 import React, { useState } from 'react';
 import { Nickname, setCurInfoByKeyParam } from '@type/infoFormType.ts';
 
-interface NicknameFormProp extends setCurInfoByKeyParam {
+interface NicknameFieldProp extends setCurInfoByKeyParam {
     recommendNickname: string;
     nickname: Nickname;
 }
 
-const NicknameField: React.FC<NicknameFormProp> = ({
+const ELEMENT_ID = {
+    NICKNAME: 'nickname',
+    RECOMMEND_NICKNAME: 'recommendNickname'
+};
+
+const NicknameField: React.FC<NicknameFieldProp> = ({
     setCurInfoByKey,
     recommendNickname,
     nickname
 }) => {
-    const [recommendCheck, setRecommendCheck] = useState(false);
+    const [recommendCheck, setRecommendCheck] = useState(false); // 추천닉네임 선택 여부
 
     const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setCurInfoByKey({ key: e.target.id, value });
+        const target = e.target;
+        setCurInfoByKey({ key: target.id, value: target.value });
 
-        if (recommendCheck && value !== recommendNickname) {
+        if (recommendCheck && target.value !== recommendNickname) {
             setRecommendCheck(false);
         }
     };
 
     const handleRecommendCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const checked = e.target.checked;
-        if (checked) {
-            setCurInfoByKey({ key: 'nickname', value: recommendNickname });
+        const isRecommendChecked = e.target.checked;
+        if (isRecommendChecked) {
+            setCurInfoByKey({ key: ELEMENT_ID.NICKNAME, value: recommendNickname });
         }
 
-        setRecommendCheck(checked);
+        setRecommendCheck(isRecommendChecked);
     };
 
     return (
         <>
-            <label htmlFor="nickname">닉네임</label>
+            <label htmlFor={ELEMENT_ID.NICKNAME}>닉네임</label>
             <input
-                id="nickname"
+                id={ELEMENT_ID.NICKNAME}
                 autoFocus
                 maxLength={20}
                 placeholder="닉네임을 입력해주세요"
                 onChange={handleNicknameChange}
                 value={nickname}
             />
+
             <div>
                 <input
                     type="checkbox"
-                    id="recommendNickname"
+                    id={ELEMENT_ID.RECOMMEND_NICKNAME}
                     onChange={handleRecommendCheck}
                     checked={recommendCheck}
                 />
-                <label htmlFor="recommendNickname">추천 닉네임 사용하기: {recommendNickname}</label>
+                <label htmlFor={ELEMENT_ID.RECOMMEND_NICKNAME}>
+                    추천 닉네임 사용하기: {recommendNickname}
+                </label>
             </div>
         </>
     );
