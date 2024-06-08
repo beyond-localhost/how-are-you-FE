@@ -16,7 +16,6 @@ import BirthField from '@feature/info-form/BirthField.tsx';
 import JobField from '@feature/info-form/JobField.tsx';
 import WorryField from '@feature/info-form/WorryField.tsx';
 import { api } from '@lib/api/client.ts';
-import { AUTH } from '@/constants/auth.ts';
 
 // 입력폼 단계
 enum Step {
@@ -35,20 +34,14 @@ type Info = {
     readonly worry: Worry;
 };
 
-enum Direction {
-    LEFT,
-    RIGHT
-}
+const DIRECTION = {
+    LEFT: 'LEFT',
+    RIGHT: 'RIGHT'
+} as const;
+type Direction = keyof typeof DIRECTION;
 
 export async function loader() {
-    const response = await api.GET('/recommendation_nickname', {
-        params: {
-            header: {
-                authorization: `Bearer ${sessionStorage.getItem(AUTH.ACCESS_TOKEN_KEY)}`
-            }
-        }
-    });
-
+    const response = await api.GET('/recommendation_nickname');
     const responseData: NicknameData | undefined = response.data;
 
     return responseData ? responseData.nickname : '긍정적인 토토로'; // todo - sm: undefined 처리?
@@ -61,13 +54,13 @@ function InfoForm() {
     const [step, setStep] = useState<Step>(Step.Nickname);
     const [info, setInfo] = useState<Info>({
         nickname: '',
-        gender: null,
+        gender: -1,
         birth: {
             year: 2000,
             month: 1,
             day: 1
         },
-        job: null,
+        job: -1,
         worry: []
     });
 
@@ -85,7 +78,7 @@ function InfoForm() {
             return;
         }
 
-        const nextStepValue = direction === Direction.LEFT ? -1 : 1;
+        const nextStepValue = direction === DIRECTION.LEFT ? -1 : 1;
         setStep(prevState => prevState + nextStepValue);
     };
 
@@ -97,39 +90,18 @@ function InfoForm() {
         return { curKey, curValue };
     };
 
-    const checkDisabled = (direction: Direction): boolean => {
+    // 우측 버튼
+    const checkDisabled = (): boolean => {
         const { curKey, curValue } = getCurKeyAndValue();
         if (!curKey) return true;
 
-        // 좌측 버튼
-        if (direction === Direction.LEFT && step === Step.Nickname) {
-            return true;
-        }
-
-        // 우측 버튼
-        if (direction === Direction.RIGHT) {
-            if (!curValue) {
-                return true; // 값이 없을 때
-            } else if (step === Step.Birth && (!isBirthValid() || Number(info.birth.year) < 1920)) {
-                return true; // 유효하지 않은 생년월일
-            } else if (step === Step.Worry && info.worry.length === 0) {
-                return true; // 고민 선택x
-            }
+        if (!curValue) {
+            return true; // 값이 없을 때
+        } else if (step === Step.Worry && info.worry.length === 0) {
+            return true; // 고민 선택x
         }
 
         return false;
-    };
-
-    // 생년월일 유효성
-    const isBirthValid = () => {
-        const { year, month, day } = info.birth;
-        const curDate = new Date(`${year}-${month}-${day}`);
-
-        return (
-            curDate.getFullYear() === Number(year) &&
-            curDate.getMonth() === Number(month) - 1 &&
-            curDate.getDate() === Number(day)
-        );
     };
     // endregion - step
 
@@ -166,7 +138,7 @@ function InfoForm() {
                 return <JobField setCurInfoByKey={setCurInfoByKey} job={info.job} />;
             case Step.Worry:
                 return <WorryField setCurInfoByKey={setCurInfoByKey} worry={info.worry} />;
-            default: // todo
+            default: // todo: error boundary
                 return <div>err!</div>;
         }
     };
@@ -186,20 +158,18 @@ function InfoForm() {
                 </fieldset>
 
                 <div>
-                    {Object.values(Direction).map(direction => {
-                        if (typeof direction !== 'number') {
-                            return null;
-                        }
-                        return (
-                            <button
-                                key={direction}
-                                onClick={() => handleStepClick(direction)}
-                                disabled={checkDisabled(direction)}
-                            >
-                                {direction === Direction.LEFT ? '⬅️' : '➡️'}
-                            </button>
-                        );
-                    })}
+                    <button
+                        onClick={() => handleStepClick(DIRECTION.LEFT)}
+                        disabled={step === Step.Nickname}
+                    >
+                        ⬅️
+                    </button>
+                    <button
+                        onClick={() => handleStepClick(DIRECTION.RIGHT)}
+                        disabled={checkDisabled()}
+                    >
+                        ➡️
+                    </button>
                 </div>
             </Form>
         </PageLayout>

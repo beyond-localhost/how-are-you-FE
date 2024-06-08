@@ -2,6 +2,7 @@ import { api } from '@lib/api/client.ts';
 import { PageLayout } from '@components/StyledComponents.ts';
 import { useRef } from 'react';
 import { BOOLEAN_STRING } from '@/constants/common.ts';
+import { redirect } from 'react-router-dom';
 
 function Index() {
     const checkboxRef = useRef<HTMLInputElement>(null);
@@ -11,18 +12,17 @@ function Index() {
             ? BOOLEAN_STRING.TRUE
             : BOOLEAN_STRING.FALSE;
 
-        const res = await api.POST('/auth/kakao', {
+        const response = await api.POST('/auth/kakao', {
             body: {
                 destination: `${import.meta.env.VITE_LOCAL_URL}/callback?autoLogin=${isAutoLogin}`
             }
         });
 
-        if (res.error) {
-            alert('fail!');
-            return;
+        if (response.error) {
+            return redirect('/');
         }
 
-        location.href = res.data.url;
+        location.href = response.data.url;
     };
 
     return (
