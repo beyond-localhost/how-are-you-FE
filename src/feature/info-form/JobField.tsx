@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '@lib/api/client.ts';
-import { AUTH } from '@/constants/auth.ts';
 import { Job, Jobs, setCurInfoByKeyParam } from '@type/infoFormType.ts';
 
 interface JobFormProp extends setCurInfoByKeyParam {
@@ -11,15 +10,9 @@ const JobField: React.FC<JobFormProp> = ({ setCurInfoByKey, job }) => {
     const [jobList, setJobList] = useState<Jobs>([]);
 
     useEffect(() => {
-        api.GET('/jobs', {
-            params: {
-                header: {
-                    authorization: `Bearer ${sessionStorage.getItem(AUTH.ACCESS_TOKEN_KEY)}`
-                }
-            }
-        }).then(res => {
+        api.GET('/jobs').then(res => {
             if (res.data) {
-                setJobList(res.data);
+                setJobList(res.data.jobs);
             }
         });
     }, []);

@@ -18,8 +18,16 @@ const WorryField: React.FC<WorryFormProp> = ({ setCurInfoByKey, worry }) => {
     }, []);
 
     const handleClick = (index: number) => {
-        const newWorryArr = [...worry, index];
-        setCurInfoByKey({ key: 'worry', value: newWorryArr });
+        const targetIndex = worry.indexOf(index);
+        let newWorryArr = [];
+
+        if (targetIndex === -1) {
+            newWorryArr = [...worry, index];
+            setCurInfoByKey({ key: 'worry', value: newWorryArr });
+        } else {
+            newWorryArr = [...worry.slice(0, targetIndex), ...worry.slice(targetIndex + 1)];
+            setCurInfoByKey({ key: 'worry', value: newWorryArr });
+        }
     };
 
     // todo: api 가져올동안 loading spinner

@@ -17,7 +17,7 @@ import QuestionList from '@routes/questionList.tsx';
 const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="/" element={<Root />} errorElement={<ErrorPage />}>
-            <Route errorElement={<ErrorPage />}>
+            <Route>
                 <Route index element={<Index />} />
                 <Route path="callback" loader={callbackLoader} />
                 <Route path="info-form" loader={infoFormLoader} element={<InfoForm />} />

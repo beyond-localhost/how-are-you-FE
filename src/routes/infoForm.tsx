@@ -44,7 +44,10 @@ export async function loader() {
     const response = await api.GET('/recommendation_nickname');
     const responseData: NicknameData | undefined = response.data;
 
-    return responseData ? responseData.nickname : '긍정적인 토토로'; // todo - sm: undefined 처리?
+    if (!responseData) {
+        throw new Response('nickname fetch error');
+    }
+    return responseData.nickname;
 }
 
 function InfoForm() {
@@ -82,33 +85,20 @@ function InfoForm() {
         setStep(prevState => prevState + nextStepValue);
     };
 
-    const getCurKeyAndValue = () => {
-        const curKey = infoKeys[step];
-        if (!isKeyOfInfo(curKey)) return {};
-
-        const curValue = info[curKey];
-        return { curKey, curValue };
-    };
-
     // 우측 버튼
     const checkDisabled = (): boolean => {
-        const { curKey, curValue } = getCurKeyAndValue();
-        if (!curKey) return true;
+        const { nickname, job, gender, worry } = info;
 
-        if (!curValue) {
-            return true; // 값이 없을 때
-        } else if (step === Step.Worry && info.worry.length === 0) {
-            return true; // 고민 선택x
-        }
-
-        return false;
+        return (
+            (step === Step.Nickname && !nickname) ||
+            (step === Step.Worry && worry.length === 0) ||
+            (step === Step.Gender && gender === -1) ||
+            (step === Step.Job && job === -1)
+        );
     };
     // endregion - step
 
     // region - setting form
-    const isKeyOfInfo = (value: string | undefined): value is keyof Info => {
-        return typeof value === 'string' && infoKeys.includes(value);
-    };
 
     const setCurInfoByKey = ({ key, value }: InfoParam) => {
         const newObj = {
