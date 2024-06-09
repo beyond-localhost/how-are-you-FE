@@ -1,6 +1,6 @@
 import { PageLayout } from '@components/StyledComponents.ts';
-import { useState } from 'react';
-import { Form, useLoaderData, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useLoaderData, useNavigate } from 'react-router-dom';
 import {
     Birth,
     Gender,
@@ -57,7 +57,7 @@ function InfoForm() {
     const [step, setStep] = useState<Step>(Step.Nickname);
     const [info, setInfo] = useState<Info>({
         nickname: '',
-        gender: -1,
+        gender: 'male',
         birth: {
             year: 2000,
             month: 1,
@@ -68,16 +68,36 @@ function InfoForm() {
     });
 
     const infoKeys = Object.keys(info);
+    const isLastStep = step === Step.Worry;
 
     // region - step
-    const submitInfoForm = () => {
-        // todo: post api
-        navigate('/question-list');
+    const submitInfoForm = async (e: React.FormEvent<HTMLFormElement>) => {
+        try {
+            e.preventDefault();
+
+            const { nickname, job, gender, worry, birth } = info;
+            const response = await api.POST('/users/me/profile', {
+                body: {
+                    nickname,
+                    birthday: birth,
+                    jobId: job,
+                    gender,
+                    worryIds: worry
+                }
+            });
+
+            if (response.error) {
+                throw new Response('info form fetch error');
+            }
+
+            navigate('/question-list');
+        } catch (e) {
+            throw new Response('info form fetch error');
+        }
     };
 
     const handleStepClick = (direction: Direction) => {
-        if (step === Step.Worry) {
-            submitInfoForm();
+        if (isLastStep) {
             return;
         }
 
@@ -87,12 +107,11 @@ function InfoForm() {
 
     // 우측 버튼
     const checkDisabled = (): boolean => {
-        const { nickname, job, gender, worry } = info;
+        const { nickname, job, worry } = info;
 
         return (
             (step === Step.Nickname && !nickname) ||
             (step === Step.Worry && worry.length === 0) ||
-            (step === Step.Gender && gender === -1) ||
             (step === Step.Job && job === -1)
         );
     };
@@ -141,7 +160,7 @@ function InfoForm() {
                 {step + 1}/{infoKeys.length} 단계
             </em>
 
-            <Form>
+            <form onSubmit={submitInfoForm}>
                 <fieldset>
                     <legend>기본 정보 입력</legend>
                     {renderStepForm()}
@@ -151,17 +170,19 @@ function InfoForm() {
                     <button
                         onClick={() => handleStepClick(DIRECTION.LEFT)}
                         disabled={step === Step.Nickname}
+                        type="button"
                     >
                         ⬅️
                     </button>
                     <button
                         onClick={() => handleStepClick(DIRECTION.RIGHT)}
                         disabled={checkDisabled()}
+                        type={isLastStep ? 'submit' : 'button'}
                     >
                         ➡️
                     </button>
                 </div>
-            </Form>
+            </form>
         </PageLayout>
     );
 }

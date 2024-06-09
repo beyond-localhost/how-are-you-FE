@@ -363,11 +363,9 @@ export interface paths {
                 200: {
                     content: {
                         'application/json': {
-                            jobs: {
-                                id: number;
-                                name: string;
-                            }[];
-                        };
+                            id: number;
+                            name: string;
+                        }[];
                     };
                 };
                 /** @description 세션 값이 없거나 / 유효하지 않은 경우에 해당합니다. 이경우 첨부된 쿠키도 전부 지워집니다! */
@@ -390,11 +388,9 @@ export interface paths {
                 200: {
                     content: {
                         'application/json': {
-                            worries: {
-                                id: number;
-                                name: string;
-                            }[];
-                        };
+                            id: number;
+                            name: string;
+                        }[];
                     };
                 };
                 /** @description 세션 값이 없거나 / 유효하지 않은 경우에 해당합니다. 이경우 첨부된 쿠키도 전부 지워집니다! */

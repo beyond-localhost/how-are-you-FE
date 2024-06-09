@@ -11,13 +11,11 @@ const WorryField: React.FC<WorryFormProp> = ({ setCurInfoByKey, worry }) => {
 
     useEffect(() => {
         api.GET('/worries').then(res => {
-            if (res.data) {
-                setWorryList(res.data.worries);
-            }
+            setWorryList(res.data || []);
         });
     }, []);
 
-    const handleClick = (index: number) => {
+    const handleWorryClick = (index: number) => {
         const targetIndex = worry.indexOf(index);
         let newWorryArr = [];
 
@@ -36,8 +34,9 @@ const WorryField: React.FC<WorryFormProp> = ({ setCurInfoByKey, worry }) => {
             <p>고민</p>
 
             {worryList.length > 0 &&
-                worryList.map((item, index) => {
+                worryList.map(item => {
                     const { id, name } = item;
+                    const index = id - 1;
                     return (
                         <button
                             key={id}
@@ -45,7 +44,8 @@ const WorryField: React.FC<WorryFormProp> = ({ setCurInfoByKey, worry }) => {
                                 padding: '10px',
                                 color: worry.includes(index) ? 'blue' : 'black'
                             }}
-                            onClick={() => handleClick(index)}
+                            onClick={() => handleWorryClick(index)}
+                            type="button"
                         >
                             {name}
                         </button>

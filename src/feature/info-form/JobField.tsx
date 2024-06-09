@@ -11,14 +11,12 @@ const JobField: React.FC<JobFormProp> = ({ setCurInfoByKey, job }) => {
 
     useEffect(() => {
         api.GET('/jobs').then(res => {
-            if (res.data) {
-                setJobList(res.data.jobs);
-            }
+            setJobList(res.data || []);
         });
     }, []);
 
-    const handleClick = (id: number) => {
-        setCurInfoByKey({ key: 'job', value: id });
+    const handleJobClick = (index: number) => {
+        setCurInfoByKey({ key: 'job', value: index });
     };
 
     // todo: api 가져올동안 loading spinner
@@ -29,11 +27,13 @@ const JobField: React.FC<JobFormProp> = ({ setCurInfoByKey, job }) => {
             {jobList.length > 0 &&
                 jobList.map(item => {
                     const { id, name } = item;
+                    const index = id - 1;
                     return (
                         <button
                             key={id}
-                            style={{ padding: '10px', color: job === id ? 'blue' : 'black' }}
-                            onClick={() => handleClick(id)}
+                            style={{ padding: '10px', color: job === index ? 'blue' : 'black' }}
+                            onClick={() => handleJobClick(index)}
+                            type="button"
                         >
                             {name}
                         </button>
