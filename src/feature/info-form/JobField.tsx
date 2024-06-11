@@ -1,20 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { api } from '@lib/api/client.ts';
+import React from 'react';
 import { Job, Jobs, setCurInfoByKeyParam } from '@type/infoFormType.ts';
 
 interface JobFormProp extends setCurInfoByKeyParam {
     job: Job;
+    jobData: Jobs;
 }
 
-const JobField: React.FC<JobFormProp> = ({ setCurInfoByKey, job }) => {
-    const [jobList, setJobList] = useState<Jobs>([]);
-
-    useEffect(() => {
-        api.GET('/jobs').then(res => {
-            setJobList(res.data || []);
-        });
-    }, []);
-
+const JobField: React.FC<JobFormProp> = ({ setCurInfoByKey, job, jobData }) => {
     const handleJobClick = (index: number) => {
         setCurInfoByKey({ key: 'job', value: index });
     };
@@ -24,8 +16,8 @@ const JobField: React.FC<JobFormProp> = ({ setCurInfoByKey, job }) => {
         <>
             <p>직업</p>
 
-            {jobList.length > 0 &&
-                jobList.map(item => {
+            {jobData.length > 0 &&
+                jobData.map(item => {
                     const { id, name } = item;
                     const index = id - 1;
                     return (

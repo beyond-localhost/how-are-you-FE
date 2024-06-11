@@ -15,12 +15,12 @@ function ErrorPage() {
         const referrer = document.referrer;
         const curUrl = location.origin;
 
-        if (referrer && !referrer.startsWith(curUrl)) {
-            // 외부 사이트에서 온 경우
-            navigate('/');
+        // 이전 사이트 방문 이력 있을 경우
+        if (referrer && referrer.startsWith(curUrl)) {
+            navigate(-1);
         }
 
-        navigate(-1);
+        navigate('/');
     };
 
     const handleInquiry = () => {

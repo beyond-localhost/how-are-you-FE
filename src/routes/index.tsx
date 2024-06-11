@@ -2,7 +2,6 @@ import { api } from '@lib/api/client.ts';
 import { PageLayout } from '@components/StyledComponents.ts';
 import { useRef } from 'react';
 import { BOOLEAN_STRING } from '@/constants/common.ts';
-import { redirect } from 'react-router-dom';
 
 function Index() {
     const checkboxRef = useRef<HTMLInputElement>(null);
@@ -19,7 +18,7 @@ function Index() {
         });
 
         if (response.error) {
-            return redirect('/');
+            throw new Response('', { statusText: '로그인 실패' });
         }
 
         location.href = response.data.url;

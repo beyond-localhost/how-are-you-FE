@@ -6,8 +6,10 @@ import {
     Gender,
     InfoParam,
     Job,
+    Jobs,
     Nickname,
-    NicknameData,
+    RecommendNickname,
+    Worries,
     Worry
 } from '@type/infoFormType.ts';
 import NicknameField from '@feature/info-form/NicknameField.tsx';
@@ -41,18 +43,30 @@ const DIRECTION = {
 type Direction = keyof typeof DIRECTION;
 
 export async function loader() {
-    const response = await api.GET('/recommendation_nickname');
-    const responseData: NicknameData | undefined = response.data;
+    const [nicknameResponse, jobResponse, worryResponse] = await Promise.all([
+        api.GET('/recommendation_nickname'),
+        api.GET('/jobs'),
+        api.GET('/worries')
+    ]);
 
-    if (!responseData) {
+    if (nicknameResponse.error || jobResponse.error || worryResponse.error) {
         throw new Response('nickname fetch error');
     }
-    return responseData.nickname;
+
+    const recommendNicknameData = nicknameResponse.data.nickname;
+    const jobData = jobResponse.data;
+    const worryData = worryResponse.data;
+
+    return { recommendNicknameData, jobData, worryData };
 }
 
 function InfoForm() {
     const navigate = useNavigate();
-    const recommendNickname = useLoaderData() as string;
+    const { recommendNicknameData, jobData, worryData } = useLoaderData() as {
+        recommendNicknameData: RecommendNickname;
+        jobData: Jobs;
+        worryData: Worries;
+    };
 
     const [step, setStep] = useState<Step>(Step.Nickname);
     const [info, setInfo] = useState<Info>({
@@ -64,7 +78,7 @@ function InfoForm() {
             day: 1
         },
         job: -1,
-        worry: []
+        worry: new Set()
     });
 
     const infoKeys = Object.keys(info);
@@ -82,17 +96,17 @@ function InfoForm() {
                     birthday: birth,
                     jobId: job,
                     gender,
-                    worryIds: worry
+                    worryIds: Array.from(worry)
                 }
             });
 
             if (response.error) {
-                throw new Response('info form fetch error');
+                alert('오류가 발생했습니다. 다시 시도해주세요.');
             }
 
             navigate('/question-list');
         } catch (e) {
-            throw new Response('info form fetch error');
+            alert('오류가 발생했습니다. 다시 시도해주세요.');
         }
     };
 
@@ -111,7 +125,7 @@ function InfoForm() {
 
         return (
             (step === Step.Nickname && !nickname) ||
-            (step === Step.Worry && worry.length === 0) ||
+            (step === Step.Worry && worry.size === 0) ||
             (step === Step.Job && job === -1)
         );
     };
@@ -135,7 +149,7 @@ function InfoForm() {
                 return (
                     <NicknameField
                         setCurInfoByKey={setCurInfoByKey}
-                        recommendNickname={recommendNickname}
+                        recommendNicknameData={recommendNicknameData}
                         nickname={info.nickname}
                     />
                 );
@@ -144,9 +158,17 @@ function InfoForm() {
             case Step.Birth:
                 return <BirthField setCurInfoByKey={setCurInfoByKey} birth={info.birth} />;
             case Step.Job:
-                return <JobField setCurInfoByKey={setCurInfoByKey} job={info.job} />;
+                return (
+                    <JobField setCurInfoByKey={setCurInfoByKey} job={info.job} jobData={jobData} />
+                );
             case Step.Worry:
-                return <WorryField setCurInfoByKey={setCurInfoByKey} worry={info.worry} />;
+                return (
+                    <WorryField
+                        setCurInfoByKey={setCurInfoByKey}
+                        worry={info.worry}
+                        worryData={worryData}
+                    />
+                );
             default: // todo: error boundary
                 return <div>err!</div>;
         }

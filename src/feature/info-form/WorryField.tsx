@@ -1,31 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { api } from '@lib/api/client.ts';
+import React from 'react';
 import { setCurInfoByKeyParam, Worries, Worry } from '@type/infoFormType.ts';
 
 interface WorryFormProp extends setCurInfoByKeyParam {
     worry: Worry;
+    worryData: Worries;
 }
 
-const WorryField: React.FC<WorryFormProp> = ({ setCurInfoByKey, worry }) => {
-    const [worryList, setWorryList] = useState<Worries>([]);
+const WorryField: React.FC<WorryFormProp> = ({ setCurInfoByKey, worry, worryData }) => {
+    const handleWorryClick = (id: number) => {
+        const newSet = new Set(worry);
 
-    useEffect(() => {
-        api.GET('/worries').then(res => {
-            setWorryList(res.data || []);
-        });
-    }, []);
-
-    const handleWorryClick = (index: number) => {
-        const targetIndex = worry.indexOf(index);
-        let newWorryArr = [];
-
-        if (targetIndex === -1) {
-            newWorryArr = [...worry, index];
-            setCurInfoByKey({ key: 'worry', value: newWorryArr });
+        if (newSet.has(id)) {
+            newSet.delete(id);
         } else {
-            newWorryArr = [...worry.slice(0, targetIndex), ...worry.slice(targetIndex + 1)];
-            setCurInfoByKey({ key: 'worry', value: newWorryArr });
+            newSet.add(id);
         }
+
+        setCurInfoByKey({ key: 'worry', value: newSet });
     };
 
     // todo: api 가져올동안 loading spinner
@@ -33,18 +24,17 @@ const WorryField: React.FC<WorryFormProp> = ({ setCurInfoByKey, worry }) => {
         <>
             <p>고민</p>
 
-            {worryList.length > 0 &&
-                worryList.map(item => {
+            {worryData.length > 0 &&
+                worryData.map(item => {
                     const { id, name } = item;
-                    const index = id - 1;
                     return (
                         <button
                             key={id}
                             style={{
                                 padding: '10px',
-                                color: worry.includes(index) ? 'blue' : 'black'
+                                color: worry.has(id) ? 'blue' : 'black'
                             }}
-                            onClick={() => handleWorryClick(index)}
+                            onClick={() => handleWorryClick(id)}
                             type="button"
                         >
                             {name}

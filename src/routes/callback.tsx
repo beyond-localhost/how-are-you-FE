@@ -7,7 +7,8 @@ export async function loader() {
     // 로그인 실패
     if (response.error) {
         throw new Response('', { statusText: '로그인 실패' });
-    } else if (response.data && response.data.profile) {
+    }
+    if (response.data.profile) {
         return redirect('/question-list');
     }
     return redirect('/info-form');
