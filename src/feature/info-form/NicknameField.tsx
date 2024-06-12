@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Nickname, setCurInfoByKeyParam } from '@type/infoFormType.ts';
+import { Nickname, RecommendNickname, setCurInfoByKeyParam } from '@type/infoFormType.ts';
 
 interface NicknameFieldProp extends setCurInfoByKeyParam {
-    recommendNickname: string;
+    recommendNicknameData: RecommendNickname;
     nickname: Nickname;
 }
 
@@ -13,7 +13,7 @@ const ELEMENT_ID = {
 
 const NicknameField: React.FC<NicknameFieldProp> = ({
     setCurInfoByKey,
-    recommendNickname,
+    recommendNicknameData,
     nickname
 }) => {
     const [recommendCheck, setRecommendCheck] = useState(false); // 추천닉네임 선택 여부
@@ -22,7 +22,7 @@ const NicknameField: React.FC<NicknameFieldProp> = ({
         const target = e.target;
         setCurInfoByKey({ key: target.id, value: target.value });
 
-        if (recommendCheck && target.value !== recommendNickname) {
+        if (recommendCheck && target.value !== recommendNicknameData) {
             setRecommendCheck(false);
         }
     };
@@ -30,7 +30,7 @@ const NicknameField: React.FC<NicknameFieldProp> = ({
     const handleRecommendCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
         const isRecommendChecked = e.target.checked;
         if (isRecommendChecked) {
-            setCurInfoByKey({ key: ELEMENT_ID.NICKNAME, value: recommendNickname });
+            setCurInfoByKey({ key: ELEMENT_ID.NICKNAME, value: recommendNicknameData });
         }
 
         setRecommendCheck(isRecommendChecked);
@@ -56,7 +56,7 @@ const NicknameField: React.FC<NicknameFieldProp> = ({
                     checked={recommendCheck}
                 />
                 <label htmlFor={ELEMENT_ID.RECOMMEND_NICKNAME}>
-                    추천 닉네임 사용하기: {recommendNickname}
+                    추천 닉네임 사용하기: {recommendNicknameData}
                 </label>
             </div>
         </>

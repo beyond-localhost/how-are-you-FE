@@ -1,13 +1,15 @@
 import { PageLayout } from '@components/StyledComponents.ts';
-import { useState } from 'react';
-import { Form, useLoaderData, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useLoaderData, useNavigate } from 'react-router-dom';
 import {
     Birth,
     Gender,
     InfoParam,
     Job,
+    Jobs,
     Nickname,
-    NicknameData,
+    RecommendNickname,
+    Worries,
     Worry
 } from '@type/infoFormType.ts';
 import NicknameField from '@feature/info-form/NicknameField.tsx';
@@ -16,7 +18,6 @@ import BirthField from '@feature/info-form/BirthField.tsx';
 import JobField from '@feature/info-form/JobField.tsx';
 import WorryField from '@feature/info-form/WorryField.tsx';
 import { api } from '@lib/api/client.ts';
-import { AUTH } from '@/constants/auth.ts';
 
 // 입력폼 단계
 enum Step {
@@ -35,108 +36,102 @@ type Info = {
     readonly worry: Worry;
 };
 
-enum Direction {
-    LEFT,
-    RIGHT
-}
+const DIRECTION = {
+    LEFT: 'LEFT',
+    RIGHT: 'RIGHT'
+} as const;
+type Direction = keyof typeof DIRECTION;
 
 export async function loader() {
-    const response = await api.GET('/recommendation_nickname', {
-        params: {
-            header: {
-                authorization: `Bearer ${sessionStorage.getItem(AUTH.ACCESS_TOKEN_KEY)}`
-            }
-        }
-    });
+    const [nicknameResponse, jobResponse, worryResponse] = await Promise.all([
+        api.GET('/recommendation_nickname'),
+        api.GET('/jobs'),
+        api.GET('/worries')
+    ]);
 
-    const responseData: NicknameData | undefined = response.data;
+    if (nicknameResponse.error || jobResponse.error || worryResponse.error) {
+        throw new Response('nickname fetch error');
+    }
 
-    return responseData ? responseData.nickname : '긍정적인 토토로'; // todo - sm: undefined 처리?
+    const recommendNicknameData = nicknameResponse.data.nickname;
+    const jobData = jobResponse.data;
+    const worryData = worryResponse.data;
+
+    return { recommendNicknameData, jobData, worryData };
 }
 
 function InfoForm() {
     const navigate = useNavigate();
-    const recommendNickname = useLoaderData() as string;
+    const { recommendNicknameData, jobData, worryData } = useLoaderData() as {
+        recommendNicknameData: RecommendNickname;
+        jobData: Jobs;
+        worryData: Worries;
+    };
 
     const [step, setStep] = useState<Step>(Step.Nickname);
     const [info, setInfo] = useState<Info>({
         nickname: '',
-        gender: null,
+        gender: 'male',
         birth: {
             year: 2000,
             month: 1,
             day: 1
         },
-        job: null,
-        worry: []
+        job: -1,
+        worry: new Set()
     });
 
     const infoKeys = Object.keys(info);
+    const isLastStep = step === Step.Worry;
 
     // region - step
-    const submitInfoForm = () => {
-        // todo: post api
-        navigate('/question-list');
+    const submitInfoForm = async (e: React.FormEvent<HTMLFormElement>) => {
+        try {
+            e.preventDefault();
+
+            const { nickname, job, gender, worry, birth } = info;
+            const response = await api.POST('/users/me/profile', {
+                body: {
+                    nickname,
+                    birthday: birth,
+                    jobId: job,
+                    gender,
+                    worryIds: Array.from(worry)
+                }
+            });
+
+            if (response.error) {
+                alert('오류가 발생했습니다. 다시 시도해주세요.');
+            }
+
+            navigate('/question-list');
+        } catch (e) {
+            alert('오류가 발생했습니다. 다시 시도해주세요.');
+        }
     };
 
     const handleStepClick = (direction: Direction) => {
-        if (step === Step.Worry) {
-            submitInfoForm();
+        if (isLastStep) {
             return;
         }
 
-        const nextStepValue = direction === Direction.LEFT ? -1 : 1;
+        const nextStepValue = direction === DIRECTION.LEFT ? -1 : 1;
         setStep(prevState => prevState + nextStepValue);
     };
 
-    const getCurKeyAndValue = () => {
-        const curKey = infoKeys[step];
-        if (!isKeyOfInfo(curKey)) return {};
-
-        const curValue = info[curKey];
-        return { curKey, curValue };
-    };
-
-    const checkDisabled = (direction: Direction): boolean => {
-        const { curKey, curValue } = getCurKeyAndValue();
-        if (!curKey) return true;
-
-        // 좌측 버튼
-        if (direction === Direction.LEFT && step === Step.Nickname) {
-            return true;
-        }
-
-        // 우측 버튼
-        if (direction === Direction.RIGHT) {
-            if (!curValue) {
-                return true; // 값이 없을 때
-            } else if (step === Step.Birth && (!isBirthValid() || Number(info.birth.year) < 1920)) {
-                return true; // 유효하지 않은 생년월일
-            } else if (step === Step.Worry && info.worry.length === 0) {
-                return true; // 고민 선택x
-            }
-        }
-
-        return false;
-    };
-
-    // 생년월일 유효성
-    const isBirthValid = () => {
-        const { year, month, day } = info.birth;
-        const curDate = new Date(`${year}-${month}-${day}`);
+    // 우측 버튼
+    const checkDisabled = (): boolean => {
+        const { nickname, job, worry } = info;
 
         return (
-            curDate.getFullYear() === Number(year) &&
-            curDate.getMonth() === Number(month) - 1 &&
-            curDate.getDate() === Number(day)
+            (step === Step.Nickname && !nickname) ||
+            (step === Step.Worry && worry.size === 0) ||
+            (step === Step.Job && job === -1)
         );
     };
     // endregion - step
 
     // region - setting form
-    const isKeyOfInfo = (value: string | undefined): value is keyof Info => {
-        return typeof value === 'string' && infoKeys.includes(value);
-    };
 
     const setCurInfoByKey = ({ key, value }: InfoParam) => {
         const newObj = {
@@ -154,7 +149,7 @@ function InfoForm() {
                 return (
                     <NicknameField
                         setCurInfoByKey={setCurInfoByKey}
-                        recommendNickname={recommendNickname}
+                        recommendNicknameData={recommendNicknameData}
                         nickname={info.nickname}
                     />
                 );
@@ -163,10 +158,18 @@ function InfoForm() {
             case Step.Birth:
                 return <BirthField setCurInfoByKey={setCurInfoByKey} birth={info.birth} />;
             case Step.Job:
-                return <JobField setCurInfoByKey={setCurInfoByKey} job={info.job} />;
+                return (
+                    <JobField setCurInfoByKey={setCurInfoByKey} job={info.job} jobData={jobData} />
+                );
             case Step.Worry:
-                return <WorryField setCurInfoByKey={setCurInfoByKey} worry={info.worry} />;
-            default: // todo
+                return (
+                    <WorryField
+                        setCurInfoByKey={setCurInfoByKey}
+                        worry={info.worry}
+                        worryData={worryData}
+                    />
+                );
+            default: // todo: error boundary
                 return <div>err!</div>;
         }
     };
@@ -179,29 +182,29 @@ function InfoForm() {
                 {step + 1}/{infoKeys.length} 단계
             </em>
 
-            <Form>
+            <form onSubmit={submitInfoForm}>
                 <fieldset>
                     <legend>기본 정보 입력</legend>
                     {renderStepForm()}
                 </fieldset>
 
                 <div>
-                    {Object.values(Direction).map(direction => {
-                        if (typeof direction !== 'number') {
-                            return null;
-                        }
-                        return (
-                            <button
-                                key={direction}
-                                onClick={() => handleStepClick(direction)}
-                                disabled={checkDisabled(direction)}
-                            >
-                                {direction === Direction.LEFT ? '⬅️' : '➡️'}
-                            </button>
-                        );
-                    })}
+                    <button
+                        onClick={() => handleStepClick(DIRECTION.LEFT)}
+                        disabled={step === Step.Nickname}
+                        type="button"
+                    >
+                        ⬅️
+                    </button>
+                    <button
+                        onClick={() => handleStepClick(DIRECTION.RIGHT)}
+                        disabled={checkDisabled()}
+                        type={isLastStep ? 'submit' : 'button'}
+                    >
+                        ➡️
+                    </button>
                 </div>
-            </Form>
+            </form>
         </PageLayout>
     );
 }
