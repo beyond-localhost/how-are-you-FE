@@ -6,10 +6,13 @@ export async function loader() {
 
     // 로그인 실패
     if (response.error) {
-        throw new Response('', { statusText: '로그인 실패' });
+        alert('로그인 실패');
+        return redirect('/');
     }
-    if (response.data.profile) {
+    // 기본 정보 입력한 경우
+    if (response.data && response.data.profile) {
         return redirect('/question-list');
     }
+    // 기본 정보 입력 페이지
     return redirect('/info-form');
 }
