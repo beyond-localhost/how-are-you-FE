@@ -11,18 +11,17 @@ function Index() {
             ? BOOLEAN_STRING.TRUE
             : BOOLEAN_STRING.FALSE;
 
-        const res = await api.POST('/auth/kakao', {
+        const response = await api.POST('/auth/kakao', {
             body: {
                 destination: `${import.meta.env.VITE_LOCAL_URL}/callback?autoLogin=${isAutoLogin}`
             }
         });
 
-        if (res.error) {
-            alert('fail!');
-            return;
+        if (response.error) {
+            throw new Response('', { statusText: '로그인 실패' });
         }
 
-        location.href = res.data.url;
+        location.href = response.data.url;
     };
 
     return (

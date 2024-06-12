@@ -1,82 +1,176 @@
 import { PageLayout } from '@components/StyledComponents.ts';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { useLoaderData, useNavigate } from 'react-router-dom';
+import {
+    Birth,
+    Gender,
+    InfoParam,
+    Job,
+    Jobs,
+    Nickname,
+    RecommendNickname,
+    Worries,
+    Worry
+} from '@type/infoFormType.ts';
+import NicknameField from '@feature/info-form/NicknameField.tsx';
+import GenderField from '@feature/info-form/GenderField.tsx';
+import BirthField from '@feature/info-form/BirthField.tsx';
+import JobField from '@feature/info-form/JobField.tsx';
+import WorryField from '@feature/info-form/WorryField.tsx';
+import { api } from '@lib/api/client.ts';
+
+// 입력폼 단계
+enum Step {
+    Nickname,
+    Gender,
+    Birth,
+    Job,
+    Worry
+}
 
 type Info = {
-    readonly nickname: string;
-    readonly gender: number;
-    readonly birth: string;
-    readonly job: number;
-    readonly worry: number;
+    readonly nickname: Nickname;
+    readonly gender: Gender;
+    readonly birth: Birth;
+    readonly job: Job;
+    readonly worry: Worry;
 };
 
-function InfoForm() {
-    const [step, setStep] = useState(0);
-    const [info, setInfo] = useState<Info>({
-        nickname: '',
-        gender: 0,
-        birth: '',
-        job: 0,
-        worry: 0
-    });
-    const keys = Object.keys(info);
+const DIRECTION = {
+    LEFT: 'LEFT',
+    RIGHT: 'RIGHT'
+} as const;
+type Direction = keyof typeof DIRECTION;
 
-    const isKeyofInfoType = (value: string | undefined): value is keyof Info => {
-        return typeof value === 'string' && keys.includes(value);
+export async function loader() {
+    const [nicknameResponse, jobResponse, worryResponse] = await Promise.all([
+        api.GET('/recommendation_nickname'),
+        api.GET('/jobs'),
+        api.GET('/worries')
+    ]);
+
+    if (nicknameResponse.error || jobResponse.error || worryResponse.error) {
+        throw new Response('nickname fetch error');
+    }
+
+    const recommendNicknameData = nicknameResponse.data.nickname;
+    const jobData = jobResponse.data;
+    const worryData = worryResponse.data;
+
+    return { recommendNicknameData, jobData, worryData };
+}
+
+function InfoForm() {
+    const navigate = useNavigate();
+    const { recommendNicknameData, jobData, worryData } = useLoaderData() as {
+        recommendNicknameData: RecommendNickname;
+        jobData: Jobs;
+        worryData: Worries;
     };
 
-    const setCurInfo = () => {
-        const key = keys[step]; // 변경 대상
-        // todo 위에있는 key는 keyof Info로 좁혀져야함 !!!!!!!
+    const [step, setStep] = useState<Step>(Step.Nickname);
+    const [info, setInfo] = useState<Info>({
+        nickname: '',
+        gender: 'male',
+        birth: {
+            year: 2000,
+            month: 1,
+            day: 1
+        },
+        job: -1,
+        worry: new Set()
+    });
 
-        if (!isKeyofInfoType(key)) {
+    const infoKeys = Object.keys(info);
+    const isLastStep = step === Step.Worry;
+
+    // region - step
+    const submitInfoForm = async (e: React.FormEvent<HTMLFormElement>) => {
+        try {
+            e.preventDefault();
+
+            const { nickname, job, gender, worry, birth } = info;
+            const response = await api.POST('/users/me/profile', {
+                body: {
+                    nickname,
+                    birthday: birth,
+                    jobId: job,
+                    gender,
+                    worryIds: Array.from(worry)
+                }
+            });
+
+            if (response.error) {
+                alert('오류가 발생했습니다. 다시 시도해주세요.');
+            }
+
+            navigate('/question-list');
+        } catch (e) {
+            alert('오류가 발생했습니다. 다시 시도해주세요.');
+        }
+    };
+
+    const handleStepClick = (direction: Direction) => {
+        if (isLastStep) {
             return;
         }
 
+        const nextStepValue = direction === DIRECTION.LEFT ? -1 : 1;
+        setStep(prevState => prevState + nextStepValue);
+    };
+
+    // 우측 버튼
+    const checkDisabled = (): boolean => {
+        const { nickname, job, worry } = info;
+
+        return (
+            (step === Step.Nickname && !nickname) ||
+            (step === Step.Worry && worry.size === 0) ||
+            (step === Step.Job && job === -1)
+        );
+    };
+    // endregion - step
+
+    // region - setting form
+
+    const setCurInfoByKey = ({ key, value }: InfoParam) => {
         const newObj = {
             ...info,
-            [key]: 1
-        } satisfies Info; // todo
+            [key]: value
+        };
         setInfo(newObj);
     };
 
-    const handlePrevStep = () => {
-        setCurInfo();
-        setStep(prevState => prevState - 1);
-    };
-
-    const handleNextStep = () => {
-        setCurInfo();
-        setStep(prevState => prevState + 1);
-    };
+    // endregion - setting form
 
     const renderStepForm = () => {
-        // const key = keys[step]; // 변경 대상
-
         switch (step) {
-            case 0:
-            default:
+            case Step.Nickname:
                 return (
-                    <>
-                        <label htmlFor="nickname">닉네임</label>
-                        <input id="nickname" autoFocus defaultValue={info.nickname} />
-                    </>
+                    <NicknameField
+                        setCurInfoByKey={setCurInfoByKey}
+                        recommendNicknameData={recommendNicknameData}
+                        nickname={info.nickname}
+                    />
                 );
-            case 1:
+            case Step.Gender:
+                return <GenderField setCurInfoByKey={setCurInfoByKey} gender={info.gender} />;
+            case Step.Birth:
+                return <BirthField setCurInfoByKey={setCurInfoByKey} birth={info.birth} />;
+            case Step.Job:
                 return (
-                    <>
-                        <p>성별</p>
-                        <div>
-                            <label htmlFor="man">남자</label>
-                            <input type="radio" id="man" />
-
-                            <label htmlFor="woman">여자</label>
-                            <input type="radio" id="woman" />
-
-                            <label htmlFor="nothing">선택안함</label>
-                            <input type="radio" id="nothing" />
-                        </div>
-                    </>
+                    <JobField setCurInfoByKey={setCurInfoByKey} job={info.job} jobData={jobData} />
                 );
+            case Step.Worry:
+                return (
+                    <WorryField
+                        setCurInfoByKey={setCurInfoByKey}
+                        worry={info.worry}
+                        worryData={worryData}
+                    />
+                );
+            default: // todo: error boundary
+                return <div>err!</div>;
         }
     };
 
@@ -84,16 +178,33 @@ function InfoForm() {
         <PageLayout>
             <h1>기본 정보 입력</h1>
 
-            <em>{step}단계</em>
+            <em>
+                {step + 1}/{infoKeys.length} 단계
+            </em>
 
-            {renderStepForm()}
+            <form onSubmit={submitInfoForm}>
+                <fieldset>
+                    <legend>기본 정보 입력</legend>
+                    {renderStepForm()}
+                </fieldset>
 
-            <div>
-                <button onClick={handlePrevStep} disabled={step === 0}>
-                    ⬅️
-                </button>
-                <button onClick={handleNextStep}>➡️</button>
-            </div>
+                <div>
+                    <button
+                        onClick={() => handleStepClick(DIRECTION.LEFT)}
+                        disabled={step === Step.Nickname}
+                        type="button"
+                    >
+                        ⬅️
+                    </button>
+                    <button
+                        onClick={() => handleStepClick(DIRECTION.RIGHT)}
+                        disabled={checkDisabled()}
+                        type={isLastStep ? 'submit' : 'button'}
+                    >
+                        ➡️
+                    </button>
+                </div>
+            </form>
         </PageLayout>
     );
 }

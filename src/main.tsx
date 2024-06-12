@@ -10,7 +10,7 @@ import {
 import Index from '@routes/index.tsx';
 import ErrorPage from '@routes/errorPage.tsx';
 import { loader as callbackLoader } from '@routes/callback.tsx';
-import InfoForm from '@routes/infoForm.tsx';
+import InfoForm, { loader as infoFormLoader } from '@routes/infoForm.tsx';
 import Root from '@routes/root.tsx';
 // import Root, { loader as rootLoader } from '@routes/root.tsx';
 // import QuestionList, { loader as questionListLoader } from '@routes/questionList.tsx';
@@ -19,21 +19,17 @@ import Question, { loader as questionLoader, action as questionAction } from '@r
 const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="/" element={<Root />} errorElement={<ErrorPage />}>
-            <Route errorElement={<ErrorPage />}>
+            <Route>
                 <Route index element={<Index />} />
                 <Route path="callback" loader={callbackLoader} />
-                <Route path="info-form" element={<InfoForm />} />
-                {/*<Route*/}
-                {/*    path="question-list"*/}
-                {/*    loader={questionListLoader}*/}
-                {/*    element={<QuestionList />}*/}
-                {/*/>*/}
-                <Route
-                    path="question"
-                    loader={questionLoader}
-                    action={questionAction}
-                    element={<Question />}
-                />
+                <Route path="info-form" loader={infoFormLoader} element={<InfoForm />} />
+                <Route path="question-list" element={<QuestionList />} />
+              <Route
+                path="question"
+                loader={questionLoader}
+                action={questionAction}
+                element={<Question />}
+              />
             </Route>
         </Route>
     )

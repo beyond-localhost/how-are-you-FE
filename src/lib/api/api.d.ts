@@ -3,32 +3,432 @@
  * Do not make direct changes to the file.
  */
 
+/** OneOf type helpers */
+type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
+type XOR<T, U> = T | U extends object ? (Without<T, U> & U) | (Without<U, T> & T) : T | U;
+type OneOf<T extends any[]> = T extends [infer Only]
+    ? Only
+    : T extends [infer A, infer B, ...infer Rest]
+      ? OneOf<[XOR<A, B>, ...Rest]>
+      : never;
+
 export interface paths {
-    '/version': {
-        get: operations['getVersion'];
-    };
     '/auth/kakao': {
-        post: operations['postAuthKakao'];
+        post: {
+            requestBody?: {
+                content: {
+                    'application/json': {
+                        destination: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description 카카오 로그인 URL을 반환합니다 */
+                201: {
+                    content: {
+                        'application/json': {
+                            url: string;
+                        };
+                    };
+                };
+                /** @description 잘못된 URL을 전달하였을 때 반환되는 값이에요 */
+                400: {
+                    content: {
+                        'application/json': {
+                            /** @enum {number} */
+                            code: 400;
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
     };
-    '/me': {
-        get: operations['getMe'];
+    '/callback': {
+        /**
+         * @deprecated
+         * @description This is only used for internal oauth process. Do not use this.
+         */
+        get: {
+            parameters: {
+                query: {
+                    code: string;
+                    state: string;
+                };
+            };
+            responses: {
+                /** @description 로그인 성공 */
+                302: {
+                    content: never;
+                };
+                /** @description 잘못된 요청 */
+                400: {
+                    content: {
+                        'application/json': {
+                            /** @enum {number} */
+                            code: 400;
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
     };
-    '/recommendation_nickname': {
-        get: operations['getRecommendation_nickname'];
+    '/users/me': {
+        get: {
+            responses: {
+                /** @description 유저 정보를 반환합니다 */
+                200: {
+                    content: {
+                        'application/json': {
+                            id: number;
+                            profile: {
+                                nickname: string;
+                                birthday: string;
+                                job: string;
+                                worries: {
+                                    id: number;
+                                    text: string;
+                                }[];
+                            } | null;
+                        };
+                    };
+                };
+                /** @description 세션 값이 없거나 / 유효하지 않은 경우에 해당합니다. 이경우 첨부된 쿠키도 전부 지워집니다! */
+                401: {
+                    content: {
+                        'application/json': {
+                            /** @enum {number} */
+                            code: 401;
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
     };
-    '/me/profile': {
-        get: operations['getMeProfile'];
-        post: operations['postMeProfile'];
+    '/users/me/profile': {
+        post: {
+            requestBody?: {
+                content: {
+                    'application/json': {
+                        nickname: string;
+                        birthday: {
+                            year: number;
+                            month: number;
+                            day: number;
+                        };
+                        jobId: number;
+                        worryIds: number[];
+                        gender: 'male' | 'female' | 'none';
+                    };
+                };
+            };
+            responses: {
+                /** @description 유저 프로필이 정상적으로 생성되었습니다. 요청을 보낼 때 전달한 값으로 유저 상태를 업데이트 하거나 유저 정보를 다시 요청해주세요 */
+                201: {
+                    content: {
+                        'application/json': {
+                            /** @enum {boolean} */
+                            ok: true;
+                        };
+                    };
+                };
+                /** @description Form으로 전달된 값이 유효하지 않은 경우에 해당합니다. */
+                400: {
+                    content: {
+                        'application/json': {
+                            /** @enum {number} */
+                            code: 400;
+                            error: string;
+                        };
+                    };
+                };
+                /** @description 세션 값이 없거나 / 유효하지 않은 경우에 해당합니다. 이경우 첨부된 쿠키도 전부 지워집니다! */
+                401: {
+                    content: {
+                        'application/json': {
+                            /** @enum {number} */
+                            code: 401;
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
     };
     '/questions/today': {
-        get: operations['getQuestionsToday'];
+        /** 오늘 만들어진 질문과 이에 대한 유저의 답변을 반환합니다. */
+        get: {
+            responses: {
+                /** @description 오늘 만들어진 질문과 이에 대한 유저의 답변을 반환합니다. */
+                200: {
+                    content: {
+                        'application/json': OneOf<
+                            [
+                                {
+                                    /** @enum {boolean} */
+                                    userAnswered: true;
+                                    question: string;
+                                    questionId: number;
+                                    answer: string;
+                                    answerId: number;
+                                },
+                                {
+                                    /** @enum {boolean} */
+                                    userAnswered: false;
+                                    question: string;
+                                    questionId: number;
+                                }
+                            ]
+                        >;
+                    };
+                };
+                /** @description 세션 값이 없거나 / 유효하지 않은 경우에 해당합니다. 이경우 첨부된 쿠키도 전부 지워집니다! */
+                401: {
+                    content: {
+                        'application/json': {
+                            /** @enum {number} */
+                            code: 401;
+                            error: string;
+                        };
+                    };
+                };
+                /** @description 오늘 만들어진 질문이 없을 때 반환되는 응답입니다. 오늘의 기준은 UTC+09:00 입니다. */
+                404: {
+                    content: never;
+                };
+            };
+        };
     };
     '/questions/{id}/answers': {
-        post: operations['postQuestionsByIdAnswers'];
+        /** 질문에 대한 답변을 추가하거나 수정합니다. */
+        post: {
+            parameters: {
+                path: {
+                    id: string;
+                };
+            };
+            requestBody?: {
+                content: {
+                    'application/json': {
+                        answer: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description 이미 답변이 있는 경우 해당 답변을 수정합니다. 그렇지 않은 경우 해당 답변을 추가합니다. */
+                201: {
+                    content: {
+                        'application/json': {
+                            answerId: number;
+                            answer: string;
+                        };
+                    };
+                };
+                /** @description 세션 값이 없거나 / 유효하지 않은 경우에 해당합니다. 이경우 첨부된 쿠키도 전부 지워집니다! */
+                401: {
+                    content: {
+                        'application/json': {
+                            /** @enum {number} */
+                            code: 401;
+                            error: string;
+                        };
+                    };
+                };
+                /** @description 답변이 대상이 되는 질문이 '오늘'이 아닐 때 반환되는 응답입니다. 오늘의 기준은 UTC+09:00 입니다. */
+                404: {
+                    content: never;
+                };
+            };
+        };
     };
-    '/questions/{id}/answers/{answerId}': {
-        delete: operations['deleteQuestionsByIdAnswersByAnswerId'];
-        patch: operations['patchQuestionsByIdAnswersByAnswerId'];
+    '/questions/answers/{answerId}': {
+        /** 질문에 대한 답변을 삭제합니다. */
+        delete: {
+            parameters: {
+                path: {
+                    answerId: string;
+                };
+            };
+            responses: {
+                /** @description 답변이 삭제되었을 때 반환되는 응답입니다. */
+                204: {
+                    content: never;
+                };
+                /** @description 삭제하려는 답변이 유저가 남긴 답변이 아닐 때 반환되는 응답입니다. */
+                400: {
+                    content: never;
+                };
+                /** @description 세션 값이 없거나 / 유효하지 않은 경우에 해당합니다. 이경우 첨부된 쿠키도 전부 지워집니다! */
+                401: {
+                    content: {
+                        'application/json': {
+                            /** @enum {number} */
+                            code: 401;
+                            error: string;
+                        };
+                    };
+                };
+                /** @description 삭제하려는 답변이 존재하지 않을 때 반환되는 응답입니다. */
+                404: {
+                    content: never;
+                };
+            };
+        };
+    };
+    '/questions/seed': {
+        post: {
+            responses: {
+                /** @description Seed data inserted successfully */
+                204: {
+                    content: never;
+                };
+                /** @description 세션 값이 없거나 / 유효하지 않은 경우에 해당합니다. 이경우 첨부된 쿠키도 전부 지워집니다! */
+                401: {
+                    content: {
+                        'application/json': {
+                            /** @enum {number} */
+                            code: 401;
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    '/questions/answers': {
+        /** 유저가 남긴 답변에 대해 필터링 과정을 거쳐 반환합니다. */
+        get: {
+            parameters: {
+                query: {
+                    startYear: string;
+                    startMonth: string;
+                    endYear: string;
+                    endMonth: string;
+                    nextCursor?: string;
+                    limit?: number;
+                };
+            };
+            responses: {
+                /** @description 유저가 보낸 요청에 대해 더이상 페이지네이션할 것이 없다면 hasMore가 false로 반환됩니다. hasMore는 클라이언트가 더이상 페칭을 할지 안할지를 결정하는 기준입니다. */
+                200: {
+                    content: {
+                        'application/json': OneOf<
+                            [
+                                {
+                                    /** @enum {boolean} */
+                                    hasMore: true;
+                                    nextCursor: number;
+                                    data: {
+                                        questionId: number;
+                                        question: string;
+                                        answerId: number;
+                                        answer: string;
+                                    }[];
+                                },
+                                {
+                                    /** @enum {boolean} */
+                                    hasMore: false;
+                                    /** @enum {undefined} */
+                                    nextCursor?: null;
+                                    data: {
+                                        questionId: number;
+                                        question: string;
+                                        answerId: number;
+                                        answer: string;
+                                    }[];
+                                }
+                            ]
+                        >;
+                    };
+                };
+                /** @description 세션 값이 없거나 / 유효하지 않은 경우에 해당합니다. 이경우 첨부된 쿠키도 전부 지워집니다! */
+                401: {
+                    content: {
+                        'application/json': {
+                            /** @enum {number} */
+                            code: 401;
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    '/jobs': {
+        get: {
+            responses: {
+                /** @description 직업 목록을 반환합니다 */
+                200: {
+                    content: {
+                        'application/json': {
+                            id: number;
+                            name: string;
+                        }[];
+                    };
+                };
+                /** @description 세션 값이 없거나 / 유효하지 않은 경우에 해당합니다. 이경우 첨부된 쿠키도 전부 지워집니다! */
+                401: {
+                    content: {
+                        'application/json': {
+                            /** @enum {number} */
+                            code: 401;
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    '/worries': {
+        get: {
+            responses: {
+                /** @description 걱정들을 반환합니다. 걱정 마세요, 우리 삶에서 걱정은 별로 없으니까요 */
+                200: {
+                    content: {
+                        'application/json': {
+                            id: number;
+                            name: string;
+                        }[];
+                    };
+                };
+                /** @description 세션 값이 없거나 / 유효하지 않은 경우에 해당합니다. 이경우 첨부된 쿠키도 전부 지워집니다! */
+                401: {
+                    content: {
+                        'application/json': {
+                            /** @enum {number} */
+                            code: 401;
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    '/recommendation_nickname': {
+        get: {
+            responses: {
+                /** @description 추천 닉네임을 올바르게 조회한 경우에 해당합니다. */
+                200: {
+                    content: {
+                        'application/json': {
+                            nickname: string;
+                        };
+                    };
+                };
+                /** @description 세션 값이 없거나 / 유효하지 않은 경우에 해당합니다. 이경우 첨부된 쿠키도 전부 지워집니다! */
+                401: {
+                    content: {
+                        'application/json': {
+                            /** @enum {number} */
+                            code: 401;
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
     };
 }
 
@@ -37,7 +437,7 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {};
     responses: never;
-    parameters: never;
+    parameters: {};
     requestBodies: never;
     headers: never;
     pathItems: never;
@@ -47,760 +447,4 @@ export type $defs = Record<string, never>;
 
 export type external = Record<string, never>;
 
-export interface operations {
-    getVersion: {
-        responses: {
-            200: {
-                content: never;
-            };
-        };
-    };
-    postAuthKakao: {
-        requestBody: {
-            content: {
-                'application/json': {
-                    destination: string;
-                };
-                'multipart/form-data': {
-                    destination: string;
-                };
-                'text/plain': {
-                    destination: string;
-                };
-            };
-        };
-        responses: {
-            201: {
-                content: {
-                    'application/json': {
-                        url: string;
-                    };
-                    'multipart/form-data': {
-                        url: string;
-                    };
-                    'text/plain': {
-                        url: string;
-                    };
-                };
-            };
-            400: {
-                content: {
-                    'application/json':
-                        | {
-                              /** @constant */
-                              _tag: 'DataParseError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'InputRangeError';
-                          };
-                    'multipart/form-data':
-                        | {
-                              /** @constant */
-                              _tag: 'DataParseError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'InputRangeError';
-                          };
-                    'text/plain':
-                        | {
-                              /** @constant */
-                              _tag: 'DataParseError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'InputRangeError';
-                          };
-                };
-            };
-        };
-    };
-    getMe: {
-        parameters: {
-            header: {
-                authorization: string;
-            };
-        };
-        responses: {
-            200: {
-                content: {
-                    'application/json': {
-                        id: number;
-                        email: string;
-                        profile: null | {
-                            nickname: string;
-                            dateOfBirthYear: number;
-                        };
-                    };
-                    'multipart/form-data': {
-                        id: number;
-                        email: string;
-                        profile: null | {
-                            nickname: string;
-                            dateOfBirthYear: number;
-                        };
-                    };
-                    'text/plain': {
-                        id: number;
-                        email: string;
-                        profile: null | {
-                            nickname: string;
-                            dateOfBirthYear: number;
-                        };
-                    };
-                };
-            };
-            401: {
-                content: {
-                    'application/json':
-                        | {
-                              /** @constant */
-                              _tag: 'JWTMalformedError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'JWTExpiredError';
-                          };
-                    'multipart/form-data':
-                        | {
-                              /** @constant */
-                              _tag: 'JWTMalformedError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'JWTExpiredError';
-                          };
-                    'text/plain':
-                        | {
-                              /** @constant */
-                              _tag: 'JWTMalformedError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'JWTExpiredError';
-                          };
-                };
-            };
-            404: {
-                content: {
-                    'application/json': {
-                        /** @constant */
-                        _tag: 'DataNotFoundError';
-                    };
-                    'multipart/form-data': {
-                        /** @constant */
-                        _tag: 'DataNotFoundError';
-                    };
-                    'text/plain': {
-                        /** @constant */
-                        _tag: 'DataNotFoundError';
-                    };
-                };
-            };
-        };
-    };
-    getRecommendation_nickname: {
-        parameters: {
-            header: {
-                authorization: string;
-            };
-        };
-        responses: {
-            200: {
-                content: {
-                    'application/json': {
-                        nickname: string;
-                    };
-                    'multipart/form-data': {
-                        nickname: string;
-                    };
-                    'text/plain': {
-                        nickname: string;
-                    };
-                };
-            };
-            401: {
-                content: {
-                    'application/json':
-                        | {
-                              /** @constant */
-                              _tag: 'JWTMalformedError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'JWTExpiredError';
-                          };
-                    'multipart/form-data':
-                        | {
-                              /** @constant */
-                              _tag: 'JWTMalformedError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'JWTExpiredError';
-                          };
-                    'text/plain':
-                        | {
-                              /** @constant */
-                              _tag: 'JWTMalformedError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'JWTExpiredError';
-                          };
-                };
-            };
-            404: {
-                content: {
-                    'application/json': {
-                        /** @constant */
-                        _tag: 'DataNotFoundError';
-                    };
-                    'multipart/form-data': {
-                        /** @constant */
-                        _tag: 'DataNotFoundError';
-                    };
-                    'text/plain': {
-                        /** @constant */
-                        _tag: 'DataNotFoundError';
-                    };
-                };
-            };
-        };
-    };
-    getMeProfile: {
-        parameters: {
-            header: {
-                authorization: string;
-            };
-        };
-        responses: {
-            200: {
-                content: {
-                    'application/json': {
-                        id: number;
-                        nickname: string;
-                        dateOfBirthYear: number;
-                        jobs: {
-                            id: number;
-                            name: string;
-                        }[];
-                    };
-                    'multipart/form-data': {
-                        id: number;
-                        nickname: string;
-                        dateOfBirthYear: number;
-                        jobs: {
-                            id: number;
-                            name: string;
-                        }[];
-                    };
-                    'text/plain': {
-                        id: number;
-                        nickname: string;
-                        dateOfBirthYear: number;
-                        jobs: {
-                            id: number;
-                            name: string;
-                        }[];
-                    };
-                };
-            };
-            401: {
-                content: {
-                    'application/json':
-                        | {
-                              /** @constant */
-                              _tag: 'JWTMalformedError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'JWTExpiredError';
-                          };
-                    'multipart/form-data':
-                        | {
-                              /** @constant */
-                              _tag: 'JWTMalformedError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'JWTExpiredError';
-                          };
-                    'text/plain':
-                        | {
-                              /** @constant */
-                              _tag: 'JWTMalformedError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'JWTExpiredError';
-                          };
-                };
-            };
-            404: {
-                content: {
-                    'application/json': {
-                        /** @constant */
-                        _tag: 'DataNotFoundError';
-                    };
-                    'multipart/form-data': {
-                        /** @constant */
-                        _tag: 'DataNotFoundError';
-                    };
-                    'text/plain': {
-                        /** @constant */
-                        _tag: 'DataNotFoundError';
-                    };
-                };
-            };
-        };
-    };
-    postMeProfile: {
-        parameters: {
-            header: {
-                authorization: string;
-            };
-        };
-        requestBody: {
-            content: {
-                'application/json': {
-                    nickname: string;
-                    dateOfBirthYear: number;
-                    jobs: number[];
-                };
-                'multipart/form-data': {
-                    nickname: string;
-                    dateOfBirthYear: number;
-                    jobs: number[];
-                };
-                'text/plain': {
-                    nickname: string;
-                    dateOfBirthYear: number;
-                    jobs: number[];
-                };
-            };
-        };
-        responses: {
-            201: {
-                content: {
-                    'application/json': {
-                        id: number;
-                        nickname: string;
-                        dateOfBirthYear: number;
-                        jobs: {
-                            id: number;
-                            job: string;
-                        }[];
-                    };
-                    'multipart/form-data': {
-                        id: number;
-                        nickname: string;
-                        dateOfBirthYear: number;
-                        jobs: {
-                            id: number;
-                            job: string;
-                        }[];
-                    };
-                    'text/plain': {
-                        id: number;
-                        nickname: string;
-                        dateOfBirthYear: number;
-                        jobs: {
-                            id: number;
-                            job: string;
-                        }[];
-                    };
-                };
-            };
-            401: {
-                content: {
-                    'application/json':
-                        | {
-                              /** @constant */
-                              _tag: 'JWTMalformedError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'JWTExpiredError';
-                          };
-                    'multipart/form-data':
-                        | {
-                              /** @constant */
-                              _tag: 'JWTMalformedError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'JWTExpiredError';
-                          };
-                    'text/plain':
-                        | {
-                              /** @constant */
-                              _tag: 'JWTMalformedError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'JWTExpiredError';
-                          };
-                };
-            };
-            404: {
-                content: {
-                    'application/json': {
-                        /** @constant */
-                        _tag: 'DataNotFoundError';
-                    };
-                    'multipart/form-data': {
-                        /** @constant */
-                        _tag: 'DataNotFoundError';
-                    };
-                    'text/plain': {
-                        /** @constant */
-                        _tag: 'DataNotFoundError';
-                    };
-                };
-            };
-            500: {
-                content: {
-                    'application/json': {
-                        /** @constant */
-                        _tag: 'UnInterntionalError';
-                    };
-                    'multipart/form-data': {
-                        /** @constant */
-                        _tag: 'UnInterntionalError';
-                    };
-                    'text/plain': {
-                        /** @constant */
-                        _tag: 'UnInterntionalError';
-                    };
-                };
-            };
-        };
-    };
-    getQuestionsToday: {
-        parameters: {
-            header: {
-                authorization: string;
-            };
-        };
-        responses: {
-            200: {
-                content: {
-                    'application/json': {
-                        id: number;
-                        question: string;
-                    };
-                    'multipart/form-data': {
-                        id: number;
-                        question: string;
-                    };
-                    'text/plain': {
-                        id: number;
-                        question: string;
-                    };
-                };
-            };
-            401: {
-                content: {
-                    'application/json':
-                        | {
-                              /** @constant */
-                              _tag: 'JWTMalformedError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'JWTExpiredError';
-                          };
-                    'multipart/form-data':
-                        | {
-                              /** @constant */
-                              _tag: 'JWTMalformedError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'JWTExpiredError';
-                          };
-                    'text/plain':
-                        | {
-                              /** @constant */
-                              _tag: 'JWTMalformedError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'JWTExpiredError';
-                          };
-                };
-            };
-            500: {
-                content: {
-                    'application/json': {
-                        /** @constant */
-                        _tag: 'UnInterntionalError';
-                    };
-                    'multipart/form-data': {
-                        /** @constant */
-                        _tag: 'UnInterntionalError';
-                    };
-                    'text/plain': {
-                        /** @constant */
-                        _tag: 'UnInterntionalError';
-                    };
-                };
-            };
-        };
-    };
-    postQuestionsByIdAnswers: {
-        parameters: {
-            header: {
-                authorization: string;
-            };
-            path: {
-                id: string | number;
-            };
-        };
-        requestBody: {
-            content: {
-                'application/json': {
-                    answer: string;
-                };
-                'multipart/form-data': {
-                    answer: string;
-                };
-                'text/plain': {
-                    answer: string;
-                };
-            };
-        };
-        responses: {
-            201: {
-                content: {
-                    'application/json': {
-                        id: number;
-                    };
-                    'multipart/form-data': {
-                        id: number;
-                    };
-                    'text/plain': {
-                        id: number;
-                    };
-                };
-            };
-            400: {
-                content: {
-                    'application/json': {
-                        /** @constant */
-                        _tag: 'UserAlreadyAnswerTodayQuestionError';
-                    };
-                    'multipart/form-data': {
-                        /** @constant */
-                        _tag: 'UserAlreadyAnswerTodayQuestionError';
-                    };
-                    'text/plain': {
-                        /** @constant */
-                        _tag: 'UserAlreadyAnswerTodayQuestionError';
-                    };
-                };
-            };
-            401: {
-                content: {
-                    'application/json':
-                        | {
-                              /** @constant */
-                              _tag: 'JWTMalformedError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'JWTExpiredError';
-                          };
-                    'multipart/form-data':
-                        | {
-                              /** @constant */
-                              _tag: 'JWTMalformedError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'JWTExpiredError';
-                          };
-                    'text/plain':
-                        | {
-                              /** @constant */
-                              _tag: 'JWTMalformedError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'JWTExpiredError';
-                          };
-                };
-            };
-        };
-    };
-    deleteQuestionsByIdAnswersByAnswerId: {
-        parameters: {
-            header: {
-                authorization: string;
-            };
-            path: {
-                id: string | number;
-                answerId: string | number;
-            };
-        };
-        responses: {
-            204: {
-                content: {
-                    'application/json': boolean;
-                    'multipart/form-data': boolean;
-                    'text/plain': boolean;
-                };
-            };
-            400: {
-                content: {
-                    'application/json': {
-                        /** @constant */
-                        _tag: 'DataNotFoundError';
-                    };
-                    'multipart/form-data': {
-                        /** @constant */
-                        _tag: 'DataNotFoundError';
-                    };
-                    'text/plain': {
-                        /** @constant */
-                        _tag: 'DataNotFoundError';
-                    };
-                };
-            };
-            401: {
-                content: {
-                    'application/json':
-                        | {
-                              /** @constant */
-                              _tag: 'JWTMalformedError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'JWTExpiredError';
-                          };
-                    'multipart/form-data':
-                        | {
-                              /** @constant */
-                              _tag: 'JWTMalformedError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'JWTExpiredError';
-                          };
-                    'text/plain':
-                        | {
-                              /** @constant */
-                              _tag: 'JWTMalformedError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'JWTExpiredError';
-                          };
-                };
-            };
-        };
-    };
-    patchQuestionsByIdAnswersByAnswerId: {
-        parameters: {
-            header: {
-                authorization: string;
-            };
-            path: {
-                id: string | number;
-                answerId: string | number;
-            };
-        };
-        requestBody: {
-            content: {
-                'application/json': {
-                    answer: string;
-                };
-                'multipart/form-data': {
-                    answer: string;
-                };
-                'text/plain': {
-                    answer: string;
-                };
-            };
-        };
-        responses: {
-            200: {
-                content: {
-                    'application/json': {
-                        id: number;
-                        userId: number;
-                        createdAt: string;
-                        updatedAt: string;
-                        questionDistributionId: number;
-                        isPublic: boolean;
-                    };
-                    'multipart/form-data': {
-                        id: number;
-                        userId: number;
-                        createdAt: string;
-                        updatedAt: string;
-                        questionDistributionId: number;
-                        isPublic: boolean;
-                    };
-                    'text/plain': {
-                        id: number;
-                        userId: number;
-                        createdAt: string;
-                        updatedAt: string;
-                        questionDistributionId: number;
-                        isPublic: boolean;
-                    };
-                };
-            };
-            401: {
-                content: {
-                    'application/json':
-                        | {
-                              /** @constant */
-                              _tag: 'JWTMalformedError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'JWTExpiredError';
-                          };
-                    'multipart/form-data':
-                        | {
-                              /** @constant */
-                              _tag: 'JWTMalformedError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'JWTExpiredError';
-                          };
-                    'text/plain':
-                        | {
-                              /** @constant */
-                              _tag: 'JWTMalformedError';
-                          }
-                        | {
-                              /** @constant */
-                              _tag: 'JWTExpiredError';
-                          };
-                };
-            };
-            404: {
-                content: {
-                    'application/json': {
-                        /** @constant */
-                        _tag: 'DataNotFoundError';
-                    };
-                    'multipart/form-data': {
-                        /** @constant */
-                        _tag: 'DataNotFoundError';
-                    };
-                    'text/plain': {
-                        /** @constant */
-                        _tag: 'DataNotFoundError';
-                    };
-                };
-            };
-        };
-    };
-}
+export type operations = Record<string, never>;
