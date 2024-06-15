@@ -1,6 +1,5 @@
-import { ActionFunctionArgs, Form, useLoaderData } from 'react-router-dom';
+import { ActionFunctionArgs, Form, redirect, useLoaderData } from 'react-router-dom';
 import { api } from '@lib/api/client.ts';
-import { AUTH } from '@/constants/auth.ts';
 import React, { useState } from 'react';
 
 type Question = {
@@ -9,17 +8,11 @@ type Question = {
 };
 
 export async function loader() {
-    const accessToken = localStorage.getItem(AUTH.ACCESS_TOKEN_KEY); // todo: 공통화
-    const response = await api.GET('/questions/today', {
-        params: {
-            header: {
-                authorization: `Bearer ${accessToken}`
-            }
-        }
-    });
+    const response = await api.GET('/questions/today');
 
     if (response.error) {
-        return alert('문제가 발생했습니다. 다시 시도해주세요.'); // todo
+        alert('문제가 발생했습니다. 다시 시도해주세요.');
+        redirect('/');
     }
 
     // todo: 답변 (여부)

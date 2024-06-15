@@ -2,6 +2,20 @@ import { api } from '@lib/api/client.ts';
 import { PageLayout } from '@components/StyledComponents.ts';
 import { useRef } from 'react';
 import { BOOLEAN_STRING } from '@/constants/common.ts';
+import { Cookies } from 'react-cookie';
+import { redirect } from 'react-router-dom';
+
+export function loader() {
+    const cookies = new Cookies();
+    console.log('a', cookies.get('sid'));
+    console.log('b', document.cookie);
+
+    console.log(cookies);
+    if (cookies.get('sid')) {
+        return redirect('/question-list');
+    }
+    return null;
+}
 
 function Index() {
     const checkboxRef = useRef<HTMLInputElement>(null);
