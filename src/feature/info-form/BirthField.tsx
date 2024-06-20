@@ -8,7 +8,7 @@ interface BirthFieldProp extends setCurInfoByKeyParam {
 
 const BirthField: React.FC<BirthFieldProp> = ({ setCurInfoByKey, birth }) => {
     const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const newBirthObj = { ...birth, [e.target.id]: e.target.value };
+        const newBirthObj = { ...birth, [e.target.id]: Number(e.target.value) };
 
         setCurInfoByKey({ key: 'birth', value: newBirthObj });
     };
