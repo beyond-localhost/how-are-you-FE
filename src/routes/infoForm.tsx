@@ -1,4 +1,3 @@
-import { PageLayout } from '@components/StyledComponents.ts';
 import React, { useState } from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import {
@@ -18,6 +17,7 @@ import BirthField from '@feature/info-form/BirthField.tsx';
 import JobField from '@feature/info-form/JobField.tsx';
 import WorryField from '@feature/info-form/WorryField.tsx';
 import { api } from '@lib/api/client.ts';
+import { InfoFormFieldSet } from '@feature/info-form/styles/InfoForm.style.tsx';
 
 // 입력폼 단계
 enum Step {
@@ -175,18 +175,13 @@ function InfoForm() {
     };
 
     return (
-        <PageLayout>
-            <h1>기본 정보 입력</h1>
-
+        <>
             <em>
                 {step + 1}/{infoKeys.length} 단계
             </em>
 
             <form onSubmit={submitInfoForm}>
-                <fieldset>
-                    <legend>기본 정보 입력</legend>
-                    {renderStepForm()}
-                </fieldset>
+                <InfoFormFieldSet>{renderStepForm()}</InfoFormFieldSet>
 
                 <div>
                     <button
@@ -205,7 +200,7 @@ function InfoForm() {
                     </button>
                 </div>
             </form>
-        </PageLayout>
+        </>
     );
 }
 

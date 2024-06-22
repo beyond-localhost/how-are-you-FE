@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Nickname, RecommendNickname, setCurInfoByKeyParam } from '@type/infoFormType.ts';
+import { NickNameInput } from '@feature/info-form/styles/InfoFormInput.tsx';
 
 interface NicknameFieldProp extends setCurInfoByKeyParam {
     recommendNicknameData: RecommendNickname;
@@ -38,8 +39,8 @@ const NicknameField: React.FC<NicknameFieldProp> = ({
 
     return (
         <>
-            <label htmlFor={ELEMENT_ID.NICKNAME}>닉네임</label>
-            <input
+            <label htmlFor={ELEMENT_ID.NICKNAME}>닉네임을 입력해주세요</label>
+            <NickNameInput
                 id={ELEMENT_ID.NICKNAME}
                 autoFocus
                 maxLength={20}
