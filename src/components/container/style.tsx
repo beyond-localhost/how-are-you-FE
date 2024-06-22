@@ -1,14 +1,9 @@
 import styled from '@emotion/styled';
-
-export const Layout = styled.div`
-    display: flex;
-    justify-content: center;
-`;
+import { violet } from '@/tokens/color.ts';
 
 export const Container = styled.div`
-    width: 430px;
-    height: 932px;
-    flex-shrink: 0;
-
-    border: 2px solid mediumpurple; // todo: remove
+    background: ${violet['1']};
+    max-width: 430px;
+    border: 1px solid mediumpurple; // todo: remove
+    margin: 0 auto;
 `;
