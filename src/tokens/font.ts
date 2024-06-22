@@ -1,4 +1,4 @@
-export const text = {
+export const fontSize = {
     1: {
         fontSize: '12px',
         lineHeight: '16px',
@@ -39,4 +39,10 @@ export const text = {
         lineHeight: '40px',
         letterSpacing: '0px'
     }
+};
+
+export const fontWeight = {
+    regular: 400,
+    medium: 500,
+    bold: 700
 };
