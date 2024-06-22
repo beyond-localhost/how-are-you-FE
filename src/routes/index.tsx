@@ -1,7 +1,8 @@
 import { api } from '@lib/api/client.ts';
-import { PageLayout } from '@components/StyledComponents.ts';
 import { useRef } from 'react';
 import { BOOLEAN_STRING } from '@/constants/common.ts';
+import { IndexLayout, LoginButton, LoginText, Title } from '@feature/index/Index.style.tsx';
+import { KakaoIcon } from '@components/icons/KakaoIcon.tsx';
 
 function Index() {
     const checkboxRef = useRef<HTMLInputElement>(null);
@@ -25,25 +26,24 @@ function Index() {
     };
 
     return (
-        <PageLayout>
-            <div>
-                <h1>How</h1>
-                <h1>are</h1>
-                <h1>you</h1>
-                <h1>?</h1>
-            </div>
+        <IndexLayout>
+            <Title>How are you?</Title>
 
             <div>
-                <button onClick={handleKakaoClick}>Kakao 로그인</button>
-                <button disabled>Google 로그인</button>
-                <button disabled>이메일 로그인</button>
+                <LoginButton onClick={handleKakaoClick}>
+                    <KakaoIcon />
+                    <LoginText>카카오로 시작하기</LoginText>
+                </LoginButton>
+                {/*<button disabled>Google 로그인</button>*/}
+                {/*<button disabled>이메일 로그인</button>*/}
             </div>
 
-            <div>
-                <input id="autoLogin" type="checkbox" ref={checkboxRef} />
-                <label htmlFor="autoLogin">자동로그인</label>
-            </div>
-        </PageLayout>
+            {/*todo: check*/}
+            {/*<div>*/}
+            {/*    <input id="autoLogin" type="checkbox" ref={checkboxRef} />*/}
+            {/*    <label htmlFor="autoLogin">자동로그인</label>*/}
+            {/*</div>*/}
+        </IndexLayout>
     );
 }
 
