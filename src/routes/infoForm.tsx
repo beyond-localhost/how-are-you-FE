@@ -17,7 +17,15 @@ import BirthField from '@feature/info-form/BirthField.tsx';
 import JobField from '@feature/info-form/JobField.tsx';
 import WorryField from '@feature/info-form/WorryField.tsx';
 import { api } from '@lib/api/client.ts';
-import { InfoFormFieldSet } from '@feature/info-form/styles/InfoForm.style.tsx';
+import {
+    FormFooter,
+    FormButton,
+    InfoFormFieldSet,
+    FormStepContainer,
+    InfoFormContainer
+} from '@feature/info-form/styles/InfoForm.style.tsx';
+import { Text } from '@components/text/Text.tsx';
+import { mauve, violet } from '@/tokens/color.ts';
 
 // 입력폼 단계
 enum Step {
@@ -175,32 +183,38 @@ function InfoForm() {
     };
 
     return (
-        <>
-            <em>
-                {step + 1}/{infoKeys.length} 단계
-            </em>
+        <InfoFormContainer onSubmit={submitInfoForm}>
+            <FormStepContainer>
+                <Text size={5} weight={'bold'} color={mauve['11']}>
+                    {step + 1}/
+                </Text>
+                <Text size={5} weight={'bold'} color={violet['12']}>
+                    {infoKeys.length}
+                </Text>
+            </FormStepContainer>
+            <InfoFormFieldSet>{renderStepForm()}</InfoFormFieldSet>
 
-            <form onSubmit={submitInfoForm}>
-                <InfoFormFieldSet>{renderStepForm()}</InfoFormFieldSet>
-
-                <div>
-                    <button
-                        onClick={() => handleStepClick(DIRECTION.LEFT)}
-                        disabled={step === Step.Nickname}
-                        type="button"
-                    >
-                        ⬅️
-                    </button>
-                    <button
-                        onClick={() => handleStepClick(DIRECTION.RIGHT)}
-                        disabled={checkDisabled()}
-                        type={isLastStep ? 'submit' : 'button'}
-                    >
-                        ➡️
-                    </button>
-                </div>
-            </form>
-        </>
+            <FormFooter>
+                <FormButton
+                    onClick={() => handleStepClick(DIRECTION.LEFT)}
+                    disabled={step === Step.Nickname}
+                    type="button"
+                >
+                    <Text size={6} weight={'bold'} color={mauve['1']}>
+                        이전
+                    </Text>
+                </FormButton>
+                <FormButton
+                    onClick={() => handleStepClick(DIRECTION.RIGHT)}
+                    disabled={checkDisabled()}
+                    type={isLastStep ? 'submit' : 'button'}
+                >
+                    <Text size={6} weight={'bold'} color={mauve['1']}>
+                        다음
+                    </Text>
+                </FormButton>
+            </FormFooter>
+        </InfoFormContainer>
     );
 }
 

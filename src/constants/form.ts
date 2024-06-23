@@ -2,8 +2,8 @@
 import { BirthKey } from '@type/infoFormType.ts';
 
 export const GENDER = [
-    { id: 'male', label: '남자' },
-    { id: 'female', label: '여자' },
+    { id: 'male', label: '남성' },
+    { id: 'female', label: '여성' },
     { id: 'none', label: '선택안함' }
 ] as const;
 
@@ -17,3 +17,5 @@ export const BIRTH_INPUT: Birth[] = [
     { id: 'month', label: '월' },
     { id: 'day', label: '일' }
 ] as const;
+
+export const SELECT_TITLE_TEXT = '을 선택해주세요';
