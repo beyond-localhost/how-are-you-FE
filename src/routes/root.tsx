@@ -1,5 +1,5 @@
 import { Outlet, useLocation } from 'react-router-dom';
-import { Container } from '@components/container/style.tsx';
+import { Container } from '@styles/Common.style.tsx';
 
 function Root() {
     const location = useLocation();

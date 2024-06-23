@@ -1,12 +1,5 @@
 import styled from '@emotion/styled';
 
-export const IndexLayout = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100dvh; // # dvh !!
-`;
-
 export const Title = styled.div`
     //font-family: 'Room No.703'; // todo
     font-size: 60px;
@@ -36,9 +29,10 @@ export const AutoLoginDiv = styled.div`
 export const AutoLoginCheckBox = styled.input`
     width: 16px;
     height: 16px;
+    cursor: pointer;
 `;
 
-export const LoginButton = styled.div`
+export const LoginButton = styled.button`
     width: 335px;
     padding: 12px 0;
     display: flex;
@@ -47,4 +41,5 @@ export const LoginButton = styled.div`
     gap: 8px;
     border-radius: 16px;
     background: #ffdc5e;
+    border: 0;
 `;

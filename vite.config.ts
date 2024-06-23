@@ -21,7 +21,8 @@ export default defineConfig({
             { find: '@tokens', replacement: '/src/tokens' },
             { find: '@components', replacement: '/src/components' },
             { find: '@feature', replacement: '/src/feature' },
-            { find: '@type', replacement: '/src/type' }
+            { find: '@type', replacement: '/src/type' },
+            { find: '@styles', replacement: '/src/styles' }
         ]
     }
 });

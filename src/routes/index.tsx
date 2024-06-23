@@ -4,13 +4,13 @@ import { BOOLEAN_STRING } from '@/constants/common.ts';
 import {
     AutoLoginCheckBox,
     AutoLoginDiv,
-    IndexLayout,
     LoginButton,
     LoginFooter,
     Title
-} from '@feature/index/Index.style.tsx';
+} from '@feature/index/styles/Index.style.tsx';
 import { KakaoIcon } from '@components/icons/KakaoIcon.tsx';
 import { Text } from '@components/text/Text.tsx';
+import { Layout } from '@styles/Common.style.tsx';
 
 function Index() {
     const checkboxRef = useRef<HTMLInputElement>(null);
@@ -34,7 +34,7 @@ function Index() {
     };
 
     return (
-        <IndexLayout>
+        <Layout>
             <Title>How are you?</Title>
 
             <LoginFooter>
@@ -50,7 +50,7 @@ function Index() {
                     </Text>
                 </LoginButton>
             </LoginFooter>
-        </IndexLayout>
+        </Layout>
     );
 }
 
