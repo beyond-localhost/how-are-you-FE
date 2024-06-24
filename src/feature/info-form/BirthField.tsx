@@ -2,7 +2,11 @@ import { Birth, BirthKey, setCurInfoByKeyParam } from '@type/infoFormType.ts';
 import React from 'react';
 import { BIRTH_INPUT, SELECT_TITLE_TEXT } from '@/constants/form.ts';
 import { InputTitle } from '@feature/info-form/styles/InfoForm.style.tsx';
-import { BirthInputSelect, BirthInputWrapper } from '@feature/info-form/styles/Birth.style.tsx';
+import {
+    BirthInputSelect,
+    BirthInput,
+    BirthInputWrapper
+} from '@feature/info-form/styles/Birth.style.tsx';
 
 interface BirthFieldProp extends setCurInfoByKeyParam {
     birth: Birth;
@@ -42,27 +46,33 @@ const BirthField: React.FC<BirthFieldProp> = ({ setCurInfoByKey, birth }) => {
         <>
             <InputTitle>{'생년월일' + SELECT_TITLE_TEXT}</InputTitle>
 
-            {BIRTH_INPUT.map(item => {
-                const { id, label } = item;
-                const { optionLength, standardDate } = getTargetDateInfo(id);
+            <BirthInputWrapper>
+                {BIRTH_INPUT.map(item => {
+                    const { id, label } = item;
+                    const { optionLength, standardDate } = getTargetDateInfo(id);
 
-                return (
-                    <BirthInputWrapper key={id}>
-                        <BirthInputSelect id={id} value={birth[id]} onChange={handleChangeSelect}>
-                            {Array.from({ length: optionLength }, (_, i) => {
-                                const dateValue =
-                                    id === 'year' ? standardDate - i : standardDate + i;
-                                return (
-                                    <option key={dateValue} value={dateValue}>
-                                        {dateValue}
-                                    </option>
-                                );
-                            })}
-                        </BirthInputSelect>
-                        <label htmlFor={id}>{label}</label>
-                    </BirthInputWrapper>
-                );
-            })}
+                    return (
+                        <BirthInput key={id}>
+                            <BirthInputSelect
+                                id={id}
+                                value={birth[id]}
+                                onChange={handleChangeSelect}
+                            >
+                                {Array.from({ length: optionLength }, (_, i) => {
+                                    const dateValue =
+                                        id === 'year' ? standardDate - i : standardDate + i;
+                                    return (
+                                        <option key={dateValue} value={dateValue}>
+                                            {dateValue}
+                                        </option>
+                                    );
+                                })}
+                            </BirthInputSelect>
+                            <label htmlFor={id}>{label}</label>
+                        </BirthInput>
+                    );
+                })}
+            </BirthInputWrapper>
         </>
     );
 };
