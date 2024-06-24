@@ -1,6 +1,8 @@
 import { Birth, BirthKey, setCurInfoByKeyParam } from '@type/infoFormType.ts';
-import React, { Fragment } from 'react';
-import { BIRTH_INPUT } from '@/constants/form.ts';
+import React from 'react';
+import { BIRTH_INPUT, SELECT_TITLE_TEXT } from '@/constants/form.ts';
+import { InputTitle } from '@feature/info-form/styles/InfoForm.style.tsx';
+import { BirthInputSelect, BirthInputWrapper } from '@feature/info-form/styles/Birth.style.tsx';
 
 interface BirthFieldProp extends setCurInfoByKeyParam {
     birth: Birth;
@@ -38,15 +40,15 @@ const BirthField: React.FC<BirthFieldProp> = ({ setCurInfoByKey, birth }) => {
 
     return (
         <>
-            <p>생년월일</p>
+            <InputTitle>{'생년월일' + SELECT_TITLE_TEXT}</InputTitle>
 
             {BIRTH_INPUT.map(item => {
                 const { id, label } = item;
                 const { optionLength, standardDate } = getTargetDateInfo(id);
 
                 return (
-                    <Fragment key={id}>
-                        <select id={id} value={birth[id]} onChange={handleChangeSelect}>
+                    <BirthInputWrapper key={id}>
+                        <BirthInputSelect id={id} value={birth[id]} onChange={handleChangeSelect}>
                             {Array.from({ length: optionLength }, (_, i) => {
                                 const dateValue =
                                     id === 'year' ? standardDate - i : standardDate + i;
@@ -56,9 +58,9 @@ const BirthField: React.FC<BirthFieldProp> = ({ setCurInfoByKey, birth }) => {
                                     </option>
                                 );
                             })}
-                        </select>
+                        </BirthInputSelect>
                         <label htmlFor={id}>{label}</label>
-                    </Fragment>
+                    </BirthInputWrapper>
                 );
             })}
         </>

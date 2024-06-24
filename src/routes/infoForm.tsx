@@ -210,7 +210,7 @@ function InfoForm() {
                     type={isLastStep ? 'submit' : 'button'}
                 >
                     <Text size={6} weight={'bold'} color={mauve['1']}>
-                        다음
+                        {isLastStep ? '프로필 생성 🎉' : '다음'}
                     </Text>
                 </FormButton>
             </FormFooter>
