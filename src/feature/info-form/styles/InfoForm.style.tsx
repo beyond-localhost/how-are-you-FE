@@ -57,6 +57,6 @@ export const FormButton = styled.button`
 
 export const InputTitle = styled.label`
     font-weight: bold;
-    padding: 195px 0 72px 0;
+    padding: 40% 0 72px 0; // todo: 195px
     ${fontSize['7']};
 `;

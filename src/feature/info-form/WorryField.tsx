@@ -1,7 +1,10 @@
 import React from 'react';
 import { setCurInfoByKeyParam, Worries, Worry } from '@type/infoFormType.ts';
-import { SELECT_TITLE_TEXT } from '@/constants/form.ts';
 import { InputTitle } from '@feature/info-form/styles/InfoForm.style.tsx';
+import {
+    SelectListItemButton,
+    SelectListWrapper
+} from '@feature/info-form/styles/SelectListField.style.tsx';
 
 interface WorryFormProp extends setCurInfoByKeyParam {
     worry: Worry;
@@ -24,25 +27,25 @@ const WorryField: React.FC<WorryFormProp> = ({ setCurInfoByKey, worry, worryData
     // todo: api 가져올동안 loading spinner
     return (
         <>
-            <InputTitle>{'요즘 무슨 고민거리가 있으신가요?' + SELECT_TITLE_TEXT}</InputTitle>
+            <InputTitle>요즘 무슨 고민거리가 있으신가요?</InputTitle>
 
-            {worryData.length > 0 &&
-                worryData.map(item => {
-                    const { id, name } = item;
-                    return (
-                        <button
-                            key={id}
-                            style={{
-                                padding: '10px',
-                                color: worry.has(id) ? 'blue' : 'black'
-                            }}
-                            onClick={() => handleWorryClick(id)}
-                            type="button"
-                        >
-                            {name}
-                        </button>
-                    );
-                })}
+            <SelectListWrapper>
+                {worryData.length > 0 &&
+                    worryData.map(item => {
+                        const { id, name } = item;
+                        const isSelected = worry.has(id);
+                        return (
+                            <SelectListItemButton
+                                key={id}
+                                onClick={() => handleWorryClick(id)}
+                                type="button"
+                                isSelected={isSelected}
+                            >
+                                {name}
+                            </SelectListItemButton>
+                        );
+                    })}
+            </SelectListWrapper>
         </>
     );
 };
