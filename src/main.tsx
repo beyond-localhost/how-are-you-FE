@@ -14,7 +14,6 @@ import InfoForm, { loader as infoFormLoader } from '@routes/infoForm.tsx';
 import Root from '@routes/root.tsx';
 import QuestionList, { loader as questionListLoader } from '@routes/questionList.tsx';
 import Question, { loader as questionLoader, action as questionAction } from '@routes/question.tsx';
-import { CookiesProvider } from 'react-cookie';
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -41,8 +40,6 @@ const router = createBrowserRouter(
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
-        <CookiesProvider>
-            <RouterProvider router={router} />
-        </CookiesProvider>
+        <RouterProvider router={router} />
     </React.StrictMode>
 );
