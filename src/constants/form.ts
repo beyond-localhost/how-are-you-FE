@@ -1,5 +1,5 @@
 // 성별 입력 값
-import { BirthKey } from '@type/infoFormType.ts';
+import { BirthIdType } from '@type/infoFormType.ts';
 
 export const GENDER = [
     { id: 'male', label: '남성' },
@@ -8,11 +8,11 @@ export const GENDER = [
 ] as const;
 
 // 생년월일 입력 값
-type Birth = {
-    id: BirthKey;
+export type BirthInput = {
+    id: BirthIdType;
     label: string;
 };
-export const BIRTH_INPUT: Birth[] = [
+export const BIRTH_INPUT: BirthInput[] = [
     { id: 'year', label: '년' },
     { id: 'month', label: '월' },
     { id: 'day', label: '일' }
