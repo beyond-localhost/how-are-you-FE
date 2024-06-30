@@ -12,6 +12,10 @@ import { KakaoIcon } from '@components/icons/KakaoIcon.tsx';
 import { Text } from '@components/text/Text.tsx';
 import { Layout } from '@styles/Common.style.tsx';
 
+export function loader() {
+    return null;
+}
+
 function Index() {
     const checkboxRef = useRef<HTMLInputElement>(null);
 
