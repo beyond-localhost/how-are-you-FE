@@ -1,7 +1,16 @@
 import { api } from '@lib/api/client.ts';
-import { PageLayout } from '@components/StyledComponents.ts';
 import { useRef } from 'react';
 import { BOOLEAN_STRING } from '@/constants/common.ts';
+import {
+    AutoLoginCheckBox,
+    AutoLoginDiv,
+    LoginButton,
+    LoginFooter,
+    Title
+} from '@feature/index/styles/Index.style.tsx';
+import { KakaoIcon } from '@components/icons/KakaoIcon.tsx';
+import { Text } from '@components/text/Text.tsx';
+import { Layout } from '@styles/Common.style.tsx';
 
 export function loader() {
     return null;
@@ -29,25 +38,23 @@ function Index() {
     };
 
     return (
-        <PageLayout>
-            <div>
-                <h1>How</h1>
-                <h1>are</h1>
-                <h1>you</h1>
-                <h1>?</h1>
-            </div>
+        <Layout>
+            <Title>How are you?</Title>
 
-            <div>
-                <button onClick={handleKakaoClick}>Kakao 로그인</button>
-                <button disabled>Google 로그인</button>
-                <button disabled>이메일 로그인</button>
-            </div>
+            <LoginFooter>
+                <AutoLoginDiv>
+                    <AutoLoginCheckBox id="autoLogin" type="checkbox" ref={checkboxRef} />
+                    <label htmlFor="autoLogin">자동로그인</label>
+                </AutoLoginDiv>
 
-            <div>
-                <input id="autoLogin" type="checkbox" ref={checkboxRef} />
-                <label htmlFor="autoLogin">자동로그인</label>
-            </div>
-        </PageLayout>
+                <LoginButton onClick={handleKakaoClick}>
+                    <KakaoIcon />
+                    <Text size={4} weight={'bold'}>
+                        카카오로 시작하기
+                    </Text>
+                </LoginButton>
+            </LoginFooter>
+        </Layout>
     );
 }
 

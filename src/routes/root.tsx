@@ -1,12 +1,15 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
+import { Container } from '@styles/Common.style.tsx';
 
 function Root() {
+    const location = useLocation();
+
     return (
-        <div>
-            <h3>How are you?</h3>
+        <Container>
+            {!['/', '/info-form'].includes(location.pathname) && <h1>How are you?</h1>}
 
             <Outlet />
-        </div>
+        </Container>
     );
 }
 

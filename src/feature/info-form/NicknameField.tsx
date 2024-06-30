@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
 import { Nickname, RecommendNickname, setCurInfoByKeyParam } from '@type/infoFormType.ts';
+import {
+    NicknameCheckbox,
+    NicknameCheckboxLabel,
+    NicknameCheckboxWrapper,
+    NicknameInput
+} from '@feature/info-form/styles/NicknameField.style.tsx';
+import { InputTitle } from '@feature/info-form/styles/InfoForm.style.tsx';
+import { TextLabel } from '@components/text/Text.tsx';
+import { violet } from '@/tokens/color.ts';
+import { SELECT_TITLE_TEXT } from '@/constants/form.ts';
 
 interface NicknameFieldProp extends setCurInfoByKeyParam {
     recommendNicknameData: RecommendNickname;
@@ -38,8 +48,8 @@ const NicknameField: React.FC<NicknameFieldProp> = ({
 
     return (
         <>
-            <label htmlFor={ELEMENT_ID.NICKNAME}>닉네임</label>
-            <input
+            <InputTitle htmlFor={ELEMENT_ID.NICKNAME}>{'닉네임' + SELECT_TITLE_TEXT}</InputTitle>
+            <NicknameInput
                 id={ELEMENT_ID.NICKNAME}
                 autoFocus
                 maxLength={20}
@@ -48,17 +58,25 @@ const NicknameField: React.FC<NicknameFieldProp> = ({
                 value={nickname}
             />
 
-            <div>
-                <input
+            <NicknameCheckboxWrapper>
+                <NicknameCheckbox
                     type="checkbox"
                     id={ELEMENT_ID.RECOMMEND_NICKNAME}
                     onChange={handleRecommendCheck}
                     checked={recommendCheck}
                 />
-                <label htmlFor={ELEMENT_ID.RECOMMEND_NICKNAME}>
+                <NicknameCheckboxLabel
+                    htmlFor={ELEMENT_ID.RECOMMEND_NICKNAME}
+                ></NicknameCheckboxLabel>
+                <TextLabel
+                    htmlFor={ELEMENT_ID.RECOMMEND_NICKNAME}
+                    size={3}
+                    weight={'medium'}
+                    color={violet['12']}
+                >
                     추천 닉네임 사용하기: {recommendNicknameData}
-                </label>
-            </div>
+                </TextLabel>
+            </NicknameCheckboxWrapper>
         </>
     );
 };
