@@ -1,10 +1,10 @@
-import { api } from '@lib/api/client.ts';
-import { showErrorAlert } from '@/utils/error.ts';
+// import { api } from '@lib/api/client.ts';
+// import { showErrorAlert } from '@/utils/error.ts';
 import { useLoaderData } from 'react-router-dom';
 import { QuestionListType } from '@type/QuestionType.ts';
 import { useState } from 'react';
 import QuestionListFilterPopup from '@feature/question/QuestionListFilterPopup.tsx';
-import { TEMP_CONTENT, TEMP_TITLE } from '@/constants/temp.ts';
+import { TEMP_CONTENT, TEMP_DATE, TEMP_TITLE } from '@/constants/temp.ts';
 
 // todo: 월 별 Filter
 export async function loader() {
@@ -38,15 +38,19 @@ export async function loader() {
 
 function QuestionList() {
     const questionListLoaderData = useLoaderData() as QuestionListType; // todo
-    const { hasMore, nextCursor, data: questionListData } = questionListLoaderData;
 
     const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
     const [questionListData, setQuestionListData] = useState(questionListLoaderData);
-
-    console.log(hasMore, nextCursor);
+    // const { hasMore, nextCursor, data: questionList } = questionListData;
+    const { data: questionList } = questionListData;
 
     const toggleFilterPopup = () => {
         setIsFilterPopupOpen(prevState => !prevState);
+    };
+
+    const onSetQuestionListData = (data: QuestionListType) => {
+        setQuestionListData(data);
+        toggleFilterPopup();
     };
 
     return (
@@ -57,11 +61,11 @@ function QuestionList() {
             </div>
 
             <div>
-                {questionListData.length > 0 ? (
-                    questionListData.map(item => (
-                        // todo: date
+                {questionList.length > 0 ? (
+                    questionList.map(item => (
+                        // todo: mock date
                         <div key={item.questionId}>
-                            <p>날짜</p>
+                            <p>{TEMP_DATE}</p>
                             <p>{item.question}</p>
                             <p>{item.answer}</p>
                             <button>더보기</button>
@@ -72,7 +76,12 @@ function QuestionList() {
                 )}
             </div>
 
-            {isFilterPopupOpen && <QuestionListFilterPopup toggleFilterPopup={toggleFilterPopup} />}
+            {isFilterPopupOpen && (
+                <QuestionListFilterPopup
+                    toggleFilterPopup={toggleFilterPopup}
+                    onSetQuestionListData={onSetQuestionListData}
+                />
+            )}
         </>
     );
 }

@@ -1,11 +1,16 @@
 import { useRef } from 'react';
 import { api } from '@lib/api/client.ts';
+import { QuestionListType } from '@type/QuestionType.ts';
 
 type QuestionListFilterPopupProp = {
     toggleFilterPopup: () => void;
+    onSetQuestionListData: (data: QuestionListType) => void;
 };
 
-function QuestionListFilterPopup({ toggleFilterPopup }: QuestionListFilterPopupProp) {
+function QuestionListFilterPopup({
+    toggleFilterPopup,
+    onSetQuestionListData
+}: QuestionListFilterPopupProp) {
     const yearRef = useRef<HTMLInputElement>(null);
     const monthRef = useRef<HTMLInputElement>(null);
 
@@ -30,7 +35,14 @@ function QuestionListFilterPopup({ toggleFilterPopup }: QuestionListFilterPopupP
                 }
             }
         });
-        console.log(response);
+
+        if (response.error || !response.data) {
+            alert('문제가 발생했습니다. 다시 시도해주세요.');
+            toggleFilterPopup();
+            return;
+        }
+
+        onSetQuestionListData(response.data);
     };
 
     return (
