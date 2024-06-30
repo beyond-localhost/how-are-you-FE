@@ -2,7 +2,7 @@ import { paths } from '@lib/api/api';
 import { MODE } from '@/constants/question.ts';
 
 export type QuestionListType =
-    paths['/questions/answers']['get']['responses']['200']['content']['application/json']['data'];
+    paths['/questions/answers']['get']['responses']['200']['content']['application/json'];
 
 export type QuestionType =
     paths['/questions/today']['get']['responses']['200']['content']['application/json'];
