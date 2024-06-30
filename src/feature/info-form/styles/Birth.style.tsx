@@ -22,6 +22,7 @@ export const BirthInputBox = styled.div`
 export const BirthInputLabel = styled.p`
     color: ${violet['11']};
     ${fontSize['7']};
+    padding-left: 5px;
 `;
 
 // 셀렉트 박스

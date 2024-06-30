@@ -10,7 +10,6 @@ export const InfoFormContainer = styled.form`
 
     width: 100%;
     padding: 40px 16px;
-    border: 2px solid palegreen;
 `;
 
 export const FormStepContainer = styled.div`
@@ -25,6 +24,7 @@ export const InfoFormFieldSet = styled.fieldset`
     flex-direction: column;
     padding: 0;
     width: 100%;
+    border: 0;
 `;
 
 // todo: foooter 수정
