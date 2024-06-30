@@ -1,60 +1,51 @@
-import { ActionFunctionArgs, Form, redirect, useLoaderData } from 'react-router-dom';
-import { api } from '@lib/api/client.ts';
-import React, { useState } from 'react';
+import { LoaderFunctionArgs, redirect, useLoaderData } from 'react-router-dom';
+import { TEMP_CONTENT, TEMP_TITLE } from '@/constants/temp.ts';
+import { MODE } from '@/constants/question.ts';
+import QuestionInput from '@feature/question/QuestionInput.tsx';
+import { ModeType } from '@type/QuestionType.ts';
+// import { api } from '@lib/api/client.ts';
 
-type Question = {
-    id: number;
-    question: string;
+// todo: temp
+type QuestionType = {
+    questionId: number;
+    questionTitle: string;
+    questionContent: string;
+    mode: ModeType;
 };
 
-export async function loader() {
-    const response = await api.GET('/questions/today');
+export async function loader({ request, params }: LoaderFunctionArgs) {
+    const url = new URL(request.url);
 
-    if (response.error) {
-        alert('문제가 발생했습니다. 다시 시도해주세요.');
-        redirect('/');
+    if (!params.questionId) {
+        return redirect('/');
     }
 
-    // todo: 답변 (여부)
-    return response.data;
-}
+    // const response = await api.GET('/qu'); // todo: qeustion id 에 대한 글 조회 api 없음
+    const typeParam = url.searchParams.get('type');
 
-export async function action({ request }: ActionFunctionArgs) {
-    // todo: 해당 영역 개발중
-    const formData = await request.formData();
-    const inputValue = formData.get('question');
-
-    // return redirect(`/question`);
-    return inputValue;
+    return {
+        questionId: 1,
+        questionTitle: TEMP_TITLE,
+        questionContent: TEMP_CONTENT,
+        mode: typeParam === MODE.WRITE ? MODE.WRITE : typeParam === MODE.EDIT ? MODE.EDIT : null
+    };
 }
 
 function Question() {
-    const data = useLoaderData() as Question;
-    const [inputValue, setInputValue] = useState('');
-
-    if (!data) {
-        return <div />; // todo: error page
-    }
-
-    const handleValueChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setInputValue(e.target.value);
-    };
+    const questionLoaderData = useLoaderData() as QuestionType;
+    const { mode, ...questionData } = questionLoaderData;
 
     return (
-        <div style={{ border: '2px solid pink' }}>
-            <h1>{data.question}</h1>
-            <Form method="post">
-                <textarea
-                    name="question"
-                    placeholder="오늘 하루를 되돌아보며 답변을 작성해주세요"
-                    style={{ resize: 'none' }}
-                    maxLength={200}
-                    value={inputValue}
-                    onChange={handleValueChange}
-                />
-                <p>{inputValue.length}/200</p>
-                <button type="submit">완료</button>
-            </Form>
+        <div>
+            <h1>이야기 {mode && (mode === MODE.WRITE ? '작성' : '수정')}</h1>
+
+            <p>{questionData.questionTitle}</p>
+
+            {mode ? (
+                <QuestionInput mode={mode} questionData={questionData} />
+            ) : (
+                <div>{questionData.questionContent}</div>
+            )}
         </div>
     );
 }

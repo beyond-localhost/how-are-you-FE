@@ -13,7 +13,9 @@ import { loader as callbackLoader } from '@routes/callback.tsx';
 import InfoForm, { loader as infoFormLoader } from '@routes/infoForm.tsx';
 import Root from '@routes/root.tsx';
 import QuestionList, { loader as questionListLoader } from '@routes/questionList.tsx';
-import Question, { loader as questionLoader, action as questionAction } from '@routes/question.tsx';
+import TodayQuestion, { loader as questionLoader } from '@routes/todayQuestion.tsx';
+import Question, { loader as QuestionLoader } from '@routes/question.tsx';
+import { action as QuestionAction } from '@feature/question/QuestionInput.tsx';
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -27,10 +29,11 @@ const router = createBrowserRouter(
                     loader={questionListLoader}
                     element={<QuestionList />}
                 />
+                <Route path="today-question" loader={questionLoader} element={<TodayQuestion />} />
                 <Route
-                    path="question"
-                    loader={questionLoader}
-                    action={questionAction}
+                    path="question/:questionId"
+                    loader={QuestionLoader}
+                    action={QuestionAction}
                     element={<Question />}
                 />
             </Route>
