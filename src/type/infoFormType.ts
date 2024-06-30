@@ -3,11 +3,11 @@ import { paths } from '@lib/api/api';
 // 입력폼 value 타입
 export type Nickname = string;
 export type Gender = 'male' | 'female' | 'none';
-export type Birth = Record<BirthKey, number>;
+export type Birth = Record<BirthIdType, number>;
 export type Job = number;
 export type Worry = Set<number>;
 
-export type BirthKey = 'year' | 'month' | 'day';
+export type BirthIdType = 'year' | 'month' | 'day';
 
 export interface InfoParam {
     key: string;
