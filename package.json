@@ -11,9 +11,10 @@
         "generate:api": "npx openapi-typescript http://localhost:7777/swagger -o ./src/lib/api/api.d.ts && npx tsc --noEmit && npx eslint ./src/lib/api/api.d.ts --fix"
     },
     "dependencies": {
+        "@emotion/css": "^11.11.2",
         "@emotion/react": "^11.11.4",
-        "openapi-fetch": "^0.9.5",
         "@emotion/styled": "^11.11.5",
+        "openapi-fetch": "^0.9.5",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-router-dom": "^6.23.0"

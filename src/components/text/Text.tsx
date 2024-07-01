@@ -1,48 +1,50 @@
 import { fontSize, fontWeight } from '@/tokens/font.ts';
 import { CSSProperties, ReactNode } from 'react';
+import { css } from '@emotion/css';
 
-type TextProps = {
+type TextCommonProps = {
     children: ReactNode;
+    size?: keyof typeof fontSize;
+    weight?: keyof typeof fontWeight;
+    color?: string;
+};
+
+type TextProps = TextCommonProps & {
     as?: keyof HTMLElementTagNameMap;
-    size?: keyof typeof fontSize;
-    weight?: keyof typeof fontWeight;
-    color?: string;
+    style?: CSSProperties;
 };
 
-type TextLabelProps = {
-    children: ReactNode;
+type TextLabelProps = TextCommonProps & {
     htmlFor: string;
-    size?: keyof typeof fontSize;
-    weight?: keyof typeof fontWeight;
-    color?: string;
 };
 
-export const Text = ({ children, as, size, weight, color }: TextProps) => {
+export const Text = ({ children, as, size, weight, color, style }: TextProps) => {
     const Element: keyof HTMLElementTagNameMap = as || 'span';
-    const style: CSSProperties = size ? { ...fontSize[size] } : {};
 
-    if (weight) {
-        style['fontWeight'] = fontWeight[weight];
-    }
-    if (color) {
-        style['color'] = color;
-    }
-
-    return <Element style={style}>{children}</Element>;
+    return (
+        <Element
+            className={css`
+                ${color && `color: ${color}`};
+                ${weight && `font-weight: ${fontWeight[weight]}`};
+                ${size && { ...fontSize[size] }};
+                ${style && { ...style }};
+            `}
+        >
+            {children}
+        </Element>
+    );
 };
 
 export const TextLabel = ({ children, htmlFor, size, weight, color }: TextLabelProps) => {
-    const style: CSSProperties = size ? { ...fontSize[size] } : {};
-
-    if (weight) {
-        style['fontWeight'] = fontWeight[weight];
-    }
-    if (color) {
-        style['color'] = color;
-    }
-
     return (
-        <label htmlFor={htmlFor} style={style}>
+        <label
+            htmlFor={htmlFor}
+            className={css`
+                ${color && `color: ${color}`};
+                ${weight && `font-weight: ${fontWeight[weight]}`};
+                ${size && { ...fontSize[size] }};
+            `}
+        >
             {children}
         </label>
     );
