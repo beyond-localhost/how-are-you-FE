@@ -3,6 +3,7 @@ import { TEMP_CONTENT, TEMP_TITLE } from '@/constants/temp.ts';
 import { MODE } from '@/constants/question.ts';
 import QuestionInput from '@feature/question/QuestionInput.tsx';
 import { ModeType } from '@type/QuestionType.ts';
+import { Layout } from '@styles/Common.style.tsx';
 // import { api } from '@lib/api/client.ts';
 
 // todo: temp
@@ -36,7 +37,7 @@ function Question() {
     const { mode, ...questionData } = questionLoaderData;
 
     return (
-        <div>
+        <Layout>
             <h1>이야기 {mode && (mode === MODE.WRITE ? '작성' : '수정')}</h1>
 
             <p>{questionData.questionTitle}</p>
@@ -46,7 +47,7 @@ function Question() {
             ) : (
                 <div>{questionData.questionContent}</div>
             )}
-        </div>
+        </Layout>
     );
 }
 

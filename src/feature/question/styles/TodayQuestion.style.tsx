@@ -3,7 +3,6 @@ import { mauve, violet } from '@/tokens/color.ts';
 
 export const TodayQuestionWrapper = styled.div`
     display: flex;
-    min-width: 390px;
     padding: 24px;
     flex-direction: column;
     justify-content: center;
@@ -13,9 +12,9 @@ export const TodayQuestionWrapper = styled.div`
     border-radius: 12px;
     border: 1px solid ${violet['5']};
     background: ${mauve['1']};
-    box-shadow: 0 2px 1px 0 rgba(0, 0, 0, 0.25);
+    box-shadow: 0 3px 2px 0 rgba(0, 0, 0, 0.25);
 
-    margin: 20% 0 15% 0;
+    margin: 80px 12px 72px 12px;
 `;
 
 export const TodayQuestionButton = styled.button`
