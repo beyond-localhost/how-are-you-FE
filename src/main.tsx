@@ -17,6 +17,7 @@ import TodayQuestion, { loader as questionLoader } from '@routes/todayQuestion.t
 import Question, { loader as QuestionLoader } from '@routes/question.tsx';
 import { action as QuestionAction } from '@feature/question/QuestionInput.tsx';
 import { PrivateShellBoundary, privateShellLoader } from '@routes/private-shell';
+import HeaderLayout from '@routes/HeaderLayout';
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -29,18 +30,27 @@ const router = createBrowserRouter(
                 errorElement={<PrivateShellBoundary />}
             >
                 <Route path="info-form" loader={infoFormLoader} element={<InfoForm />} />
-                <Route
-                    path="question-list"
-                    loader={questionListLoader}
-                    element={<QuestionList />}
-                />
-                <Route path="today-question" loader={questionLoader} element={<TodayQuestion />} />
-                <Route
-                    path="question/:questionId"
-                    loader={QuestionLoader}
-                    action={QuestionAction}
-                    element={<Question />}
-                />
+
+                <Route element={<HeaderLayout />}>
+                    <Route>
+                        <Route
+                            path="question-list"
+                            loader={questionListLoader}
+                            element={<QuestionList />}
+                        />
+                        <Route
+                            path="today-question"
+                            loader={questionLoader}
+                            element={<TodayQuestion />}
+                        />
+                        <Route
+                            path="question/:questionId"
+                            loader={QuestionLoader}
+                            action={QuestionAction}
+                            element={<Question />}
+                        />
+                    </Route>
+                </Route>
             </Route>
         </Route>
     )

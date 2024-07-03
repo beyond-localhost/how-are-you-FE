@@ -5,12 +5,15 @@ import PencilIcon from '@components/icons/PencilIcon.tsx';
 import { Text } from '@components/text/Text.tsx';
 import {
     TodayQuestionButton,
+    TodayQuestionLayout,
     TodayQuestionWrapper
 } from '@feature/question/styles/TodayQuestion.style.tsx';
 import { api } from '@lib/api/client';
-import { Layout } from '@styles/Common.style.tsx';
+
 import { QuestionType } from '@type/QuestionType.ts';
+import { useContext } from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
+import { HeaderContext } from './HeaderLayout';
 
 export async function loader() {
     const response = await api.GET('/questions/today');
@@ -28,6 +31,8 @@ const datetimeFormatter = Intl.DateTimeFormat('ko', {
 });
 
 function TodayQuestion() {
+    const headerDeps = useContext(HeaderContext);
+    console.log(headerDeps);
     const data = useLoaderData() as QuestionType;
     const navigate = useNavigate();
 
@@ -44,8 +49,8 @@ function TodayQuestion() {
      * 버튼 (작성 / 수정) => 작성 여부에 따라
      * */
     return (
-        <Layout style={{ border: '2px solid pink' }}>
-            <Text size={5} weight={'medium'} color={mauve['11']} style={{ paddingTop: '30%' }}>
+        <TodayQuestionLayout deductedHeight={headerDeps.height}>
+            <Text size={5} weight={'medium'} color={mauve['11']}>
                 {datetimeFormatter.format(new Date())}
             </Text>
             <TodayQuestionWrapper>
@@ -64,7 +69,7 @@ function TodayQuestion() {
                 {data.userAnswered ? '확인하러 가기' : '작성하러 가기'}
                 {data.userAnswered ? <NoteIcon /> : <PencilIcon />}
             </TodayQuestionButton>
-        </Layout>
+        </TodayQuestionLayout>
     );
 }
 
