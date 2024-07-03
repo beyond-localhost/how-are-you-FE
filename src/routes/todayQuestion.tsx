@@ -1,49 +1,35 @@
-import { useLoaderData, useNavigate } from 'react-router-dom';
-import { QuestionType } from '@type/QuestionType.ts';
-import { TEMP_CONTENT, TEMP_TITLE } from '@/constants/temp.ts';
-import { Layout } from '@styles/Common.style.tsx';
-import { Text } from '@components/text/Text.tsx';
+import { MODE } from '@/constants/question.ts';
 import { mauve } from '@/tokens/color.ts';
+import NoteIcon from '@components/icons/NoteIcon.tsx';
+import PencilIcon from '@components/icons/PencilIcon.tsx';
+import { Text } from '@components/text/Text.tsx';
 import {
     TodayQuestionButton,
     TodayQuestionWrapper
 } from '@feature/question/styles/TodayQuestion.style.tsx';
-import NoteIcon from '@components/icons/NoteIcon.tsx';
-import PencilIcon from '@components/icons/PencilIcon.tsx';
-import { MODE } from '@/constants/question.ts';
+import { api } from '@lib/api/client';
+import { Layout } from '@styles/Common.style.tsx';
+import { QuestionType } from '@type/QuestionType.ts';
+import { useLoaderData, useNavigate } from 'react-router-dom';
 
 export async function loader() {
-    // const response = await api.GET('/questions/today');
+    const response = await api.GET('/questions/today');
     //
-    // if (response.error) {
-    //     alert('문제가 발생했습니다. 다시 시도해주세요.');
-    //     redirect('/');
-    // }
-
-    // todo: 답변 (여부)
-    // return response.data;
-    return {
-        question: TEMP_TITLE,
-        answer: TEMP_CONTENT, // todo
-        userAnswered: true,
-        // answer: '',
-        // userAnswered: false
-        questionId: 1
-    };
+    if (response.error) {
+        throw response.error;
+    }
+    return response.data;
 }
+
+const datetimeFormatter = Intl.DateTimeFormat('ko', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+});
 
 function TodayQuestion() {
     const data = useLoaderData() as QuestionType;
     const navigate = useNavigate();
-
-    const todayDate = new Date();
-
-    const formatDate = (date: number) => {
-        if (date.toString().length === 1) {
-            return '0' + date;
-        }
-        return date;
-    };
 
     const handleButtonClick = () => {
         const url = `/question/${data.questionId}`;
@@ -59,13 +45,9 @@ function TodayQuestion() {
      * */
     return (
         <Layout style={{ border: '2px solid pink' }}>
-            <Text
-                size={5}
-                weight={'medium'}
-                color={mauve['11']}
-                style={{ paddingTop: '30%' }}
-            >{`${todayDate.getFullYear()}.${formatDate(todayDate.getMonth() + 1)}.${formatDate(todayDate.getDate())}`}</Text>
-
+            <Text size={5} weight={'medium'} color={mauve['11']} style={{ paddingTop: '30%' }}>
+                {datetimeFormatter.format(new Date())}
+            </Text>
             <TodayQuestionWrapper>
                 <Text size={5} weight={'bold'} color={mauve['12']}>
                     {data.question}
