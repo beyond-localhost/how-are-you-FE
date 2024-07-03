@@ -16,13 +16,18 @@ import QuestionList, { loader as questionListLoader } from '@routes/questionList
 import TodayQuestion, { loader as questionLoader } from '@routes/todayQuestion.tsx';
 import Question, { loader as QuestionLoader } from '@routes/question.tsx';
 import { action as QuestionAction } from '@feature/question/QuestionInput.tsx';
+import { PrivateShellBoundary, privateShellLoader } from '@routes/private-shell';
 
 const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="/" element={<Root />} errorElement={<ErrorPage />}>
-            <Route>
-                <Route index loader={indexLoader} element={<Index />} />
-                <Route path="callback" loader={callbackLoader} />
+            <Route index loader={indexLoader} element={<Index />} />
+            <Route path="callback" loader={callbackLoader} />
+            <Route
+                loader={privateShellLoader}
+                shouldRevalidate={() => false}
+                errorElement={<PrivateShellBoundary />}
+            >
                 <Route path="info-form" loader={infoFormLoader} element={<InfoForm />} />
                 <Route
                     path="question-list"
@@ -46,3 +51,62 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <RouterProvider router={router} />
     </React.StrictMode>
 );
+
+// import React from 'react';
+// import ReactDOM from 'react-dom/client';
+// import './index.css';
+// import {
+//     createBrowserRouter,
+//     createRoutesFromElements,
+//     Route,
+//     RouterProvider
+// } from 'react-router-dom';
+// import Index, { loader as indexLoader } from '@routes/index.tsx';
+// import ErrorPage from '@routes/errorPage.tsx';
+// import { loader as callbackLoader } from '@routes/callback.tsx';
+// import InfoForm, { loader as infoFormLoader } from '@routes/infoForm.tsx';
+// import Root, { initializeOnlyOneTime, rootLoader } from '@routes/root.tsx';
+// import QuestionList, { loader as questionListLoader } from '@routes/questionList.tsx';
+// import TodayQuestion, { loader as questionLoader } from '@routes/todayQuestion.tsx';
+// import Question, { loader as QuestionLoader } from '@routes/question.tsx';
+// import { action as QuestionAction } from '@feature/question/QuestionInput.tsx';
+// import AuthShell from '@routes/authShell';
+
+// const router = createBrowserRouter(
+//     createRoutesFromElements(
+//         <Route path="/" element={<Root />} errorElement={<ErrorPage />}>
+//             <Route index element={<Index />} />
+//             <Route path="callback" loader={callbackLoader} />
+
+//             <Route
+//                 loader={rootLoader}
+//                 shouldRevalidate={initializeOnlyOneTime}
+//                 errorElement={<ErrorPage />}
+//             >
+//                 <Route
+//                     path="info-form"
+//                     loader={infoFormLoader}
+//                     lazy={() => import('./routes/infoForm')}
+//                 />
+//                 <Route
+//                     path="question-list"
+//                     loader={questionListLoader}
+//                     element={<QuestionList />}
+//                 />
+//                 <Route path="today-question" loader={questionLoader} element={<TodayQuestion />} />
+//                 <Route
+//                     path="question/:questionId"
+//                     loader={QuestionLoader}
+//                     action={QuestionAction}
+//                     element={<Question />}
+//                 />
+//             </Route>
+//         </Route>
+//     )
+// );
+
+// ReactDOM.createRoot(document.getElementById('root')!).render(
+//     <React.StrictMode>
+//         <RouterProvider router={router} />
+//     </React.StrictMode>
+// );
