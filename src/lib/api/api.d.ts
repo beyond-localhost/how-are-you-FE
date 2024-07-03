@@ -244,6 +244,56 @@ export interface paths {
         };
     };
     '/questions/answers/{answerId}': {
+        /** 유저가 남긴 답변에 대해 필터링 과정을 거쳐 반환합니다. */
+        get: {
+            parameters: {
+                path: {
+                    answerId: number;
+                };
+            };
+            responses: {
+                /** @description 유저가 보낸 요청에 대해 더이상 페이지네이션할 것이 없다면 hasMore가 false로 반환됩니다. hasMore는 클라이언트가 더이상 페칭을 할지 안할지를 결정하는 기준입니다. */
+                200: {
+                    content: {
+                        'application/json': {
+                            id: number;
+                            answer: string;
+                            question: string;
+                        };
+                    };
+                };
+                /** @description 세션 값이 없거나 / 유효하지 않은 경우에 해당합니다. 이경우 첨부된 쿠키도 전부 지워집니다! */
+                401: {
+                    content: {
+                        'application/json': {
+                            /** @enum {number} */
+                            code: 401;
+                            error: string;
+                        };
+                    };
+                };
+                /** @description 작성자는 답변을 비공개설정하였고, 다른 유저가 이 답변을 보려고 조회하였을 때 리턴합니다 */
+                403: {
+                    content: {
+                        'application/json': {
+                            /** @enum {number} */
+                            code: 403;
+                            error: string;
+                        };
+                    };
+                };
+                /** @description 해당 id에 바인딩 된 답변이 없을 때 리턴합니다 */
+                404: {
+                    content: {
+                        'application/json': {
+                            /** @enum {number} */
+                            code: 404;
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         /** 질문에 대한 답변을 삭제합니다. */
         delete: {
             parameters: {
@@ -273,26 +323,6 @@ export interface paths {
                 /** @description 삭제하려는 답변이 존재하지 않을 때 반환되는 응답입니다. */
                 404: {
                     content: never;
-                };
-            };
-        };
-    };
-    '/questions/seed': {
-        post: {
-            responses: {
-                /** @description Seed data inserted successfully */
-                204: {
-                    content: never;
-                };
-                /** @description 세션 값이 없거나 / 유효하지 않은 경우에 해당합니다. 이경우 첨부된 쿠키도 전부 지워집니다! */
-                401: {
-                    content: {
-                        'application/json': {
-                            /** @enum {number} */
-                            code: 401;
-                            error: string;
-                        };
-                    };
                 };
             };
         };

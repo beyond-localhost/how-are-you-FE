@@ -13,7 +13,7 @@
             "@components/*": ["src/components/*"],
             "@/*": ["src/*"],
             "@feature/*": ["src/feature/*"],
-            "@type/*": ["src/type/*"],
+            "@type/*": ["src/type/*"]
         },
 
         /* Bundler mode */
