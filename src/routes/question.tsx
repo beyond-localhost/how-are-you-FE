@@ -1,6 +1,18 @@
+import { QuestionAnswerType } from '@/type/QuestionType';
 import { api } from '@lib/api/client.ts';
+import {
+    CursorBar,
+    Layout,
+    NavigationContainer,
+    TitleContainer
+} from '@feature/question/styles/Question.style';
 
-import { LoaderFunctionArgs, useRouteError } from 'react-router-dom';
+import { LoaderFunctionArgs, useLoaderData, useRouteError } from 'react-router-dom';
+import { useContext } from 'react';
+import { HeaderContext } from './HeaderLayout';
+import { Text } from '@components/text/Text';
+import { mauve } from '@/tokens/color';
+import QuestionInput from '@/feature/question/QuestionInput';
 
 export async function loader({ params }: LoaderFunctionArgs) {
     if (!params.questionId) {
@@ -11,9 +23,6 @@ export async function loader({ params }: LoaderFunctionArgs) {
         params: {
             path: {
                 id: params.questionId
-            },
-            query: {
-                type: 'me'
             }
         }
     });
@@ -21,6 +30,8 @@ export async function loader({ params }: LoaderFunctionArgs) {
     if (response.error) {
         throw new Error('failed to fetch today answer');
     }
+
+    return response.data;
 }
 
 export function QuestionErrorBoundary() {
@@ -30,23 +41,26 @@ export function QuestionErrorBoundary() {
 }
 
 function Question() {
-    return null;
-    // const questionLoaderData = useLoaderData() as QuestionType;
-    // const { mode, ...questionData } = questionLoaderData;
+    const { height: headerHeight } = useContext(HeaderContext);
+    const { question, answer } = useLoaderData() as QuestionAnswerType;
+    const userAnswered = answer !== null;
 
-    // return (
-    //     <Layout>
-    //         <h1>이야기 {mode && (mode === MODE.WRITE ? '작성' : '수정')}</h1>
-
-    //         <p>{questionData.questionTitle}</p>
-
-    //         {mode ? (
-    //             <QuestionInput mode={mode} questionData={questionData} />
-    //         ) : (
-    //             <div>{questionData.questionContent}</div>
-    //         )}
-    //     </Layout>
-    // );
+    return (
+        <Layout deductedHeight={headerHeight}>
+            <NavigationContainer>
+                <CursorBar />
+                <Text size={3} weight="bold" color={mauve[10]} as="h1">
+                    이야기 작성
+                </Text>
+            </NavigationContainer>
+            <TitleContainer>
+                <Text size={6} weight="bold" color={mauve[12]} as="h2">
+                    {question.question}
+                </Text>
+            </TitleContainer>
+            <QuestionInput initialText={userAnswered ? answer.answer : ''} />
+        </Layout>
+    );
 }
 
 export default Question;
