@@ -1,35 +1,28 @@
 import { ActionFunctionArgs, Form } from 'react-router-dom';
 import React, { useState } from 'react';
-import { ModeType, QuestionDataType } from '@type/QuestionType.ts';
-import { MODE } from '@/constants/question.ts';
-
-type QuestionInputProp = {
-    mode: ModeType;
-    questionData: QuestionDataType;
-};
-
+j;
 export async function action({ request, params }: ActionFunctionArgs) {
-    const url = new URL(request.url);
+    // const url = new URL(request.url);
     const formData = await request.formData();
     const content = formData.get('question');
     const questionId = params.questionId;
     console.log(content, questionId);
 
-    const typeParam = url.searchParams.get('type');
+    // const typeParam = url.searchParams.get('type');
 
-    if (typeParam === MODE.WRITE) {
-        /// todo: 작성 api
-        // const response = await api.get('')
-    } else if (typeParam === MODE.EDIT) {
-        // 수정 api
-    }
+    // if (typeParam === MODE.WRITE) {
+    //     /// todo: 작성 api
+    //     // const response = await api.get('')
+    // } else if (typeParam === MODE.EDIT) {
+    //     // 수정 api
+    // }
 
     return null;
 }
 
-function QuestionInput({ mode, questionData }: QuestionInputProp) {
+function QuestionInput() {
     const [inputValue, setInputValue] = useState(
-        mode === MODE.EDIT && questionData.questionContent ? questionData.questionContent : ''
+        /*mode ===  && questionData.questionContent ? questionData.questionContent : '' */ ''
     );
     const handleValueChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setInputValue(e.target.value);
@@ -49,7 +42,7 @@ function QuestionInput({ mode, questionData }: QuestionInputProp) {
             <p>{inputValue.length}/200</p>
 
             <button type="submit" disabled={inputValue.length === 0}>
-                {mode === MODE.WRITE ? '작성 완료' : '수정 완료'}
+                {/* {mode === MODE.WRITE ? '작성 완료' : '수정 완료'} */}
             </button>
         </Form>
     );

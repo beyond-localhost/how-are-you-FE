@@ -194,37 +194,28 @@ export interface paths {
     };
   };
   "/questions/{id}/answers": {
-    /** 질문에 대한 답변을 조회합니다. */
+    /** 질문에 대한 유저의 답변을 조회합니다. */
     get: {
       parameters: {
-        query: {
-          type: "me" | "other";
-        };
         path: {
           id: string;
         };
       };
       responses: {
-        /** @description 질문 아이디에 대한 답변을 반환합니다. 쿼리스트링 타입이 'me'인 경우, 유저가 작성한 리턴합니다. 유저가 작성하지 않았으면 null을 리턴합니다. 쿼리스트링 타입이 all인 경우 'isPublic'이 true인 모든 답변들을 반환합니다. 이경우 유저가 작성한 답변은 조회하지 않습니다. */
+        /** @description 유저가 작성한 답변과 그에 관한 질문 정보를 반환합니다. 유저가 답변하지 않았을 경우 null을 리턴합니다. */
         200: {
           content: {
-            "application/json": OneOf<[{
-              /** @enum {string} */
-              queryType: "me";
+            "application/json": {
               answer: {
                 id: number;
                 answer: string;
                 ownerId: number;
               } | null;
-            }, {
-              /** @enum {string} */
-              queryType: "other";
-              answers: {
-                  id: number;
-                  answer: string;
-                  ownerId: number;
-                }[];
-            }]>;
+              question: {
+                id: number;
+                question: string;
+              };
+            };
           };
         };
         /** @description 세션 값이 없거나 / 유효하지 않은 경우에 해당합니다. 이경우 첨부된 쿠키도 전부 지워집니다! */

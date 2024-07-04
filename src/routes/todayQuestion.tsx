@@ -1,4 +1,3 @@
-import { MODE } from '@/constants/question.ts';
 import { mauve } from '@/tokens/color.ts';
 import NoteIcon from '@components/icons/NoteIcon.tsx';
 import PencilIcon from '@components/icons/PencilIcon.tsx';
@@ -38,9 +37,7 @@ function TodayQuestion() {
 
     const handleButtonClick = () => {
         const url = `/question/${data.questionId}`;
-        const type = data.userAnswered ? MODE.EDIT : MODE.WRITE;
-
-        navigate(url + '?type=' + type);
+        navigate(url);
     };
 
     /**

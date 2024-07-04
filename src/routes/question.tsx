@@ -1,22 +1,8 @@
-import { MODE } from '@/constants/question.ts';
-import QuestionInput from '@feature/question/QuestionInput.tsx';
 import { api } from '@lib/api/client.ts';
-import { Layout } from '@styles/Common.style.tsx';
-import { ModeType } from '@type/QuestionType.ts';
-import { LoaderFunctionArgs, useLoaderData, useRouteError } from 'react-router-dom';
 
-// todo: temp
-type QuestionType = {
-    questionId: number;
-    questionTitle: string;
-    questionContent: string;
-    mode: ModeType;
-};
+import { LoaderFunctionArgs, useRouteError } from 'react-router-dom';
 
-export async function loader({ request, params }: LoaderFunctionArgs) {
-    const url = new URL(request.url);
-    const typeParam = url.searchParams.get('type');
-
+export async function loader({ params }: LoaderFunctionArgs) {
     if (!params.questionId) {
         throw new Error('');
     }
@@ -31,21 +17,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
             }
         }
     });
+
     if (response.error) {
-        throw new Error('');
+        throw new Error('failed to fetch today answer');
     }
-
-    return {
-        ...response.data,
-        mode: typeParam === MODE.WRITE ? MODE.WRITE : typeParam === MODE.EDIT ? MODE.EDIT : null
-    };
-
-    // return {
-    //     questionId: 1,
-    //     questionTitle: TEMP_TITLE,
-    //     questionContent: TEMP_CONTENT,
-    //     mode: typeParam === MODE.WRITE ? MODE.WRITE : typeParam === MODE.EDIT ? MODE.EDIT : null
-    // };
 }
 
 export function QuestionErrorBoundary() {
@@ -55,22 +30,23 @@ export function QuestionErrorBoundary() {
 }
 
 function Question() {
-    const questionLoaderData = useLoaderData() as QuestionType;
-    const { mode, ...questionData } = questionLoaderData;
+    return null;
+    // const questionLoaderData = useLoaderData() as QuestionType;
+    // const { mode, ...questionData } = questionLoaderData;
 
-    return (
-        <Layout>
-            <h1>이야기 {mode && (mode === MODE.WRITE ? '작성' : '수정')}</h1>
+    // return (
+    //     <Layout>
+    //         <h1>이야기 {mode && (mode === MODE.WRITE ? '작성' : '수정')}</h1>
 
-            <p>{questionData.questionTitle}</p>
+    //         <p>{questionData.questionTitle}</p>
 
-            {mode ? (
-                <QuestionInput mode={mode} questionData={questionData} />
-            ) : (
-                <div>{questionData.questionContent}</div>
-            )}
-        </Layout>
-    );
+    //         {mode ? (
+    //             <QuestionInput mode={mode} questionData={questionData} />
+    //         ) : (
+    //             <div>{questionData.questionContent}</div>
+    //         )}
+    //     </Layout>
+    // );
 }
 
 export default Question;
