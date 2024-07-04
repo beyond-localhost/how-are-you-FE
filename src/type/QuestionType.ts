@@ -7,6 +7,9 @@ export type QuestionListType =
 export type QuestionType =
     paths['/questions/today']['get']['responses']['200']['content']['application/json'];
 
+export type QuestionAnswerType =
+    paths['/questions/{id}/answers']['get']['responses']['200']['content']['application/json'];
+
 export type ModeType = keyof typeof MODE | null;
 
 export type QuestionDataType = {
