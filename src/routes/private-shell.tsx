@@ -4,7 +4,7 @@ import { Navigate, redirect, useRouteError } from 'react-router-dom';
 export async function privateShellLoader() {
     const userFetchResponse = await api.GET('/users/me');
     if (userFetchResponse.error) {
-        return redirect('/');
+        return redirect('/login');
     }
     return userFetchResponse.data;
 }

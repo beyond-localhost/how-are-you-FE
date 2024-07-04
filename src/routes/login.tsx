@@ -12,11 +12,7 @@ import { KakaoIcon } from '@components/icons/KakaoIcon.tsx';
 import { Text } from '@components/text/Text.tsx';
 import { Layout } from '@styles/Common.style.tsx';
 
-export function loader() {
-    return null;
-}
-
-function Index() {
+function Login() {
     const checkboxRef = useRef<HTMLInputElement>(null);
 
     const handleKakaoClick = async () => {
@@ -58,4 +54,4 @@ function Index() {
     );
 }
 
-export default Index;
+export default Login;
