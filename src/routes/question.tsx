@@ -1,52 +1,81 @@
-import { LoaderFunctionArgs, redirect, useLoaderData } from 'react-router-dom';
-import { TEMP_CONTENT, TEMP_TITLE } from '@/constants/temp.ts';
-import { MODE } from '@/constants/question.ts';
-import QuestionInput from '@feature/question/QuestionInput.tsx';
-import { ModeType } from '@type/QuestionType.ts';
-// import { api } from '@lib/api/client.ts';
+import { QuestionAnswerType } from '@/type/QuestionType';
+import {
+    CursorBar,
+    Layout,
+    NavigationContainer,
+    TitleContainer
+} from '@feature/question/styles/Question.style';
+import { api } from '@lib/api/client.ts';
 
-// todo: temp
-type QuestionType = {
-    questionId: number;
-    questionTitle: string;
-    questionContent: string;
-    mode: ModeType;
-};
+import QuestionDetail from '@/feature/question/QuestionDetail';
+import QuestionInput from '@/feature/question/QuestionInput';
+import { mauve } from '@/tokens/color';
+import { Text } from '@components/text/Text';
+import { useContext } from 'react';
+import { LoaderFunctionArgs, useLoaderData, useNavigate } from 'react-router-dom';
+import { HeaderContext } from './HeaderLayout';
 
-export async function loader({ request, params }: LoaderFunctionArgs) {
-    const url = new URL(request.url);
-
-    if (!params.questionId) {
-        return redirect('/');
+export async function loader({ params }: LoaderFunctionArgs) {
+    let mode = params.mode;
+    if (!mode) {
+        mode = 'read';
+    } else if (['edit', 'write'].includes(mode)) {
+        mode = 'write';
     }
 
-    // const response = await api.GET('/qu'); // todo: qeustion id 에 대한 글 조회 api 없음
-    const typeParam = url.searchParams.get('type');
+    if (!params.questionId) {
+        throw new Error('');
+    }
 
-    return {
-        questionId: 1,
-        questionTitle: TEMP_TITLE,
-        questionContent: TEMP_CONTENT,
-        mode: typeParam === MODE.WRITE ? MODE.WRITE : typeParam === MODE.EDIT ? MODE.EDIT : null
-    };
+    const response = await api.GET('/questions/{id}/answers', {
+        params: {
+            path: {
+                id: params.questionId
+            }
+        }
+    });
+
+    if (response.error) {
+        throw new Error('failed to fetch today answer');
+    }
+
+    return { ...response.data, mode };
 }
 
 function Question() {
-    const questionLoaderData = useLoaderData() as QuestionType;
-    const { mode, ...questionData } = questionLoaderData;
+    const { height: headerHeight } = useContext(HeaderContext);
+    const navigate = useNavigate();
+    const { question, answer, mode } = useLoaderData() as QuestionAnswerType & {
+        mode: 'read' | 'write';
+    };
+
+    const userAnswer = answer?.answer ?? '';
+    const title = mode === 'read' ? '이야기' : '이야기 작성';
 
     return (
-        <div>
-            <h1>이야기 {mode && (mode === MODE.WRITE ? '작성' : '수정')}</h1>
-
-            <p>{questionData.questionTitle}</p>
-
-            {mode ? (
-                <QuestionInput mode={mode} questionData={questionData} />
+        <Layout deductedHeight={headerHeight}>
+            <NavigationContainer>
+                <CursorBar />
+                <Text size={3} weight="bold" color={mauve[10]} as="h1">
+                    {title}
+                </Text>
+            </NavigationContainer>
+            <TitleContainer>
+                <Text size={6} weight="bold" color={mauve[12]} as="h2">
+                    {question.question}
+                </Text>
+            </TitleContainer>
+            {mode === 'write' ? (
+                <QuestionInput initialText={userAnswer} />
             ) : (
-                <div>{questionData.questionContent}</div>
+                <QuestionDetail
+                    answer={userAnswer}
+                    onFABClick={() => {
+                        navigate('write', { replace: true });
+                    }}
+                />
             )}
-        </div>
+        </Layout>
     );
 }
 

@@ -1,36 +1,43 @@
-import { useLoaderData } from 'react-router-dom';
+import { mauve } from '@/tokens/color.ts';
+import NoteIcon from '@components/icons/NoteIcon.tsx';
+import PencilIcon from '@components/icons/PencilIcon.tsx';
+import { Text } from '@components/text/Text.tsx';
+import {
+    TodayQuestionButton,
+    TodayQuestionLayout,
+    TodayQuestionWrapper
+} from '@feature/question/styles/TodayQuestion.style.tsx';
+import { api } from '@lib/api/client';
+
 import { QuestionType } from '@type/QuestionType.ts';
-import { TEMP_CONTENT, TEMP_TITLE } from '@/constants/temp.ts';
+import { useContext } from 'react';
+import { useLoaderData, useNavigate } from 'react-router-dom';
+import { HeaderContext } from './HeaderLayout';
 
 export async function loader() {
-    // const response = await api.GET('/questions/today');
+    const response = await api.GET('/questions/today');
     //
-    // if (response.error) {
-    //     alert('문제가 발생했습니다. 다시 시도해주세요.');
-    //     redirect('/');
-    // }
-
-    // todo: 답변 (여부)
-    // return response.data;
-    return {
-        question: TEMP_TITLE,
-        answer: TEMP_CONTENT, // todo
-        userAnswered: true
-        // answer: '',
-        // userAnswered: false
-    };
+    if (response.error) {
+        throw response.error;
+    }
+    return response.data;
 }
 
+const datetimeFormatter = Intl.DateTimeFormat('ko', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+});
+
 function TodayQuestion() {
+    const headerDeps = useContext(HeaderContext);
+    console.log(headerDeps);
     const data = useLoaderData() as QuestionType;
+    const navigate = useNavigate();
 
-    const todayDate = new Date();
-
-    const formatDate = (date: number) => {
-        if (date.toString().length === 1) {
-            return '0' + date;
-        }
-        return date;
+    const handleButtonClick = () => {
+        const url = `/question/${data.questionId}/answers/write`;
+        navigate(url);
     };
 
     /**
@@ -39,15 +46,27 @@ function TodayQuestion() {
      * 버튼 (작성 / 수정) => 작성 여부에 따라
      * */
     return (
-        <div style={{ border: '2px solid pink' }}>
-            <p>{`${todayDate.getFullYear()}.${formatDate(todayDate.getMonth() + 1)}.${formatDate(todayDate.getDay())}`}</p>
+        <TodayQuestionLayout deductedHeight={headerDeps.height}>
+            <Text size={5} weight={'medium'} color={mauve['11']}>
+                {datetimeFormatter.format(new Date())}
+            </Text>
+            <TodayQuestionWrapper>
+                <Text size={5} weight={'bold'} color={mauve['12']}>
+                    {data.question}
+                </Text>
 
-            <h1>{data.question}</h1>
+                {data.answer && (
+                    <Text size={4} weight={'regular'} color={mauve['11']}>
+                        {data.answer}
+                    </Text>
+                )}
+            </TodayQuestionWrapper>
 
-            {data.answer && <span>{data.answer}</span>}
-
-            <button>{data.userAnswered ? '확인하러 가기' : '작성하러 가기'}</button>
-        </div>
+            <TodayQuestionButton onClick={handleButtonClick}>
+                {data.userAnswered ? '확인하러 가기' : '작성하러 가기'}
+                {data.userAnswered ? <NoteIcon /> : <PencilIcon />}
+            </TodayQuestionButton>
+        </TodayQuestionLayout>
     );
 }
 

@@ -54,7 +54,6 @@ function BirthSelectBox({ setCurInfoByKey, item, birth }: BirthSelectBoxProp) {
     const { optionLength, standardDate } = getTargetDateInfo(id);
 
     return (
-        // <BirthInputSelect id={id} value={birth[id]} onClick={handleChangeSelect} key={index}>
         <BirthInputSelect id={id} onClick={() => setIsOptionOpen(prev => !prev)}>
             <BirthInputOptionValue>{birth[id]}</BirthInputOptionValue>
             {isOptionOpen && (

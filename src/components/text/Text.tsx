@@ -1,48 +1,59 @@
 import { fontSize, fontWeight } from '@/tokens/font.ts';
 import { CSSProperties, ReactNode } from 'react';
 
-type TextProps = {
+type TextCommonProps = {
     children: ReactNode;
+    size?: keyof typeof fontSize;
+    weight?: keyof typeof fontWeight;
+    color?: string;
+};
+
+type TextProps = TextCommonProps & {
     as?: keyof HTMLElementTagNameMap;
-    size?: keyof typeof fontSize;
-    weight?: keyof typeof fontWeight;
-    color?: string;
+    style?: CSSProperties;
+    className?: string;
 };
 
-type TextLabelProps = {
-    children: ReactNode;
+type TextLabelProps = TextCommonProps & {
     htmlFor: string;
-    size?: keyof typeof fontSize;
-    weight?: keyof typeof fontWeight;
-    color?: string;
 };
 
-export const Text = ({ children, as, size, weight, color }: TextProps) => {
+export const Text = ({
+    children,
+    as,
+    size = 4,
+    weight = 'medium',
+    color,
+    style,
+    className
+}: TextProps) => {
     const Element: keyof HTMLElementTagNameMap = as || 'span';
-    const style: CSSProperties = size ? { ...fontSize[size] } : {};
-
-    if (weight) {
-        style['fontWeight'] = fontWeight[weight];
-    }
-    if (color) {
-        style['color'] = color;
-    }
-
-    return <Element style={style}>{children}</Element>;
-};
-
-export const TextLabel = ({ children, htmlFor, size, weight, color }: TextLabelProps) => {
-    const style: CSSProperties = size ? { ...fontSize[size] } : {};
-
-    if (weight) {
-        style['fontWeight'] = fontWeight[weight];
-    }
-    if (color) {
-        style['color'] = color;
-    }
 
     return (
-        <label htmlFor={htmlFor} style={style}>
+        <Element
+            css={{
+                color,
+                fontWeight: fontWeight[weight],
+                ...fontSize[size]
+            }}
+            className={className}
+            style={style}
+        >
+            {children}
+        </Element>
+    );
+};
+
+export const TextLabel = ({ children, htmlFor, size = 4, weight, color }: TextLabelProps) => {
+    return (
+        <label
+            htmlFor={htmlFor}
+            css={{
+                color,
+                fontWeight: weight,
+                ...fontSize[size]
+            }}
+        >
             {children}
         </label>
     );

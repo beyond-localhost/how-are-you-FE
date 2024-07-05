@@ -13,7 +13,8 @@ module.exports = {
     plugins: ['react-refresh'],
     rules: {
         '@typescript-eslint/ban-types': 0,
-        "no-unused-vars": "off",
-        "@typescript-eslint/no-unused-vars": "warn"
+        'no-unused-vars': 'off',
+        '@typescript-eslint/no-unused-vars': 'warn',
+        '@typescript-eslint/no-explicit-any': '0'
     }
 };

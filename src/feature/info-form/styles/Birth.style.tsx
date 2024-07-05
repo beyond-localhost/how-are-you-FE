@@ -5,17 +5,14 @@ import { fontSize, fontWeight } from '@/tokens/font.ts';
 export const BirthInputWrapper = styled.div`
     display: flex;
     font-weight: ${fontWeight.bold};
-
-    // todo..
-    & > div:nth-of-type(2) {
-        padding-left: 50px;
-    }
+    justify-content: space-between;
 `;
 
 export const BirthInputBox = styled.div`
-    width: 100%;
+    flex: 1;
 
     display: flex;
+    justify-content: center;
     align-items: center;
 `;
 
@@ -30,8 +27,7 @@ export const BirthInputSelect = styled.div`
     position: relative;
     border: 3px solid ${violet['8']};
     border-radius: 15px;
-    padding: 6px 17%;
-
+    padding: 4px 12px;
     color: ${mauve['11']};
     ${fontSize['6']};
     cursor: pointer;
@@ -49,18 +45,24 @@ export const BirthInputOptions = styled.ul`
     border-bottom-right-radius: inherit;
 
     height: 300px;
-    overflow: scroll;
+    overflow-y: scroll;
     position: absolute;
+    left: 0;
+    top: calc(100% + 4px);
 
     list-style: none; // li tag 들의 앞에 점들 없어짐
     padding: 0; // ul의 자체 패딩
-    width: 100%;
-    left: 0;
+    /* width: 100%; */
     margin-top: 6px;
 
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    &::-webkit-scrollbar {
+        /* border-bottom-right-radius: inherit; */
+        display: none;
+    }
 `;
 
 export const BirthInputOption = styled.li`

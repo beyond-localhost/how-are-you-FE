@@ -1,5 +1,4 @@
 import { paths } from '@lib/api/api';
-import { MODE } from '@/constants/question.ts';
 
 export type QuestionListType =
     paths['/questions/answers']['get']['responses']['200']['content']['application/json'];
@@ -7,7 +6,8 @@ export type QuestionListType =
 export type QuestionType =
     paths['/questions/today']['get']['responses']['200']['content']['application/json'];
 
-export type ModeType = keyof typeof MODE | null;
+export type QuestionAnswerType =
+    paths['/questions/{id}/answers']['get']['responses']['200']['content']['application/json'];
 
 export type QuestionDataType = {
     questionId: number;

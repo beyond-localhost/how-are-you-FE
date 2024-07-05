@@ -112,7 +112,7 @@ function InfoForm() {
                 alert('오류가 발생했습니다. 다시 시도해주세요.');
             }
 
-            navigate('/question-list');
+            navigate('/today-question');
         } catch (e) {
             alert('오류가 발생했습니다. 다시 시도해주세요.');
         }
