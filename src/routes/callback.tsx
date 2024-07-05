@@ -11,7 +11,7 @@ export async function loader() {
     }
     // 기본 정보 입력한 경우
     if (response.data && response.data.profile) {
-        return redirect('/question-list');
+        return redirect('/today-question');
     }
     // 기본 정보 입력 페이지
     return redirect('/info-form');

@@ -6,7 +6,7 @@ import InfoForm, { loader as infoFormLoader } from '@routes/infoForm.tsx';
 import Root from '@routes/root.tsx';
 import QuestionList, { loader as questionListLoader } from '@routes/questionList.tsx';
 import TodayQuestion, { loader as questionLoader } from '@routes/todayQuestion.tsx';
-import Question, { QuestionErrorBoundary, loader as QuestionLoader } from '@routes/question.tsx';
+import Question, { loader as QuestionLoader } from '@routes/question.tsx';
 import { action as QuestionAction } from '@feature/question/QuestionInput.tsx';
 import { PrivateShellBoundary, privateShellLoader } from '@routes/private-shell';
 import HeaderLayout from '@routes/HeaderLayout';
@@ -43,11 +43,10 @@ export const router = createBrowserRouter(
                             element={<TodayQuestion />}
                         />
                         <Route
-                            path="question/:questionId"
+                            path="question/:questionId/answers/:mode?"
                             loader={QuestionLoader}
                             action={QuestionAction}
                             element={<Question />}
-                            errorElement={<QuestionErrorBoundary />}
                         />
                     </Route>
                 </Route>

@@ -13,7 +13,6 @@ export const CursorBar = styled.div`
 export const Layout = styled(CommonLayout)<{ deductedHeight: number }>`
     display: block;
     height: calc(100dvh - ${props => props.deductedHeight}px);
-    padding: 0 20px;
 `;
 
 export const NavigationContainer = styled.div`
@@ -21,15 +20,17 @@ export const NavigationContainer = styled.div`
     gap: 4px;
     align-items: center;
     margin-top: 36px;
+    padding: 0 20px;
 `;
 
 export const TitleContainer = styled.div`
     margin-top: 28px;
     margin-bottom: 40px;
+    padding: 0 20px;
 `;
 
 export const QuestionAnswerForm = styled(Form)`
-    margin: 16px -20px 0;
+    margin: 16px 0;
 `;
 
 export const QuestionTextArea = styled.textarea`
@@ -56,6 +57,11 @@ export const QuestionTextArea = styled.textarea`
 
 export const TextAreaLength = styled(Text)`
     text-align: right;
+    padding: 0 12px;
+`;
+
+export const QuestionAnswerText = styled(Text)`
+    padding: 0 20px;
 `;
 
 export const QuestionSubmitButtionContainer = styled(FixedContainer)`
@@ -65,7 +71,7 @@ export const QuestionSubmitButtionContainer = styled(FixedContainer)`
     padding-right: 16px;
 `;
 
-export const QuestionSubmitButtion = styled.button`
+export const QuestionFAB = styled.button`
     padding: 12px;
     border-radius: 9999px;
     background-color: ${violet[12]};

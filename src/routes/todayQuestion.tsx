@@ -36,7 +36,7 @@ function TodayQuestion() {
     const navigate = useNavigate();
 
     const handleButtonClick = () => {
-        const url = `/question/${data.questionId}`;
+        const url = `/question/${data.questionId}/answers/write`;
         navigate(url);
     };
 

@@ -1,16 +1,15 @@
+import { violet } from '@/tokens/color';
+import PlusIcon from '@components/icons/PlusIcon';
 import { api } from '@lib/api/client';
 import React, { useLayoutEffect, useRef, useState } from 'react';
-import { ActionFunctionArgs, Form, redirect } from 'react-router-dom';
+import { ActionFunctionArgs, redirect } from 'react-router-dom';
 import {
     QuestionAnswerForm,
-    QuestionSubmitButtion,
+    QuestionFAB,
     QuestionSubmitButtionContainer,
     QuestionTextArea,
     TextAreaLength
 } from './styles/Question.style';
-import PlusIcon from '@components/icons/PlusIcon';
-import { mauve, violet } from '@/tokens/color';
-import { FixedContainer } from '@styles/Common.style';
 
 export async function action({ request, params }: ActionFunctionArgs) {
     const formData = await request.formData();
@@ -76,9 +75,9 @@ function QuestionInput({ initialText }: Props) {
                     autoFocus
                 />
                 <QuestionSubmitButtionContainer bottom={60}>
-                    <QuestionSubmitButtion disabled={inputValue.length === 0}>
+                    <QuestionFAB disabled={inputValue.length === 0}>
                         <PlusIcon color={violet[1]} />
-                    </QuestionSubmitButtion>
+                    </QuestionFAB>
                 </QuestionSubmitButtionContainer>
             </QuestionAnswerForm>
         </>

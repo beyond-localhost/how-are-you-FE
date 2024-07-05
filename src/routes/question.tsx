@@ -1,20 +1,28 @@
 import { QuestionAnswerType } from '@/type/QuestionType';
-import { api } from '@lib/api/client.ts';
 import {
     CursorBar,
     Layout,
     NavigationContainer,
     TitleContainer
 } from '@feature/question/styles/Question.style';
+import { api } from '@lib/api/client.ts';
 
-import { LoaderFunctionArgs, useLoaderData, useRouteError } from 'react-router-dom';
-import { useContext } from 'react';
-import { HeaderContext } from './HeaderLayout';
-import { Text } from '@components/text/Text';
-import { mauve } from '@/tokens/color';
+import QuestionDetail from '@/feature/question/QuestionDetail';
 import QuestionInput from '@/feature/question/QuestionInput';
+import { mauve } from '@/tokens/color';
+import { Text } from '@components/text/Text';
+import { useContext } from 'react';
+import { LoaderFunctionArgs, useLoaderData, useNavigate } from 'react-router-dom';
+import { HeaderContext } from './HeaderLayout';
 
 export async function loader({ params }: LoaderFunctionArgs) {
+    let mode = params.mode;
+    if (!mode) {
+        mode = 'read';
+    } else if (['edit', 'write'].includes(mode)) {
+        mode = 'write';
+    }
+
     if (!params.questionId) {
         throw new Error('');
     }
@@ -31,26 +39,25 @@ export async function loader({ params }: LoaderFunctionArgs) {
         throw new Error('failed to fetch today answer');
     }
 
-    return response.data;
-}
-
-export function QuestionErrorBoundary() {
-    const error = useRouteError();
-    console.log(error);
-    return null;
+    return { ...response.data, mode };
 }
 
 function Question() {
     const { height: headerHeight } = useContext(HeaderContext);
-    const { question, answer } = useLoaderData() as QuestionAnswerType;
-    const userAnswered = answer !== null;
+    const navigate = useNavigate();
+    const { question, answer, mode } = useLoaderData() as QuestionAnswerType & {
+        mode: 'read' | 'write';
+    };
+
+    const userAnswer = answer?.answer ?? '';
+    const title = mode === 'read' ? '이야기' : '이야기 작성';
 
     return (
         <Layout deductedHeight={headerHeight}>
             <NavigationContainer>
                 <CursorBar />
                 <Text size={3} weight="bold" color={mauve[10]} as="h1">
-                    이야기 작성
+                    {title}
                 </Text>
             </NavigationContainer>
             <TitleContainer>
@@ -58,7 +65,16 @@ function Question() {
                     {question.question}
                 </Text>
             </TitleContainer>
-            <QuestionInput initialText={userAnswered ? answer.answer : ''} />
+            {mode === 'write' ? (
+                <QuestionInput initialText={userAnswer} />
+            ) : (
+                <QuestionDetail
+                    answer={userAnswer}
+                    onFABClick={() => {
+                        navigate('write', { replace: true });
+                    }}
+                />
+            )}
         </Layout>
     );
 }
