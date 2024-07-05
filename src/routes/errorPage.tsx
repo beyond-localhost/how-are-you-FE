@@ -3,7 +3,6 @@ import { isRouteErrorResponse, useNavigate, useRouteError } from 'react-router-d
 function ErrorPage() {
     const error = useRouteError();
     const navigate = useNavigate();
-    console.error(error);
 
     const errorMessage = isRouteErrorResponse(error) ? error.statusText : '';
 

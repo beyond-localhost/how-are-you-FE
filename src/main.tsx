@@ -16,13 +16,18 @@ import QuestionList, { loader as questionListLoader } from '@routes/questionList
 import TodayQuestion, { loader as questionLoader } from '@routes/todayQuestion.tsx';
 import Question, { loader as QuestionLoader } from '@routes/question.tsx';
 import { action as QuestionAction } from '@feature/question/QuestionInput.tsx';
+import { PrivateShellBoundary, privateShellLoader } from '@routes/private-shell';
 
 const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="/" element={<Root />} errorElement={<ErrorPage />}>
-            <Route>
-                <Route index loader={indexLoader} element={<Index />} />
-                <Route path="callback" loader={callbackLoader} />
+            <Route index loader={indexLoader} element={<Index />} />
+            <Route path="callback" loader={callbackLoader} />
+            <Route
+                loader={privateShellLoader}
+                shouldRevalidate={() => false}
+                errorElement={<PrivateShellBoundary />}
+            >
                 <Route path="info-form" loader={infoFormLoader} element={<InfoForm />} />
                 <Route
                     path="question-list"
