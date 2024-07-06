@@ -4,13 +4,15 @@ import {
     BirthInputOptionValue,
     BirthInputSelect
 } from '@feature/info-form/styles/Birth.style.tsx';
-import { Birth, BirthIdType, setCurInfoByKeyParam } from '@type/infoFormType.ts';
-import { useState } from 'react';
+import { Birth, BirthIdType, openedOptionType, setCurInfoByKeyParam } from '@type/infoFormType.ts';
+import React from 'react';
 import { BirthInput } from '@/constants/form.ts';
 
 interface BirthSelectBoxProp extends setCurInfoByKeyParam {
     birth: Birth;
     item: BirthInput;
+    openedOption: openedOptionType;
+    setOpenedOption: React.Dispatch<React.SetStateAction<openedOptionType>>;
 }
 
 type selectType = {
@@ -18,9 +20,13 @@ type selectType = {
     dateValue: number;
 };
 
-function BirthSelectBox({ setCurInfoByKey, item, birth }: BirthSelectBoxProp) {
-    const [isOptionOpen, setIsOptionOpen] = useState(false);
-
+function BirthSelectBox({
+    setCurInfoByKey,
+    item,
+    birth,
+    openedOption,
+    setOpenedOption
+}: BirthSelectBoxProp) {
     const handleChangeSelect = ({ id, dateValue }: selectType) => {
         const newBirthObj = { ...birth, [id]: dateValue };
 
@@ -50,13 +56,21 @@ function BirthSelectBox({ setCurInfoByKey, item, birth }: BirthSelectBoxProp) {
         return { optionLength, standardDate };
     };
 
+    const handleOptionOpen = () => {
+        if (openedOption !== id) {
+            setOpenedOption(id);
+        } else {
+            setOpenedOption('');
+        }
+    };
+
     const { id } = item;
     const { optionLength, standardDate } = getTargetDateInfo(id);
 
     return (
-        <BirthInputSelect id={id} onClick={() => setIsOptionOpen(prev => !prev)}>
+        <BirthInputSelect id={id} onClick={handleOptionOpen}>
             <BirthInputOptionValue>{birth[id]}</BirthInputOptionValue>
-            {isOptionOpen && (
+            {openedOption === id && (
                 <BirthInputOptions>
                     {Array.from({ length: optionLength }, (_, i) => {
                         const dateValue = id === 'year' ? standardDate - i : standardDate + i;

@@ -1,5 +1,5 @@
-import { Birth, setCurInfoByKeyParam } from '@type/infoFormType.ts';
-import React from 'react';
+import { Birth, openedOptionType, setCurInfoByKeyParam } from '@type/infoFormType.ts';
+import React, { useState } from 'react';
 import { BIRTH_INPUT, SELECT_TITLE_TEXT } from '@/constants/form.ts';
 import { InputTitle } from '@feature/info-form/styles/InfoForm.style.tsx';
 import {
@@ -14,6 +14,8 @@ interface BirthFieldProp extends setCurInfoByKeyParam {
 }
 
 const BirthField: React.FC<BirthFieldProp> = ({ setCurInfoByKey, birth }) => {
+    const [openedOption, setOpenedOption] = useState<openedOptionType>('');
+
     return (
         <>
             <InputTitle>{'생년월일' + SELECT_TITLE_TEXT}</InputTitle>
@@ -25,6 +27,8 @@ const BirthField: React.FC<BirthFieldProp> = ({ setCurInfoByKey, birth }) => {
                             item={item}
                             setCurInfoByKey={setCurInfoByKey}
                             birth={birth}
+                            openedOption={openedOption}
+                            setOpenedOption={setOpenedOption}
                         />
                         <BirthInputLabel>{item.label}</BirthInputLabel>
                     </BirthInputBox>
