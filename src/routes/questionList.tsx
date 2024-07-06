@@ -4,16 +4,19 @@ import { useLoaderData } from 'react-router-dom';
 import { QuestionListType } from '@type/QuestionType.ts';
 import { useState } from 'react';
 import QuestionListFilterPopup from '@feature/question/QuestionListFilterPopup.tsx';
-import { TEMP_CONTENT, TEMP_DATE, TEMP_TITLE } from '@/constants/temp.ts';
+import { TEMP_CONTENT, TEMP_TITLE } from '@/constants/temp.ts';
 import FunnelIcon from '@components/icons/FunnelIcon.tsx';
 import {
     FunnelButton,
+    QuestionListContainer,
+    QuestionListWrapper,
     SubTitleLeftDiv,
     SubTitleLeftLine,
     SubTitleWrapper
 } from '@feature/question/styles/QuestionList.style.tsx';
 import { Text } from '@components/text/Text.tsx';
 import { mauve } from '@/tokens/color.ts';
+import QuestionListItem from '@feature/question/QuestionListItem.tsx';
 
 // todo: 월 별 Filter
 export async function loader() {
@@ -38,8 +41,8 @@ export async function loader() {
         data: [
             {
                 questionId: 1,
-                question: TEMP_CONTENT,
-                answer: TEMP_TITLE
+                question: TEMP_TITLE,
+                answer: TEMP_CONTENT
             }
         ]
     };
@@ -63,7 +66,7 @@ function QuestionList() {
     };
 
     return (
-        <>
+        <QuestionListContainer>
             <SubTitleWrapper>
                 <SubTitleLeftDiv>
                     <SubTitleLeftLine />
@@ -76,21 +79,17 @@ function QuestionList() {
                 </FunnelButton>
             </SubTitleWrapper>
 
-            <div>
+            <QuestionListWrapper>
                 {questionList.length > 0 ? (
                     questionList.map(item => (
                         // todo: mock date
-                        <div key={item.questionId}>
-                            <p>{TEMP_DATE}</p>
-                            <p>{item.question}</p>
-                            <p>{item.answer}</p>
-                            <button>더보기</button>
-                        </div>
+                        <QuestionListItem item={item} key={item.questionId} />
                     ))
                 ) : (
+                    // todo: empty set
                     <div />
                 )}
-            </div>
+            </QuestionListWrapper>
 
             {isFilterPopupOpen && (
                 <QuestionListFilterPopup
@@ -98,7 +97,7 @@ function QuestionList() {
                     onSetQuestionListData={onSetQuestionListData}
                 />
             )}
-        </>
+        </QuestionListContainer>
     );
 }
 

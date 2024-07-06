@@ -2,6 +2,8 @@ import { paths } from '@lib/api/api';
 
 export type QuestionListType =
     paths['/questions/answers']['get']['responses']['200']['content']['application/json'];
+export type QuestionListItemType =
+    paths['/questions/answers']['get']['responses']['200']['content']['application/json']['data'];
 
 export type QuestionType =
     paths['/questions/today']['get']['responses']['200']['content']['application/json'];
