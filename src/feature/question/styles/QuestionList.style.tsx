@@ -78,15 +78,37 @@ export const ListFilterPopupOverlay = styled.div`
     align-items: center;
 
     z-index: 20;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 0 23px;
 `;
 
 export const ListFilterPopup = styled.div`
-    background: white;
-    //  todo: style
+    border-radius: 20px;
+    background: ${mauve['1']};
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+`;
+
+export const ListFilterPopupInputs = styled.div`
+    display: flex;
+    align-items: center;
+    margin: 14px 0 37px 0;
+`;
+
+export const ListFilterPopupButtons = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
 `;
 
 export const ListFilterButton = styled.button<ListFilterButtonProp>`
-    background: ${props => (props.active ? 'white' : 'white')};
+    background: ${props => (props.active ? violet['11'] : 'none')};
+    color: ${props => (props.active ? mauve['1'] : mauve['10'])};
+    padding: 8px 12px;
+    border-radius: 12px;
+    border: ${props => (props.active ? 'none' : `1px solid ${mauve['6']}`)};
 `;
 
-// endregion - 필터 팝업
+// endregion - 필터 팝업가

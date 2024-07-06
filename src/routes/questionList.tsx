@@ -91,7 +91,8 @@ function QuestionList() {
                 )}
             </QuestionListWrapper>
 
-            {isFilterPopupOpen && (
+            {/*{isFilterPopupOpen && (*/}
+            {!isFilterPopupOpen && (
                 <QuestionListFilterPopup
                     toggleFilterPopup={toggleFilterPopup}
                     onSetQuestionListData={onSetQuestionListData}

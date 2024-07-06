@@ -4,9 +4,12 @@ import { QuestionListType } from '@type/QuestionType.ts';
 import {
     ListFilterButton,
     ListFilterPopup,
+    ListFilterPopupButtons,
+    ListFilterPopupInputs,
     ListFilterPopupOverlay
 } from '@feature/question/styles/QuestionList.style.tsx';
 import { Text } from '@components/text/Text.tsx';
+import { mauve, violet } from '@/tokens/color.ts';
 
 type QuestionListFilterPopupProp = {
     toggleFilterPopup: () => void;
@@ -54,14 +57,30 @@ function QuestionListFilterPopup({
     return (
         <ListFilterPopupOverlay>
             <ListFilterPopup>
-                <Text>기록 필터링</Text>
-                <Text>언제부터 작성한 글을 볼까요?</Text>
-                <input type={'number'} name="filterYear" ref={yearRef} />년
-                <input type={'number'} name="filterMonth" ref={monthRef} />월
-                <ListFilterButton onClick={toggleFilterPopup}>취소</ListFilterButton>
-                <ListFilterButton onClick={handleFiltering} active={true}>
-                    필터링
-                </ListFilterButton>
+                <Text size={7} weight="bold" color={violet['11']} style={{ marginBottom: '8px' }}>
+                    기록 필터링
+                </Text>
+                <Text size={3} weight="medium" color={mauve['11']}>
+                    언제부터 작성한 글을 볼까요?
+                </Text>
+
+                <ListFilterPopupInputs>
+                    <input type={'number'} name="filterYear" ref={yearRef} />년
+                    <input type={'number'} name="filterMonth" ref={monthRef} />월
+                </ListFilterPopupInputs>
+
+                <ListFilterPopupButtons>
+                    <ListFilterButton onClick={toggleFilterPopup}>
+                        <Text size={3} weight="bold" color={mauve['10']}>
+                            취소
+                        </Text>
+                    </ListFilterButton>
+                    <ListFilterButton onClick={handleFiltering} active={true}>
+                        <Text size={3} weight="bold" color={mauve['1']}>
+                            필터링
+                        </Text>
+                    </ListFilterButton>
+                </ListFilterPopupButtons>
             </ListFilterPopup>
         </ListFilterPopupOverlay>
     );
