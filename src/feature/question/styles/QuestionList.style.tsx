@@ -51,13 +51,18 @@ export const QuestionListWrapper = styled.div`
 export const QuestionListItemWrapper = styled.div`
     display: flex;
     flex-direction: column;
+    cursor: pointer;
 `;
 
 export const QuestionListItemContent = styled.div`
     display: flex;
     align-items: center;
-    padding-top: 16px;
+    align-self: stretch;
+    padding: 16px 0;
+    gap: 16px;
+    border-bottom: 1px solid ${violet['6']};
 `;
+
 // endregion - 질문 리스트
 
 // region - 필터 팝업
