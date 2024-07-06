@@ -1,6 +1,12 @@
 import { useRef } from 'react';
 import { api } from '@lib/api/client.ts';
 import { QuestionListType } from '@type/QuestionType.ts';
+import {
+    ListFilterButton,
+    ListFilterPopup,
+    ListFilterPopupOverlay
+} from '@feature/question/styles/QuestionList.style.tsx';
+import { Text } from '@components/text/Text.tsx';
 
 type QuestionListFilterPopupProp = {
     toggleFilterPopup: () => void;
@@ -46,14 +52,18 @@ function QuestionListFilterPopup({
     };
 
     return (
-        <div>
-            <h1>기록 필터링</h1>
-            <p>언제부터 작성한 글을 볼까요?</p>
-            <input type={'number'} name="filterYear" ref={yearRef} />년
-            <input type={'number'} name="filterMonth" ref={monthRef} />월
-            <button onClick={toggleFilterPopup}>취소</button>
-            <button onClick={handleFiltering}>필터링</button>
-        </div>
+        <ListFilterPopupOverlay>
+            <ListFilterPopup>
+                <Text>기록 필터링</Text>
+                <Text>언제부터 작성한 글을 볼까요?</Text>
+                <input type={'number'} name="filterYear" ref={yearRef} />년
+                <input type={'number'} name="filterMonth" ref={monthRef} />월
+                <ListFilterButton onClick={toggleFilterPopup}>취소</ListFilterButton>
+                <ListFilterButton onClick={handleFiltering} active={true}>
+                    필터링
+                </ListFilterButton>
+            </ListFilterPopup>
+        </ListFilterPopupOverlay>
     );
 }
 

@@ -3,7 +3,6 @@
 import { useLoaderData } from 'react-router-dom';
 import { QuestionListType } from '@type/QuestionType.ts';
 import { useState } from 'react';
-import QuestionListFilterPopup from '@feature/question/QuestionListFilterPopup.tsx';
 import { TEMP_CONTENT, TEMP_TITLE } from '@/constants/temp.ts';
 import FunnelIcon from '@components/icons/FunnelIcon.tsx';
 import {
@@ -17,6 +16,7 @@ import {
 import { Text } from '@components/text/Text.tsx';
 import { mauve } from '@/tokens/color.ts';
 import QuestionListItem from '@feature/question/QuestionListItem.tsx';
+import QuestionListFilterPopup from '@feature/question/QuestionListFilterPopup.tsx';
 
 // todo: 월 별 Filter
 export async function loader() {

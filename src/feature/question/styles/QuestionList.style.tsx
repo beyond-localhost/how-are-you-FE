@@ -1,6 +1,10 @@
 import styled from '@emotion/styled';
 import { mauve, violet } from '@/tokens/color.ts';
 
+type ListFilterButtonProp = {
+    active?: boolean;
+};
+
 export const QuestionListContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -55,3 +59,29 @@ export const QuestionListItemContent = styled.div`
     padding-top: 16px;
 `;
 // endregion - 질문 리스트
+
+// region - 필터 팝업
+export const ListFilterPopupOverlay = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 20;
+`;
+
+export const ListFilterPopup = styled.div`
+    background: white;
+    //  todo: style
+`;
+
+export const ListFilterButton = styled.button<ListFilterButtonProp>`
+    background: ${props => (props.active ? 'white' : 'white')};
+`;
+
+// endregion - 필터 팝업
