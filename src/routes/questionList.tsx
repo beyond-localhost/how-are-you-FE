@@ -5,6 +5,15 @@ import { QuestionListType } from '@type/QuestionType.ts';
 import { useState } from 'react';
 import QuestionListFilterPopup from '@feature/question/QuestionListFilterPopup.tsx';
 import { TEMP_CONTENT, TEMP_DATE, TEMP_TITLE } from '@/constants/temp.ts';
+import FunnelIcon from '@components/icons/FunnelIcon.tsx';
+import {
+    FunnelButton,
+    SubTitleLeftDiv,
+    SubTitleLeftLine,
+    SubTitleWrapper
+} from '@feature/question/styles/QuestionList.style.tsx';
+import { Text } from '@components/text/Text.tsx';
+import { mauve } from '@/tokens/color.ts';
 
 // todo: 월 별 Filter
 export async function loader() {
@@ -55,10 +64,17 @@ function QuestionList() {
 
     return (
         <>
-            <div>
-                <h1>기록</h1>
-                <button onClick={toggleFilterPopup}>Filter</button>
-            </div>
+            <SubTitleWrapper>
+                <SubTitleLeftDiv>
+                    <SubTitleLeftLine />
+                    <Text size={3} weight="bold" color={mauve['10']} as={'h1'}>
+                        기록
+                    </Text>
+                </SubTitleLeftDiv>
+                <FunnelButton onClick={toggleFilterPopup}>
+                    <FunnelIcon />
+                </FunnelButton>
+            </SubTitleWrapper>
 
             <div>
                 {questionList.length > 0 ? (
