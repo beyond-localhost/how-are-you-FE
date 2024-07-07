@@ -40,6 +40,7 @@ export const FunnelButton = styled.button<filterActiveType>`
     border-radius: 4px;
     border: 1px solid ${mauve['3']};
     background-color: ${props => (props.active ? violet['3'] : violet['1'])};
+    gap: 4px;
 `;
 // endregion - 서브 헤더
 

@@ -39,12 +39,16 @@ function QuestionList() {
 
     // const { hasMore, data: questionList } = questionListData;
     const { list: questionList } = questionListData;
-    const isFunnelButtonActive = !!filteredDate.year; // 필터 여부
+    const isFunnelButtonActive = !!filteredDate.year; // 필터링 여부
+    let formattedFilterMonth = filteredDate.month; // 필터링된 '월' 날짜 포맷팅
+    if (isFunnelButtonActive) {
+        formattedFilterMonth =
+            formattedFilterMonth.length > 1 ? formattedFilterMonth : '0' + formattedFilterMonth;
+    }
 
     const toggleFilterPopup = () => {
         setIsFilterPopupOpen(prevState => !prevState);
     };
-
     const onSetQuestionListData = async ({ year, month }: onSetQuestionListDataProp) => {
         try {
             const yearParam = year ? year : FILTER_DEFAULT_DATE.YEAR;
@@ -74,7 +78,7 @@ function QuestionList() {
 
                     {isFunnelButtonActive && (
                         <Text size={3} weight="bold" color={violet['11']}>
-                            {filteredDate.year}년 {filteredDate.month}월
+                            {filteredDate.year}년 {formattedFilterMonth}월
                         </Text>
                     )}
                 </FunnelButton>
