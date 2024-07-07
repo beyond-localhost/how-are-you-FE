@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { api } from '@lib/api/client.ts';
 import { QuestionListType } from '@type/QuestionType.ts';
 import {
@@ -14,10 +14,6 @@ import { mauve, violet } from '@/tokens/color.ts';
 type QuestionListFilterPopupProp = {
     toggleFilterPopup: () => void;
     onSetQuestionListData: (data: QuestionListType) => void;
-    year: string;
-    month: string;
-    setYear: React.Dispatch<React.SetStateAction<string>>;
-    setMonth: React.Dispatch<React.SetStateAction<string>>;
 };
 
 type handleInputChangeProp = {
@@ -27,12 +23,11 @@ type handleInputChangeProp = {
 
 function QuestionListFilterPopup({
     toggleFilterPopup,
-    onSetQuestionListData,
-    year,
-    setYear,
-    month,
-    setMonth
+    onSetQuestionListData
 }: QuestionListFilterPopupProp) {
+    const [year, setYear] = useState('');
+    const [month, setMonth] = useState('');
+
     const handleFiltering = async () => {
         if (!year || !month) {
             alert('날짜를 모두 입력해주세요');

@@ -53,9 +53,6 @@ function QuestionList() {
 
     const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
     const [questionListData, setQuestionListData] = useState(questionListLoaderData);
-    const [year, setYear] = useState<string>('');
-    const [month, setMonth] = useState<string>('');
-
     // const { hasMore, nextCursor, data: questionList } = questionListData;
     const { data: questionList } = questionListData;
 
@@ -94,14 +91,11 @@ function QuestionList() {
                 )}
             </QuestionListWrapper>
 
-            {isFilterPopupOpen && (
+            {/*{isFilterPopupOpen && (*/}
+            {!isFilterPopupOpen && (
                 <QuestionListFilterPopup
                     toggleFilterPopup={toggleFilterPopup}
                     onSetQuestionListData={onSetQuestionListData}
-                    year={year}
-                    setYear={setYear}
-                    month={month}
-                    setMonth={setMonth}
                 />
             )}
         </QuestionListContainer>
