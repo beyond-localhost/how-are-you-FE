@@ -31,12 +31,15 @@ const datetimeFormatter = Intl.DateTimeFormat('ko', {
 
 function TodayQuestion() {
     const headerDeps = useContext(HeaderContext);
-    console.log(headerDeps);
     const data = useLoaderData() as QuestionType;
     const navigate = useNavigate();
+    const curDate = datetimeFormatter.format(new Date()); // 오늘 날짜
 
     const handleButtonClick = () => {
-        const url = `/question/${data.questionId}/answers/write`;
+        let url = `/question/${data.questionId}/answers`;
+        if (!data.userAnswered) {
+            url += '/write';
+        }
         navigate(url);
     };
 
@@ -48,7 +51,7 @@ function TodayQuestion() {
     return (
         <TodayQuestionLayout deductedHeight={headerDeps.height}>
             <Text size={5} weight={'medium'} color={mauve['11']}>
-                {datetimeFormatter.format(new Date())}
+                {curDate.slice(0, curDate.length - 1)}
             </Text>
             <TodayQuestionWrapper>
                 <Text size={5} weight={'bold'} color={mauve['12']}>
