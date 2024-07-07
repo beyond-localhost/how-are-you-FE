@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { mauve, violet } from '@/tokens/color.ts';
+import { fontSize, fontWeight } from '@/tokens/font.ts';
 
 type ListFilterButtonProp = {
     active?: boolean;
@@ -88,12 +89,28 @@ export const ListFilterPopup = styled.div`
     display: flex;
     flex-direction: column;
     padding: 16px;
+    width: 384px;
 `;
 
 export const ListFilterPopupInputs = styled.div`
     display: flex;
     align-items: center;
     margin: 14px 0 37px 0;
+    gap: 16px;
+    font-weight: ${fontWeight.bold};
+    ${fontSize['7']};
+    color: ${violet['11']};
+
+    div {
+        width: 108px;
+        display: flex;
+        gap: 4px;
+    }
+
+    input {
+        width: 100%;
+        color: ${violet['11']};
+    }
 `;
 
 export const ListFilterPopupButtons = styled.div`
