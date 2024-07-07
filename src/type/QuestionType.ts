@@ -1,9 +1,8 @@
 import { paths } from '@lib/api/api';
 
-export type QuestionListType =
+// API response
+export type QuestionListDataType =
     paths['/questions/answers']['get']['responses']['200']['content']['application/json'];
-export type QuestionListItemType =
-    paths['/questions/answers']['get']['responses']['200']['content']['application/json']['data'];
 
 export type QuestionType =
     paths['/questions/today']['get']['responses']['200']['content']['application/json'];
@@ -11,8 +10,15 @@ export type QuestionType =
 export type QuestionAnswerType =
     paths['/questions/{id}/answers']['get']['responses']['200']['content']['application/json'];
 
-export type QuestionDataType = {
-    questionId: number;
-    questionTitle: string;
-    questionContent: string;
+// 필터 팝업
+export type filterDateKeyType = 'year' | 'month';
+export type filterDateType = Record<filterDateKeyType, string>;
+export type onSetQuestionListDataProp = {
+    year: string;
+    month: string;
+};
+
+// 질문 리스트
+export type filterActiveType = {
+    active: boolean;
 };

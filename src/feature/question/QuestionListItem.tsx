@@ -1,5 +1,5 @@
 import { TEMP_DATE } from '@/constants/temp.ts';
-import { QuestionListItemType } from '@type/QuestionType.ts';
+import { QuestionListDataType } from '@type/QuestionType.ts';
 import {
     QuestionListItemContent,
     QuestionListItemWrapper
@@ -10,15 +10,14 @@ import CareRightIcon from '@components/icons/CareRightIcon.tsx';
 import { useNavigate } from 'react-router-dom';
 
 type QuestionListItemProp = {
-    item: QuestionListItemType[0]; // todo: type check
+    item: QuestionListDataType['list'][number];
 };
 
 function QuestionListItem({ item }: QuestionListItemProp) {
     const navigate = useNavigate();
 
     const goToItemContent = () => {
-        // todo: 실제 데이터로 테스트
-        navigate(`question/${item.questionId}/answers`);
+        navigate(`/question/${item.questionId}/answers`);
     };
 
     return (

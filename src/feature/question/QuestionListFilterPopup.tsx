@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { api } from '@lib/api/client.ts';
-import { QuestionListType } from '@type/QuestionType.ts';
+import {
+    filterDateKeyType,
+    filterDateType,
+    onSetQuestionListDataProp
+} from '@type/QuestionType.ts';
 import {
     ListFilterButton,
     ListFilterPopup,
@@ -13,20 +16,22 @@ import { mauve, violet } from '@/tokens/color.ts';
 
 type QuestionListFilterPopupProp = {
     toggleFilterPopup: () => void;
-    onSetQuestionListData: (data: QuestionListType) => void;
+    onSetQuestionListData: ({ year, month }: onSetQuestionListDataProp) => void;
+    filteredDate: filterDateType;
 };
 
 type handleInputChangeProp = {
     e: React.ChangeEvent<HTMLInputElement>;
-    type: 'year' | 'month';
+    type: filterDateKeyType;
 };
 
 function QuestionListFilterPopup({
     toggleFilterPopup,
-    onSetQuestionListData
+    onSetQuestionListData,
+    filteredDate
 }: QuestionListFilterPopupProp) {
-    const [year, setYear] = useState('');
-    const [month, setMonth] = useState('');
+    const [year, setYear] = useState(filteredDate.year);
+    const [month, setMonth] = useState(filteredDate.month);
 
     const handleFiltering = async () => {
         if (!year || !month) {
@@ -48,26 +53,7 @@ function QuestionListFilterPopup({
             return;
         }
 
-        const curDate = new Date();
-
-        const response = await api.GET('/questions/answers', {
-            params: {
-                query: {
-                    startYear: year.toString(),
-                    startMonth: month.toString(),
-                    endYear: curDate.getFullYear().toString(),
-                    endMonth: (curDate.getMonth() + 1).toString()
-                }
-            }
-        });
-
-        if (response.error || !response.data) {
-            alert('문제가 발생했습니다. 다시 시도해주세요.');
-            toggleFilterPopup();
-            return;
-        }
-
-        onSetQuestionListData(response.data);
+        onSetQuestionListData({ year, month });
     };
 
     const handleInputChange = ({ e, type }: handleInputChangeProp) => {

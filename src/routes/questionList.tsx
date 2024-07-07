@@ -1,68 +1,60 @@
-// import { api } from '@lib/api/client.ts';
-// import { showErrorAlert } from '@/utils/error.ts';
 import { useLoaderData } from 'react-router-dom';
-import { QuestionListType } from '@type/QuestionType.ts';
+import {
+    filterDateType,
+    onSetQuestionListDataProp,
+    QuestionListDataType
+} from '@type/QuestionType.ts';
 import { useState } from 'react';
-import { TEMP_CONTENT, TEMP_TITLE } from '@/constants/temp.ts';
 import FunnelIcon from '@components/icons/FunnelIcon.tsx';
 import {
     FunnelButton,
     QuestionListContainer,
+    QuestionListEmptySet,
     QuestionListWrapper,
     SubTitleLeftDiv,
     SubTitleLeftLine,
     SubTitleWrapper
 } from '@feature/question/styles/QuestionList.style.tsx';
 import { Text } from '@components/text/Text.tsx';
-import { mauve } from '@/tokens/color.ts';
+import { mauve, violet } from '@/tokens/color.ts';
 import QuestionListItem from '@feature/question/QuestionListItem.tsx';
 import QuestionListFilterPopup from '@feature/question/QuestionListFilterPopup.tsx';
+import FunnelFilledIcon from '@components/icons/FunnelFilledIcon.tsx';
+import { getQuestionList } from '@/apis/question.ts';
 
-// todo: 월 별 Filter
 export async function loader() {
-    // const response = await api.GET('/questions/answers', {
-    //     // todo
-    //     params: {
-    //         query: {
-    //             startYear: '2024',
-    //             startMonth: '3',
-    //             endYear: '2024',
-    //             endMonth: '3'
-    //         }
-    //     }
-    // });
-    // if (response.error) {
-    //     showErrorAlert();
-    // }
-    // return response;
-    return {
-        hasMore: false,
-        nextCursor: null,
-        data: [
-            {
-                questionId: 1,
-                question: TEMP_TITLE,
-                answer: TEMP_CONTENT
-            }
-        ]
-    };
+    return await getQuestionList({
+        year: '2024',
+        month: '3'
+    });
 }
 
 function QuestionList() {
-    const questionListLoaderData = useLoaderData() as QuestionListType; // todo
+    const questionListLoaderData = useLoaderData() as QuestionListDataType;
 
     const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
     const [questionListData, setQuestionListData] = useState(questionListLoaderData);
-    // const { hasMore, nextCursor, data: questionList } = questionListData;
-    const { data: questionList } = questionListData;
+    const [filteredDate, setFilteredDate] = useState<filterDateType>({ year: '', month: '' });
+
+    // const { hasMore, data: questionList } = questionListData;
+    const { list: questionList } = questionListData;
+    const isFunnelButtonActive = !!filteredDate.year; // 필터 여부
 
     const toggleFilterPopup = () => {
         setIsFilterPopupOpen(prevState => !prevState);
     };
 
-    const onSetQuestionListData = (data: QuestionListType) => {
-        setQuestionListData(data);
-        toggleFilterPopup();
+    const onSetQuestionListData = async ({ year, month }: onSetQuestionListDataProp) => {
+        try {
+            toggleFilterPopup();
+
+            const response = await getQuestionList({ year, month });
+
+            setFilteredDate({ year, month });
+            setQuestionListData(response);
+        } catch (e) {
+            alert('문제가 발생했습니다. 다시 시도해주세요');
+        }
     };
 
     return (
@@ -74,28 +66,30 @@ function QuestionList() {
                         기록
                     </Text>
                 </SubTitleLeftDiv>
-                <FunnelButton onClick={toggleFilterPopup}>
-                    <FunnelIcon />
+                <FunnelButton onClick={toggleFilterPopup} active={isFunnelButtonActive}>
+                    {isFunnelButtonActive ? <FunnelFilledIcon /> : <FunnelIcon />}
+
+                    {isFunnelButtonActive && (
+                        <Text size={3} weight="bold" color={violet['11']}>
+                            {filteredDate.year}년 {filteredDate.month}월
+                        </Text>
+                    )}
                 </FunnelButton>
             </SubTitleWrapper>
 
             <QuestionListWrapper>
-                {questionList.length > 0 ? (
-                    questionList.map(item => (
-                        // todo: mock date
-                        <QuestionListItem item={item} key={item.questionId} />
-                    ))
+                {questionList.length < 0 ? (
+                    questionList.map(item => <QuestionListItem item={item} key={item.questionId} />)
                 ) : (
-                    // todo: empty set
-                    <div />
+                    <QuestionListEmptySet>등록된 기록이 없어요 😭</QuestionListEmptySet>
                 )}
             </QuestionListWrapper>
 
-            {/*{isFilterPopupOpen && (*/}
-            {!isFilterPopupOpen && (
+            {isFilterPopupOpen && (
                 <QuestionListFilterPopup
                     toggleFilterPopup={toggleFilterPopup}
                     onSetQuestionListData={onSetQuestionListData}
+                    filteredDate={filteredDate}
                 />
             )}
         </QuestionListContainer>

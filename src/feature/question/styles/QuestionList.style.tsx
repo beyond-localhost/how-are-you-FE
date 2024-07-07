@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { mauve, violet } from '@/tokens/color.ts';
 import { fontSize, fontWeight } from '@/tokens/font.ts';
+import { filterActiveType } from '@type/QuestionType.ts';
 
 type ListFilterButtonProp = {
     active?: boolean;
@@ -31,14 +32,14 @@ export const SubTitleLeftLine = styled.div`
     background: ${mauve['10']};
 `;
 
-export const FunnelButton = styled.button`
+export const FunnelButton = styled.button<filterActiveType>`
     display: inline-flex;
     padding: 4px;
     justify-content: center;
     align-items: center;
     border-radius: 4px;
     border: 1px solid ${mauve['3']};
-    background-color: ${violet['1']};
+    background-color: ${props => (props.active ? violet['3'] : violet['1'])};
 `;
 // endregion - 서브 헤더
 
@@ -62,6 +63,15 @@ export const QuestionListItemContent = styled.div`
     padding: 16px 0;
     gap: 16px;
     border-bottom: 1px solid ${violet['6']};
+`;
+
+export const QuestionListEmptySet = styled.div`
+    color: ${mauve['11']};
+    font-weight: ${fontWeight.medium};
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 `;
 
 // endregion - 질문 리스트
