@@ -21,11 +21,12 @@ import QuestionListItem from '@feature/question/QuestionListItem.tsx';
 import QuestionListFilterPopup from '@feature/question/QuestionListFilterPopup.tsx';
 import FunnelFilledIcon from '@components/icons/FunnelFilledIcon.tsx';
 import { getQuestionList } from '@/apis/question.ts';
+import { FILTER_DEFAULT_DATE } from '@/constants/question.ts';
 
 export async function loader() {
     return await getQuestionList({
-        year: '2024',
-        month: '3'
+        year: FILTER_DEFAULT_DATE.YEAR,
+        month: FILTER_DEFAULT_DATE.MONTH
     });
 }
 
@@ -46,9 +47,11 @@ function QuestionList() {
 
     const onSetQuestionListData = async ({ year, month }: onSetQuestionListDataProp) => {
         try {
-            toggleFilterPopup();
+            const yearParam = year ? year : FILTER_DEFAULT_DATE.YEAR;
+            const monthParam = month ? month : FILTER_DEFAULT_DATE.MONTH;
 
-            const response = await getQuestionList({ year, month });
+            toggleFilterPopup();
+            const response = await getQuestionList({ year: yearParam, month: monthParam });
 
             setFilteredDate({ year, month });
             setQuestionListData(response);

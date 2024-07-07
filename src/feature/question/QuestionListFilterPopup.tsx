@@ -42,18 +42,22 @@ function QuestionListFilterPopup({
         const yearValue = Number(year);
         const monthValue = Number(month);
 
-        if (
-            isNaN(yearValue) ||
-            isNaN(monthValue) ||
-            yearValue < 1900 ||
-            monthValue < 1 ||
-            monthValue > 12
-        ) {
+        const curDate = new Date();
+        const targetDate = new Date(yearValue, monthValue);
+
+        if (yearValue < 1900 || monthValue < 1 || monthValue > 12) {
             alert('유효하지 않은 날짜입니다.');
+            return;
+        } else if (curDate < targetDate) {
+            alert('현재 날짜보다 더 앞선 날짜입니다.');
             return;
         }
 
         onSetQuestionListData({ year, month });
+    };
+
+    const handleResetClick = () => {
+        onSetQuestionListData({ year: '', month: '' });
     };
 
     const handleInputChange = ({ e, type }: handleInputChangeProp) => {
@@ -114,6 +118,11 @@ function QuestionListFilterPopup({
                     <ListFilterButton onClick={handleFiltering} active={true}>
                         <Text size={3} weight="bold" color={mauve['1']}>
                             필터링
+                        </Text>
+                    </ListFilterButton>
+                    <ListFilterButton onClick={handleResetClick} active={false}>
+                        <Text size={3} weight="bold" color={violet['11']}>
+                            초기화
                         </Text>
                     </ListFilterButton>
                 </ListFilterPopupButtons>

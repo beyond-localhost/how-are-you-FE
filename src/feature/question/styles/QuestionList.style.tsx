@@ -127,7 +127,7 @@ export const ListFilterPopupButtons = styled.div`
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 16px;
+    gap: 8px;
 `;
 
 export const ListFilterButton = styled.button<ListFilterButtonProp>`
@@ -135,7 +135,12 @@ export const ListFilterButton = styled.button<ListFilterButtonProp>`
     color: ${props => (props.active ? mauve['1'] : mauve['10'])};
     padding: 8px 12px;
     border-radius: 12px;
-    border: ${props => (props.active ? 'none' : `1px solid ${mauve['6']}`)};
+    border: ${props =>
+        props.active === undefined
+            ? `1px solid ${mauve['6']}`
+            : props.active
+              ? 'none'
+              : `1px solid ${violet['11']}`};
 `;
 
 // endregion - 필터 팝업가

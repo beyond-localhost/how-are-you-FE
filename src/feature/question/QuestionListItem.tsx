@@ -30,7 +30,13 @@ function QuestionListItem({ item }: QuestionListItemProp) {
             </Text>
 
             <QuestionListItemContent>
-                <Text size={1} weight="medium" color={mauve['10']}>
+                <Text
+                    size={1}
+                    weight="medium"
+                    color={mauve['10']}
+                    as={'p'}
+                    style={{ width: '100%' }}
+                >
                     {item.answer}
                 </Text>
 
