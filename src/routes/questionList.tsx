@@ -78,7 +78,7 @@ function QuestionList() {
             </SubTitleWrapper>
 
             <QuestionListWrapper>
-                {questionList.length < 0 ? (
+                {questionList.length > 0 ? (
                     questionList.map(item => <QuestionListItem item={item} key={item.questionId} />)
                 ) : (
                     <QuestionListEmptySet>등록된 기록이 없어요 😭</QuestionListEmptySet>

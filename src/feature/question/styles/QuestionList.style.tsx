@@ -59,7 +59,7 @@ export const QuestionListItemWrapper = styled.div`
 export const QuestionListItemContent = styled.div`
     display: flex;
     align-items: center;
-    align-self: stretch;
+    justify-content: space-between;
     padding: 16px 0;
     gap: 16px;
     border-bottom: 1px solid ${violet['6']};
