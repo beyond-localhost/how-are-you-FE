@@ -44,7 +44,7 @@ export const BirthInputOptions = styled.ul`
     border-bottom-left-radius: inherit;
     border-bottom-right-radius: inherit;
 
-    height: 300px;
+    height: 205px;
     overflow-y: scroll;
     position: absolute;
     left: 0;
@@ -58,6 +58,7 @@ export const BirthInputOptions = styled.ul`
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: ${violet['1']};
 
     &::-webkit-scrollbar {
         /* border-bottom-right-radius: inherit; */

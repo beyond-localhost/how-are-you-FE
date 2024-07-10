@@ -7,7 +7,9 @@ export type Birth = Record<BirthIdType, number>;
 export type Job = number;
 export type Worry = Set<number>;
 
+// 생년월일 입력폼
 export type BirthIdType = 'year' | 'month' | 'day';
+export type openedOptionType = BirthIdType | '';
 
 export interface InfoParam {
     key: string;
