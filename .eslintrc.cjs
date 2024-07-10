@@ -15,6 +15,6 @@ module.exports = {
         '@typescript-eslint/ban-types': 0,
         'no-unused-vars': 'off',
         '@typescript-eslint/no-unused-vars': 'warn',
-        '@typescript-eslint/no-explicit-any': '0'
+        '@typescript-eslint/no-explicit-any': 0
     }
 };
