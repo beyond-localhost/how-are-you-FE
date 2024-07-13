@@ -1,16 +1,23 @@
-import styled from '@emotion/styled';
 import { violet } from '@/tokens/color.ts';
-import { Text } from '@components/text/Text.tsx';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-
-const HEADER_HEIGHT = 72;
+import DrawerToggleIcon from '@components/icons/DrawerToggleIcon.tsx';
+import {
+    DrawerWrap,
+    HeaderText,
+    DrawerToggleButton,
+    HeaderWrap,
+    LogoutButton,
+    DrawerTopWrap,
+    DrawerLinkWrap
+} from '@components/header/styles/Header.style.tsx';
+import { Text } from '@components/text/Text.tsx';
+import CustomLink from '@components/header/CustomLink.tsx';
 
 function Header() {
-    const [isHeaderOpen, setIsHeaderOpen] = useState(false);
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-    const toggleHeaderOpen = () => {
-        setIsHeaderOpen(prevState => !prevState);
+    const toggleDrawerOpen = () => {
+        setIsDrawerOpen(prevState => !prevState);
     };
 
     return (
@@ -18,39 +25,37 @@ function Header() {
             <HeaderText size={5} weight="bold" color={violet[10]}>
                 How are you?
             </HeaderText>
-            <button onClick={toggleHeaderOpen}>토글</button>
 
-            {isHeaderOpen && (
-                <>
-                    <span>닉네임</span>
-                    <button>로그아웃</button>
+            {isDrawerOpen ? (
+                <DrawerWrap>
+                    <DrawerTopWrap>
+                        <DrawerToggleButton onClick={toggleDrawerOpen} isDrawerOpen={isDrawerOpen}>
+                            <DrawerToggleIcon isDrawerOpen={isDrawerOpen} />
+                        </DrawerToggleButton>
 
-                    <Link to={'/today-question'}>오늘의 이야기</Link>
-                    <Link to={'/question-list'}>내 기록</Link>
-                </>
+                        <Text
+                            size={3}
+                            weight="bold"
+                            color={violet['12']}
+                            style={{ width: '100%', marginBottom: '16px' }}
+                        >
+                            닉네임
+                        </Text>
+                        <LogoutButton>로그아웃</LogoutButton>
+                    </DrawerTopWrap>
+
+                    <DrawerLinkWrap>
+                        <CustomLink to={'/today-question'} text={'오늘의 이야기'} />
+                        <CustomLink to={'/question-list'} text={'내 기록'} />
+                    </DrawerLinkWrap>
+                </DrawerWrap>
+            ) : (
+                <DrawerToggleButton onClick={toggleDrawerOpen}>
+                    <DrawerToggleIcon isDrawerOpen={isDrawerOpen} />
+                </DrawerToggleButton>
             )}
         </HeaderWrap>
     );
 }
 
 export default Header;
-
-const HeaderWrap = styled.header`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    position: sticky;
-    top: -1px;
-
-    padding: 20px 16px;
-    width: 100%;
-    height: ${HEADER_HEIGHT}px;
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
-    border-color: ${violet[3]};
-`;
-
-const HeaderText = styled(Text)`
-    font-style: italic;
-`;
