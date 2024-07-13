@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { Layout } from '@styles/Common.style.tsx';
 
 export const Title = styled.div`
     //font-family: 'Room No.703'; // todo
@@ -11,6 +12,12 @@ export const Title = styled.div`
     -webkit-text-fill-color: transparent;
     position: absolute;
     bottom: 50%;
+`;
+
+export const LoginLayout = styled(Layout)`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 `;
 
 export const LoginFooter = styled.div`

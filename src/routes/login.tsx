@@ -6,11 +6,11 @@ import {
     AutoLoginDiv,
     LoginButton,
     LoginFooter,
+    LoginLayout,
     Title
 } from '@feature/index/styles/Index.style.tsx';
 import { KakaoIcon } from '@components/icons/KakaoIcon.tsx';
 import { Text } from '@components/text/Text.tsx';
-import { Layout } from '@styles/Common.style.tsx';
 
 function Login() {
     const checkboxRef = useRef<HTMLInputElement>(null);
@@ -34,7 +34,7 @@ function Login() {
     };
 
     return (
-        <Layout>
+        <LoginLayout>
             <Title>How are you?</Title>
 
             <LoginFooter>
@@ -50,7 +50,7 @@ function Login() {
                     </Text>
                 </LoginButton>
             </LoginFooter>
-        </Layout>
+        </LoginLayout>
     );
 }
 
