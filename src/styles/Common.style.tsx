@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { violet } from '@/tokens/color.ts';
+import { LayoutType } from '@type/commonStyleType.ts';
 
 export const Container = styled.div`
     background: ${violet['1']};
@@ -7,8 +8,9 @@ export const Container = styled.div`
     margin: 0 auto;
 `;
 
-export const Layout = styled.div`
+export const Layout = styled.div<LayoutType>`
     height: 100dvh; // # dvh !!
+    background: ${props => (props.showHeaderDrawer ? '#d9d9d9' : 'none')};
 `;
 
 /**

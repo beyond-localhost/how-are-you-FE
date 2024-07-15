@@ -1,6 +1,6 @@
 import { mauve, violet } from '@/tokens/color.ts';
 
-function DrawerToggleIcon({ isDrawerOpen }: { isDrawerOpen: boolean }) {
+function DrawerToggleIcon({ showHeaderDrawer }: { showHeaderDrawer: boolean }) {
     return (
         <svg
             width="24"
@@ -14,7 +14,7 @@ function DrawerToggleIcon({ isDrawerOpen }: { isDrawerOpen: boolean }) {
                     id="Vector"
                     opacity="0.2"
                     d="M19.5 5.25V18.75C19.5 18.9489 19.421 19.1397 19.2803 19.2803C19.1397 19.421 18.9489 19.5 18.75 19.5H12V4.5H18.75C18.9489 4.5 19.1397 4.57902 19.2803 4.71967C19.421 4.86032 19.5 5.05109 19.5 5.25Z"
-                    fill={isDrawerOpen ? violet['11'] : violet['1']}
+                    fill={showHeaderDrawer ? violet['11'] : violet['1']}
                 />
                 <path
                     id="Vector_2"

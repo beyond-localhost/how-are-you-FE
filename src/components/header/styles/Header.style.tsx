@@ -28,10 +28,10 @@ export const HeaderText = styled(Text)`
 `;
 
 // Drawer
-export const DrawerToggleButton = styled.button<{ isDrawerOpen?: boolean }>`
+export const DrawerToggleButton = styled.button<{ showHeaderDrawer?: boolean }>`
     background: none;
     border: none;
-    margin-bottom: ${props => (props.isDrawerOpen ? '32px' : '0')};
+    margin-bottom: ${props => (props.showHeaderDrawer ? '32px' : '0')};
 `;
 
 export const DrawerWrap = styled.div`
@@ -44,7 +44,7 @@ export const DrawerWrap = styled.div`
 
     height: 100dvh;
     width: 302px;
-    padding: 20px 16px;
+    padding: 24px 16px;
 
     background: ${violet['1']};
     box-shadow:

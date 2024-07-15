@@ -1,5 +1,4 @@
 import { violet } from '@/tokens/color.ts';
-import { useState } from 'react';
 import DrawerToggleIcon from '@components/icons/DrawerToggleIcon.tsx';
 import {
     DrawerWrap,
@@ -11,14 +10,11 @@ import {
     DrawerLinkWrap
 } from '@components/header/styles/Header.style.tsx';
 import { Text } from '@components/text/Text.tsx';
-import CustomLink from '@components/header/CustomLink.tsx';
+import NavigateBtn from '@components/header/NavigateBtn.tsx';
+import { useCommonStore } from '@/store/useCommonStore.tsx';
 
 function Header() {
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-    const toggleDrawerOpen = () => {
-        setIsDrawerOpen(prevState => !prevState);
-    };
+    const { showHeaderDrawer, toggleHeaderDrawer, userNickname } = useCommonStore(state => state);
 
     return (
         <HeaderWrap>
@@ -26,11 +22,14 @@ function Header() {
                 How are you?
             </HeaderText>
 
-            {isDrawerOpen ? (
+            {showHeaderDrawer ? (
                 <DrawerWrap>
                     <DrawerTopWrap>
-                        <DrawerToggleButton onClick={toggleDrawerOpen} isDrawerOpen={isDrawerOpen}>
-                            <DrawerToggleIcon isDrawerOpen={isDrawerOpen} />
+                        <DrawerToggleButton
+                            onClick={toggleHeaderDrawer}
+                            showHeaderDrawer={showHeaderDrawer}
+                        >
+                            <DrawerToggleIcon showHeaderDrawer={showHeaderDrawer} />
                         </DrawerToggleButton>
 
                         <Text
@@ -39,19 +38,19 @@ function Header() {
                             color={violet['12']}
                             style={{ width: '100%', marginBottom: '16px' }}
                         >
-                            닉네임
+                            {userNickname}
                         </Text>
                         <LogoutButton>로그아웃</LogoutButton>
                     </DrawerTopWrap>
 
                     <DrawerLinkWrap>
-                        <CustomLink to={'/today-question'} text={'오늘의 이야기'} />
-                        <CustomLink to={'/question-list'} text={'내 기록'} />
+                        <NavigateBtn to={'/today-question'} text={'오늘의 이야기'} />
+                        <NavigateBtn to={'/question-list'} text={'내 기록'} />
                     </DrawerLinkWrap>
                 </DrawerWrap>
             ) : (
-                <DrawerToggleButton onClick={toggleDrawerOpen}>
-                    <DrawerToggleIcon isDrawerOpen={isDrawerOpen} />
+                <DrawerToggleButton onClick={toggleHeaderDrawer}>
+                    <DrawerToggleIcon showHeaderDrawer={showHeaderDrawer} />
                 </DrawerToggleButton>
             )}
         </HeaderWrap>
