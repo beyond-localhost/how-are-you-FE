@@ -62,13 +62,12 @@ export const DrawerTopWrap = styled.div`
 `;
 
 export const HeaderTextButton = styled.button`
-    //display: flex;
     border: none;
     font-weight: ${fontWeight.bold};
     ${fontSize['5']};
     color: ${violet['10']};
     font-style: italic;
-    //margin-bottom: 36px;
+    background: none;
 `;
 
 export const LogoutButton = styled.button`

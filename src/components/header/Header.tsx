@@ -30,7 +30,7 @@ function Header() {
                 throw new Error('api error');
             }
 
-            navigate('/');
+            navigate('/login');
         } catch (e) {
             alert('로그아웃에 실패하였습니다. 다시 시도해주세요');
             console.error(e);
