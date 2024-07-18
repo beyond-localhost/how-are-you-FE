@@ -19,6 +19,7 @@ export const HeaderWrap = styled.header`
     border-bottom-width: 1px;
     border-bottom-style: solid;
     border-color: ${violet[3]};
+    transition: all 800ms cubic-bezier(0.8, 0, 0.33, 1);
 
     z-index: 999;
 `;
@@ -58,6 +59,16 @@ export const DrawerTopWrap = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+`;
+
+export const HeaderTextButton = styled.button`
+    //display: flex;
+    border: none;
+    font-weight: ${fontWeight.bold};
+    ${fontSize['5']};
+    color: ${violet['10']};
+    font-style: italic;
+    //margin-bottom: 36px;
 `;
 
 export const LogoutButton = styled.button`

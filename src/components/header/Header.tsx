@@ -2,25 +2,44 @@ import { violet } from '@/tokens/color.ts';
 import DrawerToggleIcon from '@components/icons/DrawerToggleIcon.tsx';
 import {
     DrawerWrap,
-    HeaderText,
     DrawerToggleButton,
     HeaderWrap,
     LogoutButton,
     DrawerTopWrap,
-    DrawerLinkWrap
+    DrawerLinkWrap,
+    HeaderTextButton
 } from '@components/header/styles/Header.style.tsx';
 import { Text } from '@components/text/Text.tsx';
 import NavigateBtn from '@components/header/NavigateBtn.tsx';
 import { useCommonStore } from '@/store/useCommonStore.tsx';
+import { useNavigate } from 'react-router-dom';
+import { api } from '@lib/api/client.ts';
 
 function Header() {
+    const navigate = useNavigate();
     const { showHeaderDrawer, toggleHeaderDrawer, userNickname } = useCommonStore(state => state);
+
+    const goToMain = () => {
+        navigate('/today-question');
+    };
+
+    const handleLogout = async () => {
+        try {
+            const response = await api.POST('/logout');
+            if (response.error) {
+                throw new Error('api error');
+            }
+
+            navigate('/');
+        } catch (e) {
+            alert('로그아웃에 실패하였습니다. 다시 시도해주세요');
+            console.error(e);
+        }
+    };
 
     return (
         <HeaderWrap>
-            <HeaderText size={5} weight="bold" color={violet[10]}>
-                How are you?
-            </HeaderText>
+            <HeaderTextButton onClick={goToMain}>How are you?</HeaderTextButton>
 
             {showHeaderDrawer ? (
                 <DrawerWrap>
@@ -40,7 +59,7 @@ function Header() {
                         >
                             {userNickname}
                         </Text>
-                        <LogoutButton>로그아웃</LogoutButton>
+                        <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
                     </DrawerTopWrap>
 
                     <DrawerLinkWrap>
