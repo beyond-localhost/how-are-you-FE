@@ -17,7 +17,7 @@ export const TodayQuestionWrapper = styled.div`
     align-items: center;
     gap: 16px;
 
-    margin: 80px 0 72px;
+    margin: 80px 10px 72px;
 
     border-radius: 12px;
     border: 1px solid ${violet['5']};

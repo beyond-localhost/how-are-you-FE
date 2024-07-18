@@ -2,9 +2,9 @@ import styled from '@emotion/styled';
 import { Layout } from '@styles/Common.style.tsx';
 
 export const Title = styled.div`
-    //font-family: 'Room No.703'; // todo
-    font-size: 60px;
-    font-weight: 400;
+    width: 100%;
+    font-size: 50px;
+    font-weight: 600;
     line-height: 68px;
     background: linear-gradient(180deg, #5746af 0%, #c4b8f3 100%);
     background-clip: text;
@@ -12,6 +12,9 @@ export const Title = styled.div`
     -webkit-text-fill-color: transparent;
     position: absolute;
     bottom: 50%;
+    display: flex;
+    justify-content: center;
+    font-style: italic;
 `;
 
 export const LoginLayout = styled(Layout)`
