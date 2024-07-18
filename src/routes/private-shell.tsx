@@ -30,7 +30,8 @@ export function PrivateShell() {
     const { profile } = data;
 
     const setUserNickname = useCommonStore(state => state.setUserNickname);
-    if (profile) {
+    const userNickname = useCommonStore(state => state.userNickname);
+    if (profile && !userNickname) {
         setUserNickname(profile.nickname);
     }
 
