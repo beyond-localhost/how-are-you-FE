@@ -1,4 +1,3 @@
-import { TEMP_DATE } from '@/constants/temp.ts';
 import { QuestionListDataType } from '@type/QuestionType.ts';
 import {
     QuestionListItemContent,
@@ -23,7 +22,7 @@ function QuestionListItem({ item }: QuestionListItemProp) {
     return (
         <QuestionListItemWrapper onClick={goToItemContent}>
             <Text size={1} weight="medium" color={mauve['10']}>
-                {TEMP_DATE}
+                {item.createdAt.slice(0, 9).replaceAll('-', '.')}
             </Text>
             <Text size={2} weight="bold" color={mauve['12']}>
                 {item.question}

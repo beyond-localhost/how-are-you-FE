@@ -1,7 +1,7 @@
 import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router-dom';
 import Login from '@routes/login.tsx';
 import ErrorPage from '@routes/errorPage.tsx';
-import { Loader as callbackLoader } from '@routes/callback.tsx';
+import { loader as callbackLoader } from '@routes/callback.tsx';
 import InfoForm, { loader as infoFormLoader } from '@routes/infoForm.tsx';
 import Root from '@routes/root.tsx';
 import QuestionList, { loader as questionListLoader } from '@routes/questionList.tsx';

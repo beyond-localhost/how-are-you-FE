@@ -157,6 +157,27 @@ export interface paths {
             };
         };
     };
+    '/logout': {
+        /** @description 유저를 로그아웃 시킵니다 */
+        post: {
+            responses: {
+                /** @description 성공적으로 로그아웃이 완료된 경우 입니다 */
+                204: {
+                    content: never;
+                };
+                /** @description 세션 값이 없거나 / 유효하지 않은 경우에 해당합니다. 이경우 첨부된 쿠키도 전부 지워집니다! */
+                401: {
+                    content: {
+                        'application/json': {
+                            /** @enum {number} */
+                            code: 401;
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
     '/questions/today': {
         /** 오늘 만들어진 질문과 이에 대한 유저의 답변을 반환합니다. */
         get: {
@@ -339,7 +360,7 @@ export interface paths {
             };
             responses: {
                 /** @description 답변이 삭제되었을 때 반환되는 응답입니다. */
-                204: {
+                200: {
                     content: never;
                 };
                 /** @description 삭제하려는 답변이 유저가 남긴 답변이 아닐 때 반환되는 응답입니다. */
@@ -391,6 +412,7 @@ export interface paths {
                                         question: string;
                                         answerId: number;
                                         answer: string;
+                                        createdAt: string;
                                     }[];
                                 },
                                 {
@@ -403,6 +425,7 @@ export interface paths {
                                         question: string;
                                         answerId: number;
                                         answer: string;
+                                        createdAt: string;
                                     }[];
                                 }
                             ]

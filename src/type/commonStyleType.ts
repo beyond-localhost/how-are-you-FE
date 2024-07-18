@@ -1,5 +1,5 @@
 export type LayoutType = {
-    showHeaderDrawer: boolean;
+    showHeaderDrawer?: boolean;
 };
 
 export type activeStyleType = { isActive: boolean };
