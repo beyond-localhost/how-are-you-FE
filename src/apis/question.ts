@@ -12,6 +12,7 @@ export const getQuestionList = async (param: onSetQuestionListDataProp) => {
                 startMonth: month ? month.toString() : '3',
                 endYear: curDate.getFullYear().toString(),
                 endMonth: (curDate.getMonth() + 1).toString()
+                // nextCursor:
             }
         }
     });

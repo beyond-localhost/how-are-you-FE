@@ -4,7 +4,7 @@ import {
     onSetQuestionListDataProp,
     QuestionListDataType
 } from '@type/QuestionType.ts';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import FunnelIcon from '@components/icons/FunnelIcon.tsx';
 import {
     FunnelButton,
@@ -33,9 +33,26 @@ export async function loader() {
 function QuestionList() {
     const questionListLoaderData = useLoaderData() as QuestionListDataType;
 
-    const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
     const [questionListData, setQuestionListData] = useState(questionListLoaderData);
+    const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
     const [filteredDate, setFilteredDate] = useState<filterDateType>({ year: '', month: '' });
+    const pageRef = useRef(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(entries => {
+            if (entries[0] && entries[0].isIntersecting && questionListData.hasMore) {
+                void fetchQuestionList();
+            }
+            if (pageRef && pageRef.current) {
+                observer.observe(pageRef.current);
+            }
+        });
+        return () => {
+            if (pageRef) {
+                observer.disconnect();
+            }
+        };
+    }, [questionListData.nextCursor]);
 
     // const { hasMore, data: questionList } = questionListData;
     const { list: questionList } = questionListData;
@@ -45,6 +62,23 @@ function QuestionList() {
         formattedFilterMonth =
             formattedFilterMonth.length > 1 ? formattedFilterMonth : '0' + formattedFilterMonth;
     }
+
+    const fetchQuestionList = async () => {
+        try {
+            const response = await getQuestionList({
+                year: filteredDate.year,
+                month: filteredDate.month
+            });
+            setQuestionListData(prevState => ({
+                ...prevState,
+                nextCursor: response.nextCursor || prevState.nextCursor || 0, // todo: type이 number|null... 돼있음
+                hasMore: response.hasMore || prevState.hasMore || true, // todo: type이 true로 돼있음
+                list: [...prevState.list, ...response.list]
+            }));
+        } catch (e) {
+            console.error(e);
+        }
+    };
 
     const toggleFilterPopup = () => {
         setIsFilterPopupOpen(prevState => !prevState);
@@ -86,7 +120,12 @@ function QuestionList() {
 
             <QuestionListWrapper>
                 {questionList && questionList.length > 0 ? (
-                    questionList.map(item => <QuestionListItem item={item} key={item.questionId} />)
+                    <>
+                        {questionList.map(item => (
+                            <QuestionListItem item={item} key={item.questionId} />
+                        ))}
+                        <div ref={pageRef} />
+                    </>
                 ) : (
                     <QuestionListEmptySet>등록된 기록이 없어요 😭</QuestionListEmptySet>
                 )}

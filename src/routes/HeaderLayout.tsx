@@ -17,7 +17,13 @@ export function HeaderLayout() {
         <HeaderContext.Provider value={{ height: HEADER_HEIGHT }}>
             <Layout showHeaderDrawer={showHeaderDrawer}>
                 <Header />
-                <Outlet />
+                <div
+                    css={{
+                        pointerEvents: showHeaderDrawer ? 'none' : 'auto'
+                    }}
+                >
+                    <Outlet />
+                </div>
             </Layout>
         </HeaderContext.Provider>
     );
