@@ -1,5 +1,7 @@
 import { api } from '@lib/api/client';
-import { Navigate, redirect, useRouteError } from 'react-router-dom';
+import { Navigate, Outlet, redirect, useLoaderData, useRouteError } from 'react-router-dom';
+import { useCommonStore } from '@/store/useCommonStore.tsx';
+import { paths } from '@lib/api/api';
 
 export async function privateShellLoader() {
     const userFetchResponse = await api.GET('/users/me');
@@ -18,4 +20,20 @@ export function PrivateShellBoundary() {
         throw error;
     }
     return <Navigate to="/" replace />;
+}
+
+type PrivateShellProp =
+    paths['/users/me']['get']['responses']['200']['content']['application/json'];
+
+export function PrivateShell() {
+    const data = useLoaderData() as PrivateShellProp;
+    const { profile } = data;
+
+    const setUserNickname = useCommonStore(state => state.setUserNickname);
+    const userNickname = useCommonStore(state => state.userNickname);
+    if (profile && !userNickname) {
+        setUserNickname(profile.nickname);
+    }
+
+    return <Outlet />;
 }

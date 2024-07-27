@@ -8,7 +8,7 @@ import QuestionList, { loader as questionListLoader } from '@routes/questionList
 import TodayQuestion, { loader as questionLoader } from '@routes/todayQuestion.tsx';
 import Question, { loader as QuestionLoader } from '@routes/question.tsx';
 import { action as QuestionAction } from '@feature/question/QuestionInput.tsx';
-import { PrivateShellBoundary, privateShellLoader } from '@routes/private-shell';
+import { PrivateShell, PrivateShellBoundary, privateShellLoader } from '@routes/private-shell';
 import HeaderLayout from '@routes/HeaderLayout';
 import InitialPageNavigate, { initialPageNavigateLoader } from '@routes/initalPageNavigate';
 
@@ -27,6 +27,7 @@ export const router = createBrowserRouter(
                 loader={privateShellLoader}
                 shouldRevalidate={() => false}
                 errorElement={<PrivateShellBoundary />}
+                element={<PrivateShell />}
             >
                 <Route path="info-form" loader={infoFormLoader} element={<InfoForm />} />
 

@@ -48,22 +48,23 @@ export const FunnelButton = styled.button<filterActiveType>`
 export const QuestionListWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    margin-top: 40px;
+    margin-top: 34px;
 `;
 
 export const QuestionListItemWrapper = styled.div`
     display: flex;
     flex-direction: column;
     cursor: pointer;
+    padding: 16px 0;
+    border-bottom: 1px solid ${violet['6']};
 `;
 
 export const QuestionListItemContent = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 0;
+    padding-top: 16px;
     gap: 16px;
-    border-bottom: 1px solid ${violet['6']};
 `;
 
 export const QuestionListEmptySet = styled.div`
@@ -109,7 +110,7 @@ export const ListFilterPopupInputs = styled.div`
     margin: 14px 0 37px 0;
     gap: 16px;
     font-weight: ${fontWeight.bold};
-    ${fontSize['7']};
+    ${fontSize['6']};
     color: ${violet['11']};
 
     div {
