@@ -22,7 +22,7 @@ function QuestionListItem({ item }: QuestionListItemProp) {
     return (
         <QuestionListItemWrapper onClick={goToItemContent}>
             <Text size={1} weight="medium" color={mauve['10']}>
-                {item.createdAt.slice(0, 9).replaceAll('-', '.')}
+                {item.createdAt.slice(0, 10).replaceAll('-', '.')}
             </Text>
             <Text size={2} weight="bold" color={mauve['12']}>
                 {item.question}
